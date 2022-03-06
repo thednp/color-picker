@@ -12,12 +12,7 @@ Download the package and check the demo folder, or check it online [here](http:/
 * Accessibility Focus
 * ES6+ sources with TypeScript definitions
 * SCSS sources
-* very light footprint, `5kb` in size when minified
-* 3 sets of positions top (main), left or right
-* provides a set of options for JavaScript initialization
-* DATA API allows you to automatically initiate without JS invocation
-* modern browsers supported and semi-modern alike with a special polyfill for IE10+ provided
-
+* light footprint, `10kb` in size when minified and gzipped
 
 # NPM
 You can install **ColorPicker** through NPM:
