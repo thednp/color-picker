@@ -1,0 +1,75 @@
+{
+  "name": "@thednp/color-picker",
+  "version": "0.0.1",
+  "description": "Modern Color Picker Component",
+  "main": "dist/js/color-picker.min.js",
+  "module": "dist/js/color-picker.esm.js",
+  "types": "types/index.d.ts",
+  "style": "dist/css/color-picker.min.css",
+  "sass": "src/css/color-picker.scss",
+  "jsnext": "src/js/color-picker.js",
+  "files": [
+    "types",
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fix:js": "eslint src/ --config .eslintrc --fix",
+    "lint:js": "eslint src/ --config .eslintrc",
+    "fix:css": "stylelint --config .stylelintrc.json -s --fix scss \"src/scss/*.scss\"",
+    "lint:css": "stylelint --config .stylelintrc.json -s scss \"src/scss/*.scss\"",
+    "bundle": "npm-run-all --parallel build compile",
+    "build": "npm run lint:js && npm-run-all --parallel build-*",
+    "build:ts": "tsc -d",
+    "build-js": "rollup --environment FORMAT:umd,MIN:false -c",
+    "build-ce": "rollup --environment FORMAT:umd,MIN:false,NAME:ColorPickerElement,INPUTFILE:src/js/color-picker-element.js,OUTPUTFILE:dist/js/color-picker-element.js -c",
+    "build-ce-min": "rollup --environment FORMAT:umd,MIN:true,NAME:ColorPickerElement,INPUTFILE:src/js/color-picker-element.js,OUTPUTFILE:dist/js/color-picker-element.min.js -c",
+    "build-ce-esm": "rollup --environment FORMAT:esm,MIN:false,NAME:ColorPickerElement,INPUTFILE:src/js/color-picker-element.js,OUTPUTFILE:dist/js/color-picker-element-esm.js -c",
+    "build-ce-esm-min": "rollup --environment FORMAT:esm,MIN:true,NAME:ColorPickerElement,INPUTFILE:src/js/color-picker-element.js,OUTPUTFILE:dist/js/color-picker-element-esm.js -c",
+    "build-minjs": "rollup --environment FORMAT:umd,MIN:true -c",
+    "build-esm": "rollup --environment FORMAT:esm,MIN:false -c",
+    "build-esmjs": "rollup --environment FORMAT:esm,MIN:true -c",
+    "compile": "npm run lint:css && npm-run-all --parallel compile-* && npm run copy-compile",
+    "compile-scss": "node compile.js",
+    "compile-scss-min": "node compile.js MIN:true"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thednp/color-picker.git"
+  },
+  "keywords": [
+    "color-picker",
+    "colorpicker",
+    "javascript colorpicker",
+    "native javascript"
+  ],
+  "author": "thednp",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thednp/color-picker/issues"
+  },
+  "homepage": "http://thednp.github.io/color-picker",
+  "dependencies": {
+    "event-listener.js": "^0.0.5",
+    "shorter-js": "^0.3.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-buble": "^0.21.3",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^7.1.3",
+    "eslint": "^7.22.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-vue": "^7.7.0",
+    "npm-run-all": "^4.1.5",
+    "rollup": "^1.32.1",
+    "rollup-plugin-terser": "^5.3.1",
+    "sass": "^1.39.0",
+    "stylelint": "^13.12.0",
+    "stylelint-config-standard": "^20.0.0",
+    "stylelint-order": "^4.1.0",
+    "stylelint-scss": "^3.19.0",
+    "typescript": "^4.5.2"
+  }
+}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>ColorPicker Web Component</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./dist/css/color-picker.css">
+</head>
+<body>
+
+<h1>ColorPicker Web Component</h1>
+<p>Spaces are intentional to test automatic positioning on open.</p>
+
+<div class="row">
+  <div class="col">
+    <label for="picker1">Primary Color</label>
+    <div class="color-picker">
+      <input type="text" data-function="color-picker" class="color-preview button-appearance" name="picker1" id="picker1" value="#069" format="hex" autocomplete="off" spellcheck="false" placeholder="Set color HEXADECIMAL format">
+    </div>
+  </div>
+  <div class="col">
+    <label for="picker2">Secondary Color</label>
+    <div class="color-picker">
+      <input type="text" data-function="color-picker" class="color-preview button-appearance" name="picker2" id="picker2" value="hsl(25,100,50)" format="hsl" autocomplete="off" spellcheck="false" placeholder="Set color HSL format">
+    </div>
+  </div>
+  <div class="col">
+    <label for="picker3">Accent Color</label>
+    <div class="color-picker">
+      <input type="text" data-function="color-picker" class="color-preview button-appearance" name="picker3" id="picker3" value="rgb(0,66,99)" format="rgb" autocomplete="off" spellcheck="false"  placeholder="Set color RGB format">
+    </div>  
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <label for="picker12">Primary Color</label>
+    <color-picker>
+      <input type="text" class="color-preview button-appearance" name="picker12" id="picker12" value="#069" format="hex" autocomplete="off" spellcheck="false" placeholder="Set color HEXADECIMAL format">
+    </color-picker>
+  </div>
+  <div class="col">
+    <label for="picker22">Secondary Color</label>
+    <color-picker>
+      <input type="text" class="color-preview button-appearance" name="picker22" id="picker22" value="hsl(25,100,50)" format="hsl" autocomplete="off" spellcheck="false" placeholder="Set color HSL format">
+    </color-picker>
+  </div>
+  <div class="col">
+    <label for="picker32">Accent Color</label>
+    <color-picker>
+      <input type="text" class="color-preview button-appearance" name="picker32" id="picker32" value="rgb(0,66,99)" format="rgb" autocomplete="off" spellcheck="false"  placeholder="Set color RGB format">
+    </color-picker>  
+  </div>
+</div>
+
+
+
+<script>
+document.querySelectorAll('[data-function="color-picker"]')[2].addEventListener('colorpicker.change', function handleCustomEvent(e) {
+  console.log('The "change" event has fired for color-picker#picker3 with new value: '+ e.target.value + '\nThis listener is set to fire *only* once for performance reasons.');
+}, {once: true});
+</script>
+
+<!-- partial -->
+<script src="./dist/js/color-picker.js"></script>
+<!-- <script type="module" src="./dist/js/color-picker-ce.js"></script> -->
+<script src="./dist/js/color-picker-element.js"></script>
+</body>
+</html>
