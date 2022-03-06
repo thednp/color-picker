@@ -66,6 +66,7 @@ Alternatively you can use the `ColorPickerElement` custom element:
 
 <script type="module" src="../path-to/color-picker-element.js"></script>
 ```
+In this case the `data-function="color-picker"` attribute is no longer required.
 
 Other initialization and markup options apply, explained in [the demo](http://thednp.github.io/color-picker/).
 

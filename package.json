@@ -1,6 +1,6 @@
 {
   "name": "@thednp/color-picker",
-  "version": "0.0.1",
+  "version": "0.0.1alpha1",
   "description": "Modern Color Picker Component",
   "main": "dist/js/color-picker.min.js",
   "module": "dist/js/color-picker.esm.js",
@@ -13,6 +13,10 @@
     "dist",
     "src"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "fix:js": "eslint src/ --config .eslintrc --fix",
