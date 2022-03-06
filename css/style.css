@@ -1,0 +1,31 @@
+body {font: 14px Arial; padding: 5rem}
+/* color-picker { display: flex} */
+.col > label {
+  /* position: relative;  */
+  margin: 7.5rem 0 0.5rem; display: flex;
+}
+
+.row {
+  --gutter-x: 1.5rem;
+  --gutter-y: 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: calc(-1 * var(--gutter-y));
+  margin-right: calc(-.5 * var(--gutter-x));
+  margin-left: calc(-.5 * var(--gutter-x));
+}
+
+.row>* {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  padding-right: calc(var(--gutter-x) * .5);
+  padding-left: calc(var(--gutter-x) * .5);
+  margin-top: var(--gutter-y);
+}
+@media (min-width: 768px) {
+  
+  .col {
+    flex: 1 0 0%;
+  }
+}
