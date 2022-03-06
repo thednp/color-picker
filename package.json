@@ -30,7 +30,7 @@
     "build-ce": "rollup --environment FORMAT:umd,MIN:false,NAME:ColorPickerElement,INPUTFILE:src/js/color-picker-element.js,OUTPUTFILE:dist/js/color-picker-element.js -c",
     "build-ce-min": "rollup --environment FORMAT:umd,MIN:true,NAME:ColorPickerElement,INPUTFILE:src/js/color-picker-element.js,OUTPUTFILE:dist/js/color-picker-element.min.js -c",
     "build-ce-esm": "rollup --environment FORMAT:esm,MIN:false,NAME:ColorPickerElement,INPUTFILE:src/js/color-picker-element.js,OUTPUTFILE:dist/js/color-picker-element-esm.js -c",
-    "build-ce-esm-min": "rollup --environment FORMAT:esm,MIN:true,NAME:ColorPickerElement,INPUTFILE:src/js/color-picker-element.js,OUTPUTFILE:dist/js/color-picker-element-esm.js -c",
+    "build-ce-esm-min": "rollup --environment FORMAT:esm,MIN:true,NAME:ColorPickerElement,INPUTFILE:src/js/color-picker-element.js,OUTPUTFILE:dist/js/color-picker-element-esm.min.js -c",
     "build-minjs": "rollup --environment FORMAT:umd,MIN:true -c",
     "build-esm": "rollup --environment FORMAT:esm,MIN:false -c",
     "build-esmjs": "rollup --environment FORMAT:esm,MIN:true -c",
