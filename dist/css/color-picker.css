@@ -21,9 +21,8 @@ color-picker:focus,
   background: rgba(0,0,0,.75);
   border-radius: .5rem;
   box-shadow: 0 6px 12px rgba(0, 0, 0, .4);
-  flex-basis: 100%;
   flex-direction: column;
-  min-width: max-content;
+  width: min-content;
 }
 .color-dropdown.menu {
   right: 0; left: auto;
@@ -41,6 +40,7 @@ color-picker:focus,
   display: none;
   flex-wrap: wrap;
   justify-content: space-between;
+  width: max-content;
 }
 .picker-toggle:focus + .color-preview {
   box-shadow: 0 0 0 5px rgba(0,0,0,.33);
