@@ -355,3 +355,16 @@ color-picker:focus,
   white-space: nowrap !important;
   border: 0 !important;
 }
+
+[dir=rtl] .color-preview {
+  text-align: right;
+}
+[dir=rtl] .menu-toggle {
+  right: auto;
+  left: 0;
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+[dir=rtl] .color-control + .color-control {
+  margin-right: 0.5rem;
+  margin-left: 0;
+}

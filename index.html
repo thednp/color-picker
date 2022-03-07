@@ -9,8 +9,13 @@
 <body>
 
 <h1>ColorPicker Web Component</h1>
-<p>Spaces are intentional to test automatic positioning on open.</p>
+<p>
+  <a target="_blank" href="https://github.com/thednp/color-picker" title="ColorPicker on Github">Github</a> |
+  <a target="_blank" href="https://www.jsdelivr.com/package/npm/@thednp/color-picker" title="ColorPicker on jsDelivr CDN">CDN</a> |
+  <a target="_blank" href="https://www.npmjs.com/package/@thednp/color-picker" title="ColorPicker on NPM">NPM</a>.
+</p>
 
+<h2>Regular Input</h2>
 <div class="row">
   <div class="col">
     <label for="picker1">Primary Color</label>
@@ -21,38 +26,40 @@
   <div class="col">
     <label for="picker2">Secondary Color</label>
     <div class="color-picker">
-      <input type="text" data-function="color-picker" class="color-preview button-appearance" name="picker2" id="picker2" value="hsl(25,100,50)" format="hsl" autocomplete="off" spellcheck="false" placeholder="Set color HSL format">
+      <input type="text" data-function="color-picker" class="color-preview button-appearance" name="picker2" id="picker2" value="rgb(0,160,10)" format="rgb" autocomplete="off" spellcheck="false" placeholder="Set color HSL format">
     </div>
   </div>
   <div class="col">
     <label for="picker3">Accent Color</label>
     <div class="color-picker">
-      <input type="text" data-function="color-picker" class="color-preview button-appearance" name="picker3" id="picker3" value="rgb(0,66,99)" format="rgb" autocomplete="off" spellcheck="false"  placeholder="Set color RGB format">
+      <input type="text" data-function="color-picker" class="color-preview button-appearance" name="picker3" id="picker3" value="hsl(15,100%,40%)" format="hsl" autocomplete="off" spellcheck="false"  placeholder="Set color RGB format">
     </div>  
   </div>
 </div>
 
+<h2>Custom Element</h2>
 <div class="row">
   <div class="col">
     <label for="picker12">Primary Color</label>
     <color-picker>
-      <input type="text" class="color-preview button-appearance" name="picker12" id="picker12" value="#069" format="hex" autocomplete="off" spellcheck="false" placeholder="Set color HEXADECIMAL format">
+      <input type="text" class="color-preview button-appearance" name="picker12" id="picker12" value="#9d00a8" format="hex" autocomplete="off" spellcheck="false" placeholder="Set color HEXADECIMAL format">
     </color-picker>
   </div>
   <div class="col">
     <label for="picker22">Secondary Color</label>
     <color-picker>
-      <input type="text" class="color-preview button-appearance" name="picker22" id="picker22" value="hsl(25,100,50)" format="hsl" autocomplete="off" spellcheck="false" placeholder="Set color HSL format">
+      <input type="text" class="color-preview button-appearance" name="picker22" id="picker22" value="rgb(100,0,200)" format="rgb" autocomplete="off" spellcheck="false" placeholder="Set color HSL format">
     </color-picker>
   </div>
   <div class="col">
     <label for="picker32">Accent Color</label>
     <color-picker>
-      <input type="text" class="color-preview button-appearance" name="picker32" id="picker32" value="rgb(0,66,99)" format="rgb" autocomplete="off" spellcheck="false"  placeholder="Set color RGB format">
+      <input type="text" class="color-preview button-appearance" name="picker32" id="picker32" value="hsl(200,100%,40%)" format="hsl" autocomplete="off" spellcheck="false"  placeholder="Set color RGB format">
     </color-picker>  
   </div>
 </div>
 
+<p class="copy"><a target="_blank" href="https://github.com/thednp">thednp</a> © 2022</p>
 
 <script>
 document.querySelectorAll('[data-function="color-picker"]')[2].addEventListener('colorpicker.change', function handleCustomEvent(e) {
@@ -62,7 +69,7 @@ document.querySelectorAll('[data-function="color-picker"]')[2].addEventListener(
 
 <!-- partial -->
 <script src="./dist/js/color-picker.js"></script>
-<!-- <script type="module" src="./dist/js/color-picker-ce.js"></script> -->
+<!-- <script type="module" src="./dist/js/color-picker-element.js"></script> -->
 <script src="./dist/js/color-picker-element.js"></script>
 </body>
 </html>
