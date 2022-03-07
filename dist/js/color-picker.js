@@ -9,37 +9,6 @@
   (global = global || self, global.ColorPicker = factory());
 }(this, (function () { 'use strict';
 
-  /**
-   * Returns the `document` or the `#document` element.
-   * @see https://github.com/floating-ui/floating-ui
-   * @param {(Node | HTMLElement | Element | globalThis)=} node
-   * @returns {Document}
-   */
-  function getDocument(node) {
-    if (node instanceof HTMLElement) return node.ownerDocument;
-    if (node instanceof Window) return node.document;
-    return window.document;
-  }
-
-  /**
-   * A global array of possible `ParentNode`.
-   */
-  const parentNodes = [Document, Element, HTMLElement];
-
-  /**
-   * A shortcut for `(document|Element).querySelectorAll`.
-   *
-   * @param {string} selector the input selector
-   * @param {(HTMLElement | Element | Document | Node)=} parent optional node to look into
-   * @return {NodeListOf<HTMLElement | Element>} the query result
-   */
-  function querySelectorAll(selector, parent) {
-    const lookUp = parent && parentNodes
-      .some((x) => parent instanceof x) ? parent : getDocument();
-    // @ts-ignore -- `ShadowRoot` is also a node
-    return lookUp.querySelectorAll(selector);
-  }
-
   /** @type {Record<string, any>} */
   const EventRegistry = {};
 
@@ -304,6 +273,23 @@
   }
 
   /**
+   * Returns the `document` or the `#document` element.
+   * @see https://github.com/floating-ui/floating-ui
+   * @param {(Node | HTMLElement | Element | globalThis)=} node
+   * @returns {Document}
+   */
+  function getDocument(node) {
+    if (node instanceof HTMLElement) return node.ownerDocument;
+    if (node instanceof Window) return node.document;
+    return window.document;
+  }
+
+  /**
+   * A global array of possible `ParentNode`.
+   */
+  const parentNodes = [Document, Element, HTMLElement];
+
+  /**
    * A global array with `Element` | `HTMLElement`.
    */
   const elementNodes = [Element, HTMLElement];
@@ -324,6 +310,20 @@
     return elementNodes.some((x) => selector instanceof x)
       // @ts-ignore
       ? selector : lookUp.querySelector(selector);
+  }
+
+  /**
+   * A shortcut for `(document|Element).querySelectorAll`.
+   *
+   * @param {string} selector the input selector
+   * @param {(HTMLElement | Element | Document | Node)=} parent optional node to look into
+   * @return {NodeListOf<HTMLElement | Element>} the query result
+   */
+  function querySelectorAll(selector, parent) {
+    const lookUp = parent && parentNodes
+      .some((x) => parent instanceof x) ? parent : getDocument();
+    // @ts-ignore -- `ShadowRoot` is also a node
+    return lookUp.querySelectorAll(selector);
   }
 
   /**
@@ -1593,10 +1593,11 @@
      * @returns {string} the CSS valid color in HSL/HSLA format
      */
     toHslString() {
-      const hsl = this.toHsl();
-      const h = Math.round(hsl.h);
-      const s = Math.round(hsl.s * 100);
-      const l = Math.round(hsl.l * 100);
+      let { h, s, l } = this.toHsl();
+      h = Math.round(h);
+      s = Math.round(s * 100);
+      l = Math.round(l * 100);
+
       return this.a === 1
         ? `hsl(${h},${s}%,${l}%)`
         : `hsla(${h},${s}%,${l}%,${this.roundA})`;
@@ -1975,13 +1976,15 @@
   }
 
   /**
-   * Color Picker
+   * Color Picker Web Component
    * @see http://thednp.github.io/color-picker
    */
   class ColorPicker {
     /**
-     * Returns a new ColorPicker instance.
-     * @param {HTMLInputElement | string} target the target `<input>` element
+     * Returns a new `ColorPicker` instance. The target of this constructor
+     * must be an `HTMLInputElement` or a contenteditable `HTMLElement`.
+     *
+     * @param {HTMLInputElement | HTMLElement | string} target the target `<input>` element
      */
     constructor(target) {
       const self = this;
@@ -2992,14 +2995,6 @@
     init: initColorPicker,
     selector: colorPickerSelector,
   });
-
-  function initCallBack() {
-    const { init, selector } = ColorPicker;
-    [...querySelectorAll(selector)].forEach(init);
-  }
-
-  if (document.body) initCallBack();
-  else document.addEventListener('DOMContentLoaded', initCallBack, { once: true });
 
   return ColorPicker;
 

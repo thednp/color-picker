@@ -1020,10 +1020,11 @@
      * @returns {string} the CSS valid color in HSL/HSLA format
      */
     toHslString() {
-      const hsl = this.toHsl();
-      const h = Math.round(hsl.h);
-      const s = Math.round(hsl.s * 100);
-      const l = Math.round(hsl.l * 100);
+      let { h, s, l } = this.toHsl();
+      h = Math.round(h);
+      s = Math.round(s * 100);
+      l = Math.round(l * 100);
+
       return this.a === 1
         ? `hsl(${h},${s}%,${l}%)`
         : `hsla(${h},${s}%,${l}%,${this.roundA})`;
@@ -1975,13 +1976,15 @@
   }
 
   /**
-   * Color Picker
+   * Color Picker Web Component
    * @see http://thednp.github.io/color-picker
    */
   class ColorPicker {
     /**
-     * Returns a new ColorPicker instance.
-     * @param {HTMLInputElement | string} target the target `<input>` element
+     * Returns a new `ColorPicker` instance. The target of this constructor
+     * must be an `HTMLInputElement` or a contenteditable `HTMLElement`.
+     *
+     * @param {HTMLInputElement | HTMLElement | string} target the target `<input>` element
      */
     constructor(target) {
       const self = this;
@@ -3003,18 +3006,15 @@
   class ColorPickerElement extends HTMLElement {
     constructor() {
       super();
-      /** @type {ColorPicker?} */
-      this.colorPicker = null;
-      /** @type {HTMLInputElement} */
-      // @ts-ignore - `HTMLInputElement` is also `HTMLElement`
-      this.input = querySelector('input', this);
       /** @type {boolean} */
       this.isDisconnected = true;
       this.attachShadow({ mode: 'open' });
     }
 
-    get value() { return this.input.value; }
+    /** Returns the current color value. */
+    get value() { return this.input && this.input.value; }
 
+    /** Returns the `Color` instance. */
     get color() { return this.colorPicker && this.colorPicker.color; }
 
     connectedCallback() {
@@ -3024,8 +3024,13 @@
         }
         return;
       }
-
-      this.colorPicker = new ColorPicker(this.input);
+      /** @type {HTMLInputElement?} */
+      // @ts-ignore -- <INPUT> is also `HTMLElement`
+      this.input = querySelector('input', this);
+      /** @type {ColorPicker} */
+      if (this.input) {
+        this.colorPicker = new ColorPicker(this.input);
+      }
       this.isDisconnected = false;
 
       if (this.shadowRoot) {

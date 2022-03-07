@@ -314,13 +314,15 @@ function showMenu(self) {
 }
 
 /**
- * Color Picker
+ * Color Picker Web Component
  * @see http://thednp.github.io/color-picker
  */
 export default class ColorPicker {
   /**
-   * Returns a new ColorPicker instance.
-   * @param {HTMLInputElement | string} target the target `<input>` element
+   * Returns a new `ColorPicker` instance. The target of this constructor
+   * must be an `HTMLInputElement` or a contenteditable `HTMLElement`.
+   *
+   * @param {HTMLInputElement | HTMLElement | string} target the target `<input>` element
    */
   constructor(target) {
     const self = this;

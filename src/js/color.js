@@ -755,10 +755,11 @@ export default class Color {
    * @returns {string} the CSS valid color in HSL/HSLA format
    */
   toHslString() {
-    const hsl = this.toHsl();
-    const h = Math.round(hsl.h);
-    const s = Math.round(hsl.s * 100);
-    const l = Math.round(hsl.l * 100);
+    let { h, s, l } = this.toHsl();
+    h = Math.round(h);
+    s = Math.round(s * 100);
+    l = Math.round(l * 100);
+
     return this.a === 1
       ? `hsl(${h},${s}%,${l}%)`
       : `hsla(${h},${s}%,${l}%,${this.roundA})`;

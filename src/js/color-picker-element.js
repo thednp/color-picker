@@ -15,18 +15,15 @@ import ColorPicker from './color-picker';
 class ColorPickerElement extends HTMLElement {
   constructor() {
     super();
-    /** @type {ColorPicker?} */
-    this.colorPicker = null;
-    /** @type {HTMLInputElement} */
-    // @ts-ignore - `HTMLInputElement` is also `HTMLElement`
-    this.input = querySelector('input', this);
     /** @type {boolean} */
     this.isDisconnected = true;
     this.attachShadow({ mode: 'open' });
   }
 
-  get value() { return this.input.value; }
+  /** Returns the current color value. */
+  get value() { return this.input && this.input.value; }
 
+  /** Returns the `Color` instance. */
   get color() { return this.colorPicker && this.colorPicker.color; }
 
   connectedCallback() {
@@ -36,8 +33,13 @@ class ColorPickerElement extends HTMLElement {
       }
       return;
     }
-
-    this.colorPicker = new ColorPicker(this.input);
+    /** @type {HTMLInputElement?} */
+    // @ts-ignore -- <INPUT> is also `HTMLElement`
+    this.input = querySelector('input', this);
+    /** @type {ColorPicker} */
+    if (this.input) {
+      this.colorPicker = new ColorPicker(this.input);
+    }
     this.isDisconnected = false;
 
     if (this.shadowRoot) {
