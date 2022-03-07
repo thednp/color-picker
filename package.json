@@ -34,9 +34,11 @@
     "build-minjs": "rollup --environment FORMAT:umd,MIN:true -c",
     "build-esm": "rollup --environment FORMAT:esm,MIN:false -c",
     "build-esmjs": "rollup --environment FORMAT:esm,MIN:true -c",
-    "compile": "npm run lint:css && npm-run-all --parallel compile-* && npm run copy-compile",
+    "compile": "npm run lint:css && npm-run-all --parallel compile-*",
     "compile-scss": "node compile.js",
-    "compile-scss-min": "node compile.js MIN:true"
+    "compile-scss-min": "node compile.js MIN:true",
+    "compile-scss-rtl": "node compile.js MIN:false,DIR:rtl",
+    "compile-scss-rtl-min": "node compile.js MIN:true,DIR:rtl"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,15 @@
+@import "color-picker";
+
+[dir="rtl"] {
+  .color-preview { text-align: right; }
+
+  .menu-toggle {
+    right: auto;
+    left: 0;
+    border-radius: .25rem 0 0 .25rem;
+  }
+  .color-control + .color-control {
+    margin-right: .5rem;
+    margin-left: 0;
+  }
+}

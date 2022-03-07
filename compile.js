@@ -1,4 +1,4 @@
-// ColorPickers | Compile SCSS Script
+// ColorPicker | Compile SCSS Script
 // Build script to compile and minify the CSS file from SCSS folder
 // Usage: npm run compile-scss
 
@@ -9,33 +9,35 @@ const pkg = require('./package.json');
 const year = (new Date).getFullYear();
 const args = {};
 
-process.argv.map((x) => {const [name, value] = x.split(':'); args[name] = value; });
+const ARGS = process.argv.slice(-1)[0].split(',');
+ARGS.map((x) => {const [name, value] = x.split(':'); args[name] = value; });
 
-let banner = args.MIN === 'true'
-? `/* ColorPicker v${pkg.version} | ${pkg.author} © ${year} | ${pkg.license}-License */`
+const RTL = args.DIR === 'rtl' ? 'RTL ' : '';
+const banner = args.MIN === 'true'
+? `/* ColorPicker ${RTL}v${pkg.version} | ${pkg.author} © ${year} | ${pkg.license}-License */`
 : `/*!
 * ColorPicker v${pkg.version} (${pkg.homepage})
-* Copyright 2016-${year} © ${pkg.author}
+* Copyright ${year} © ${pkg.author}
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */`;
 
-let INPUTFILE = args.INPUTFILE ? args.INPUTFILE : './src/scss/color-picker.scss'
-let OUTPUTFILE = args.OUTPUTFILE ? args.OUTPUTFILE : `./dist/css/color-picker${(args.MIN?'.min':'')}.css`
-let COMPRESS = args.MIN === 'true' ? 'compressed' : 'expanded'
-let COPY = args.COPY === 'true' || false
+const DIR = args.DIR === 'rtl' ? '.rtl' : '';
+const MIN = args.MIN === 'true' ? '.min' : '';
+const INPUTFILE = args.INPUTFILE ? args.INPUTFILE : `./src/scss/color-picker${DIR}.scss`;
+const OUTPUTFILE = args.OUTPUTFILE ? args.OUTPUTFILE : `./dist/css/color-picker${DIR}${MIN}.css`;
+const COMPRESS = args.MIN === 'true' ? 'compressed' : 'expanded';
+const COPY = args.COPY === 'true' || false;
 
 // Helper Functions
 function compile(inputPath, writePath, compressType) {
-  let result = sass.renderSync({
-    file: inputPath,
-    // sourceMap: true,
-    outFile: writePath,
-    outputStyle: compressType,
-    includePaths: ["src/scss"]
+  const result = sass.compile(inputPath, {
+    style: compressType,
+    loadPaths: ["src/scss"]
   })
   writeFileSync(writePath, `${banner}\n` + result.css.toString())
-  console.log(`✅ Compiled ${inputPath} - ${pkg.version} to ${writePath}.`)
+  console.log(`✅ Compiled ${inputPath} to ${writePath}.`)
 }
+
 function copy(input,output) {
   fs.copyFile(input, output, (err) => {
     if (err) throw err;

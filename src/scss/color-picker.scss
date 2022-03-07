@@ -1,8 +1,3 @@
-/*!
-* ColorPicker v0.0.1alpha1 (http://thednp.github.io/color-picker)
-* Copyright 2022 © thednp
-* Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
-*/
 /* :host */
 color-picker,
 .color-picker {
@@ -24,16 +19,14 @@ color-picker:focus,
   width: min-content;
   /* width: 100%; */
   /* max-width: calc(100% - 1rem); */
-  padding: 0.5rem;
-  color: rgba(255, 255, 255, 0.8);
-  background: rgba(0, 0, 0, 0.75);
-  border-radius: 0.5rem;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  padding: .5rem;
+  color: rgba(255,255,255,.8);
+  background: rgba(0,0,0,.75);
+  border-radius: .5rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, .4);
 }
-
 .color-dropdown.menu {
-  right: 0;
-  left: auto;
+  right: 0; left: auto;
 }
 
 .color-dropdown.show {
@@ -53,54 +46,51 @@ color-picker:focus,
   justify-content: space-between;
   width: max-content;
 }
-
 .picker-toggle:focus + .color-preview {
-  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.33);
+  box-shadow: 0 0 0 5px rgba(0,0,0,.33);
 }
 
 .button-appearance {
   width: 100%;
   height: 1.5rem;
-  padding: 0.6rem 1rem;
+  padding: .6rem 1rem;
   font-size: 1rem;
   line-height: 1.5;
   border: 0;
-  border-radius: 0.25rem;
+  border-radius: .25rem;
   outline: none;
   appearance: none;
 }
 
 .color-preview {
-  box-shadow: 0 0 0 1px rgba(120, 120, 120, 0.33) inset;
-  direction: ltr;
-  /* color value can never be rtl */
+  box-shadow: 0 0 0 1px rgba(120,120,120,.33) inset;
+  direction: ltr; /* color value can never be rtl */
 }
 
 .dark .color-preview {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255,255,255,.8);
 }
 
 .dark .color-preview:focus {
-  box-shadow: 0 0 0 1px white inset, 0 0 0 3px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 0 1px rgb(255,255,255) inset, 0 0 0 3px rgba(0,0,0,.15);
 }
 
 .dark .color-preview::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255,255,255,.6);
 }
 
 .light .color-preview {
-  color: rgba(0, 0, 0, 0.8);
+  color: rgba(0,0,0,.8);
 }
 
 .light .color-preview:focus {
-  color: rgba(0, 0, 0, 0.8);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5) inset, 0 0 0 3px rgba(0, 0, 0, 0.15);
+  color: rgba(0,0,0,.8);
+  box-shadow: 0 0 0 1px rgba(0,0,0,.5) inset, 0 0 0 3px rgba(0,0,0,.15);
 }
 
 .light .color-preview::placeholder {
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(0,0,0,.6);
 }
-
 .picker-toggle {
   position: absolute;
   top: 0;
@@ -114,7 +104,6 @@ color-picker:focus,
 .open .picker-toggle {
   z-index: -1;
 }
-
 .menu-toggle {
   position: absolute;
   top: 0;
@@ -122,34 +111,34 @@ color-picker:focus,
   display: flex;
   width: 3rem;
   height: 100%;
-  padding: 0 0.25rem;
+  padding: 0 .25rem;
   cursor: pointer;
   border: 0;
-  border-radius: 0 0.25rem 0.25rem 0;
-  transition: all 0.33s ease;
+  border-radius: 0 .25rem .25rem 0;
+  transition: all .33s ease;
 }
 
 .light .menu-toggle {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0,0,0,.5);
 }
 
 .light .menu-toggle:focus,
 .light .menu-toggle:focus {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0,0,0,.7);
 }
 
 .dark .menu-toggle {
-  background: rgba(255, 255, 255, 0.33);
+  background: rgba(255,255,255,.33);
 }
 
 .dark .menu-toggle:focus,
 .dark .menu-toggle:focus {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255,255,255,.5);
 }
 
 .button-appearance:focus,
 .button-appearance:hover {
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 0 3px rgba(0,0,0,.15);
 }
 
 .menu-toggle svg {
@@ -184,7 +173,7 @@ color-picker:focus,
 }
 
 .color-menu:hover::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255,255,255,.2);
 }
 
 .color-menu::-webkit-scrollbar-thumb:hover {
@@ -197,14 +186,14 @@ color-picker:focus,
 }
 
 .color-option {
-  padding: 0.25rem 0.5rem;
+  padding: .25rem .5rem;
   color: inherit;
   cursor: pointer;
 }
 
 .color-option:focus,
 .color-option:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255,255,255,.3);
   outline: none;
 }
 
@@ -220,13 +209,11 @@ color-picker:focus,
   flex-wrap: wrap;
   align-items: center;
   max-width: fit-content;
-  padding: 0.25rem 0;
+  padding: .25rem 0;
   font: 12px sans-serif;
 }
 
-.color-form.hex {
-  max-width: initial;
-}
+.color-form.hex { max-width: initial; }
 
 .color-form > * {
   flex: 1 0 0%;
@@ -245,7 +232,7 @@ color-picker:focus,
   color: inherit;
   text-align: right;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255,255,255,.15);
   outline: none;
 }
 
@@ -257,8 +244,8 @@ color-picker:focus,
 
 .color-input:active,
 .color-input:focus {
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.33);
+  background: rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.33);
 }
 
 .visual-control2,
@@ -278,7 +265,7 @@ color-picker:focus,
 }
 
 .color-control + .color-control {
-  margin-left: 0.5rem;
+  margin-left: .5rem;
 }
 
 .knob {
@@ -292,17 +279,14 @@ color-picker:focus,
   outline: none;
   will-change: transform;
 }
-
 .knob:hover {
-  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 6px rgba(255,255,255,.5);
 }
-
 .knob:active,
 .knob:focus {
   z-index: 1;
-  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 6px rgba(255,255,255,.9);
 }
-
 .color-pointer {
   width: 5px;
   border-radius: 5px;
@@ -317,7 +301,6 @@ color-picker:focus,
   background: #000;
   border-color: #000;
 }
-
 .color-pointer:hover,
 .color-pointer:active,
 .color-pointer:focus {
@@ -326,21 +309,21 @@ color-picker:focus,
 }
 
 .dark .color-pointer:hover {
-  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 6px rgba(255,255,255,.5);
 }
 
 .light .color-pointer:hover {
-  box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 6px rgba(0,0,0,.5);
 }
 
 .dark .color-pointer:focus,
 .dark .color-pointer:active {
-  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 6px rgba(255,255,255,.9);
 }
 
 .light .color-pointer:focus,
 .light .color-pointer:active {
-  box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 0 0 6px rgba(0,0,0,.9);
 }
 
 /* utility */
@@ -351,7 +334,7 @@ color-picker:focus,
   padding: 0 !important;
   margin: -1px !important;
   overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
+  clip: rect(0,0,0,0) !important;
   white-space: nowrap !important;
   border: 0 !important;
 }
