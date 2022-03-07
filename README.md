@@ -1,5 +1,5 @@
 # ColorPicker Web Component
-The feature rich color picker component for the modern web built with TypeScript definition, WAI-ARIA compliant.
+The feature rich Color Picker component for the modern web built with TypeScript definitions, WAI-ARIA compliant and lots of goodies.
 
 [![NPM Version](https://img.shields.io/npm/v/@thednp/color-picker.svg?style=flat-square)](https://www.npmjs.com/package/@thednp/color-picker)
 [![NPM Downloads](https://img.shields.io/npm/dm/@thednp/color-picker.svg?style=flat-square)](http://npm-stat.com/charts.html?package=@thednp/color-picker)
@@ -8,11 +8,17 @@ The feature rich color picker component for the modern web built with TypeScript
 # Demo
 Download the package and check the demo folder, or check it online [here](http://thednp.github.io/color-picker).
 
+# Wiki
+Work in progress..
+
 # Highlights
-* Accessibility Focus
+* Accessibility Focus for WAI-ARIA compliance
 * ES6+ sources with TypeScript definitions
-* SCSS sources
-* light footprint, `10kb` in size when minified and gzipped
+* Supports keyboard and touch events
+* Automatic repositioning of the popup dropdown on show / window scroll
+* SCSS sources with minimal style required
+* RTL languages supported
+* light footprint, `10kb` in size when minified and gZipped
 
 # NPM
 You can install **ColorPicker** through NPM:
@@ -35,6 +41,10 @@ Link the required JS in your document  `<body>` tag, though it should work in th
 OR use the `ColorPickerElement` custom element:
 ```html
 <script src="../assets/js/color-picker-element.js"></script>
+```
+OR use the `ColorPickerElement` custom element ESM module:
+```html
+<script type="module" src="../assets/js/color-picker-element-esm.js"></script>
 ```
 
 If you don't want to use the custom element, you can initialize the function for your elements at the end of your `<body>` tag
@@ -59,11 +69,9 @@ Alternatively you can use the `ColorPickerElement` custom element:
   <input id="myPicker" name="myPicker" class="color-preview" value="#069">
 </color-picker>
 
-<script type="module" src="../path-to/color-picker-element.js"></script>
+<script type="module" src="../path-to/color-picker-element-esm.js"></script>
 ```
 In this case the `data-function="color-picker"` attribute is no longer required.
-
-Other initialization and markup options apply, explained in [the demo](http://thednp.github.io/color-picker/).
 
 
 # ES6+
@@ -77,8 +85,10 @@ let myPicker = new ColorPicker('#myPicker')
 # Thanks
 * Dimitris Grammatikogiannis for his [initial project](https://codepen.io/dgrammatiko/pen/zLvXwR) as well as testing and contributions
 * Serhii Kulykov for his [Vanilla Colorful](https://github.com/web-padawan/vanilla-colorful)
-* @see https://www.eyecon.ro/colorpicker/
-* @see http://www.dematte.at/colorPicker/
+* Brian Grinstead for his [TinyColor](https://github.com/bgrins/TinyColor)
+* People at eyecon for their [colorPicker](https://www.eyecon.ro/colorpicker/)
+* Brian Teeman for his [patience](https://github.com/joomla/joomla-cms/pull/35639)
+* People at dematte for their [colorPicker](http://www.dematte.at/colorPicker/)
 
 # License
 [MIT License](https://github.com/thednp/color-picker/blob/master/LICENSE)
