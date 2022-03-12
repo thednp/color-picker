@@ -16,7 +16,7 @@
   // "include": ["types/source/types"],
   "files": [
     "types/index.d.ts",
-    // "types/source/types.d.ts",
+    "types/source/types.d.ts",
     "types/source/source.ts",
   ]
 }

@@ -67,7 +67,7 @@ Alternatively you can use the `ColorPickerElement` custom element:
 ```html
 <label for="myPicker">Color Label</label>
 <color-picker>
-  <input id="myPicker" name="myPicker" class="color-preview" value="#069">
+  <input id="myPicker" name="myPicker" class="color-preview" value="#069" data-format="rgb">
 </color-picker>
 
 <script type="module" src="../path-to/color-picker-element-esm.js"></script>
@@ -77,7 +77,7 @@ In this case the `data-function="color-picker"` attribute is no longer required.
 
 # ES6+
 ```javascript
-import ColorPicker from '@thednp/color-picker'
+import ColorPicker from '@thednp/color-picker';
 
 let myPicker = new ColorPicker('#myPicker')
 ```

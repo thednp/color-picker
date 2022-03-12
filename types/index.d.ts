@@ -11,7 +11,6 @@ export {
   ColorObject,
   ColorFormats,
   ColorInput,
-  ColorOptions,
   GetInstance,
   InitCallback,
 } from './source/types';

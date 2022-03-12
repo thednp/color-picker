@@ -1,0 +1,73 @@
+body {font: 14px Arial; margin: 2rem; padding: 0; position: relative; }
+.color-picker,
+color-picker { margin: 0.5rem 0 }
+
+@media (min-width: 768px) {
+  body {margin: 5rem}
+  .color-picker,
+  color-picker,
+  p {
+    margin: 0.5rem 0;
+  }
+}
+
+.mb-1 { margin-bottom: .25rem }
+.mb-2 { margin-bottom: .5rem }
+.mb-3 { margin-bottom: 1rem }
+.mb-4 { margin-bottom: 1.5rem }
+.mb-5 { margin-bottom: 3rem }
+
+code {
+  font-size: .875em;
+  color: #d63384;
+  word-wrap: break-word;
+}
+
+.row {
+  --gutter-x: 1.5rem;
+  --gutter-y: 0;
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+  margin-top: calc(-1 * var(--gutter-y));
+  margin-right: calc(-.5 * var(--gutter-x));
+  margin-left: calc(-.5 * var(--gutter-x));
+}
+
+.row>* {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  padding-right: calc(var(--gutter-x) * .5);
+  padding-left: calc(var(--gutter-x) * .5);
+  margin-top: var(--gutter-y);
+}
+
+@media (min-width: 768px) {
+  .col {
+    flex: 1 0 0%;
+  }
+}
+
+/* .copy {
+  margin: 7.5rem 0 0.5rem;
+} */
+
+.button-appearance.switch {
+  background: #eee;
+  color: #777;
+  position: absolute;
+  top: 0;
+  right: 1.5rem;
+  width: auto;
+  text-decoration: none;
+}
+.button-appearance.switch:hover,
+.button-appearance.switch:focus {
+  background: #333;
+  color: #eee;
+}
+
+[dir=rtl] .switch {
+  right: auto; left: 1.5rem;
+}

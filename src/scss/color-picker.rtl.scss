@@ -4,9 +4,14 @@
   .color-preview { text-align: right; }
 
   .menu-toggle {
-    right: auto;
-    left: 0;
+    right: auto; left: 0;
     border-radius: .25rem 0 0 .25rem;
+  }
+  .color-dropdown.picker {
+    right: 0; left: auto;
+  }
+  .color-dropdown.menu {
+    right: auto; left: 0;
   }
   .color-control + .color-control {
     margin-right: .5rem;

@@ -1,12 +1,12 @@
 {
   "name": "@thednp/color-picker",
-  "version": "0.0.1alpha1",
-  "description": "Modern Color Picker Component",
+  "version": "0.0.1alpha2",
+  "description": "Modern Color Picker Web Component",
   "main": "dist/js/color-picker.min.js",
   "module": "dist/js/color-picker.esm.js",
   "types": "types/index.d.ts",
   "style": "dist/css/color-picker.min.css",
-  "sass": "src/css/color-picker.scss",
+  "sass": "src/scss/color-picker.scss",
   "jsnext": "src/js/color-picker.js",
   "files": [
     "types",
@@ -23,7 +23,7 @@
     "lint:js": "eslint src/ --config .eslintrc",
     "fix:css": "stylelint --config .stylelintrc.json -s --fix scss \"src/scss/*.scss\"",
     "lint:css": "stylelint --config .stylelintrc.json -s scss \"src/scss/*.scss\"",
-    "bundle": "npm-run-all --parallel build compile",
+    "bundle": "npm-run-all build compile copy",
     "build": "npm run lint:js && npm-run-all --parallel build-*",
     "build:ts": "tsc -d",
     "build-js": "rollup --environment FORMAT:umd,MIN:false -c",
@@ -34,6 +34,11 @@
     "build-minjs": "rollup --environment FORMAT:umd,MIN:true -c",
     "build-esm": "rollup --environment FORMAT:esm,MIN:false -c",
     "build-esmjs": "rollup --environment FORMAT:esm,MIN:true -c",
+    "copy": "npm-run-all --parallel copy-*",
+    "copy-js": "node compile.js INPUTFILE:dist/js/color-picker.js,OUTPUTFILE:docs/color-picker.js,COPY:true",
+    "copy-css": "node compile.js INPUTFILE:dist/css/color-picker.css,OUTPUTFILE:docs/color-picker.css,COPY:true",
+    "copy-css-rtl": "node compile.js INPUTFILE:dist/css/color-picker.rtl.css,OUTPUTFILE:docs/color-picker.rtl.css,COPY:true",
+    "copy-js-ce": "node compile.js INPUTFILE:dist/js/color-picker-element.js,OUTPUTFILE:docs/color-picker-element.js,COPY:true",
     "compile": "npm run lint:css && npm-run-all --parallel compile-*",
     "compile-scss": "node compile.js",
     "compile-scss-min": "node compile.js MIN:true",
@@ -58,7 +63,7 @@
   "homepage": "http://thednp.github.io/color-picker",
   "dependencies": {
     "event-listener.js": "^0.0.5",
-    "shorter-js": "^0.3.1"
+    "shorter-js": "^0.3.4"
   },
   "devDependencies": {
     "@rollup/plugin-buble": "^0.21.3",

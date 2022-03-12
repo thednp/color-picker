@@ -3,7 +3,8 @@ import getElementStyle from 'shorter-js/src/get/getElementStyle';
 import setElementStyle from 'shorter-js/src/misc/setElementStyle';
 import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 
-import colorNames from './util/colorNames';
+import webColors from './util/webColors';
+import nonColors from './util/nonColors';
 
 // <http://www.w3.org/TR/css3-values/#integers>
 const CSS_INTEGER = '[-\\+]?\\d+%?';
@@ -159,7 +160,7 @@ function pad2(c) {
 // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
 // <http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript>
 /**
- * Handle bounds / percentage checking to conform to CSS color spec
+ * Handle bounds / percentage checking to conform to CSS colour spec
  * * *Assumes:* r, g, b in [0, 255] or [0, 1]
  * * *Returns:* { r, g, b } in [0, 255]
  * @see http://www.w3.org/TR/css3-color/
@@ -177,7 +178,7 @@ function rgbToRgb(r, g, b) {
 }
 
 /**
- * Converts an RGB color value to HSL.
+ * Converts an RGB colour value to HSL.
  * *Assumes:* r, g, and b are contained in [0, 255] or [0, 1]
  * *Returns:* { h, s, l } in [0,1]
  * @param {number} R
@@ -320,7 +321,7 @@ function rgbToHsv(R, G, B) {
 }
 
 /**
- * Converts an HSV color value to RGB.
+ * Converts an HSV colour value to RGB.
  *
  * *Assumes:* h is contained in [0, 1] or [0, 360] and s and v are contained in [0, 1] or [0, 100]
  * *Returns:* { r, g, b } in the set [0, 255]
@@ -346,7 +347,7 @@ function hsvToRgb(H, S, V) {
 }
 
 /**
- * Converts an RGB color to hex
+ * Converts an RGB colour to hex
  *
  * Assumes r, g, and b are contained in the set [0, 255]
  * Returns a 3 or 6 character hex
@@ -384,7 +385,7 @@ function parseIntFromHex(val) {
 }
 
 /**
- * Returns an `{r,g,b}` color object corresponding to a given number.
+ * Returns an `{r,g,b}` colour object corresponding to a given number.
  * @param {number} color
  * @returns {CP.RGB}
  */
@@ -412,12 +413,12 @@ function stringInputToObject(input) {
     };
   }
   let named = false;
-  if (colorNames.includes(color)) {
+  if (webColors.includes(color)) {
     color = getHexFromColorName(color);
     named = true;
-  } else if (color === 'transparent') {
+  } else if (nonColors.includes(color)) {
     return {
-      r: 0, g: 0, b: 0, a: 0, format: 'name',
+      r: 255, g: 255, b: 255, a: 1, format: 'rgb',
     };
   }
 
@@ -463,7 +464,7 @@ function stringInputToObject(input) {
       g: parseIntFromHex(match[2]),
       b: parseIntFromHex(match[3]),
       a: convertHexToDecimal(match[4]),
-      format: named ? 'name' : 'hex8',
+      format: named ? 'rgb' : 'hex8',
     };
   }
   match = matchers.hex6.exec(color);
@@ -472,7 +473,7 @@ function stringInputToObject(input) {
       r: parseIntFromHex(match[1]),
       g: parseIntFromHex(match[2]),
       b: parseIntFromHex(match[3]),
-      format: named ? 'name' : 'hex',
+      format: named ? 'rgb' : 'hex',
     };
   }
   match = matchers.hex4.exec(color);
@@ -482,7 +483,7 @@ function stringInputToObject(input) {
       g: parseIntFromHex(match[2] + match[2]),
       b: parseIntFromHex(match[3] + match[3]),
       a: convertHexToDecimal(match[4] + match[4]),
-      format: named ? 'name' : 'hex8',
+      format: named ? 'rgb' : 'hex8',
     };
   }
   match = matchers.hex3.exec(color);
@@ -491,7 +492,7 @@ function stringInputToObject(input) {
       r: parseIntFromHex(match[1] + match[1]),
       g: parseIntFromHex(match[2] + match[2]),
       b: parseIntFromHex(match[3] + match[3]),
-      format: named ? 'name' : 'hex',
+      format: named ? 'rgb' : 'hex',
     };
   }
   return false;
@@ -564,11 +565,6 @@ function inputToRGB(input) {
   };
 }
 
-/** @type {CP.ColorOptions} */
-const colorPickerDefaults = {
-  format: 'hex',
-};
-
 /**
  * Returns a new `Color` instance.
  * @see https://github.com/bgrins/TinyColor
@@ -578,13 +574,12 @@ export default class Color {
   /**
    * @constructor
    * @param {CP.ColorInput} input
-   * @param {CP.ColorOptions=} config
+   * @param {CP.ColorFormats=} config
    */
   constructor(input, config) {
     let color = input;
-    const opts = typeof config === 'object'
-      ? ObjectAssign(colorPickerDefaults, config)
-      : ObjectAssign({}, colorPickerDefaults);
+    const configFormat = config && ['hex', 'rgb', 'hsl'].includes(config)
+      ? config : 'hex';
 
     // If input is already a `Color`, return itself
     if (color instanceof Color) {
@@ -612,7 +607,7 @@ export default class Color {
     /** @type {number} */
     this.roundA = Math.round(100 * this.a) / 100;
     /** @type {CP.ColorFormats} */
-    this.format = opts.format || format;
+    this.format = configFormat || format;
 
     // Don't let the range of [0,255] come back in [0,1].
     // Potentially lose a little bit of precision here, but will fix issues where
@@ -646,9 +641,9 @@ export default class Color {
   }
 
   /**
-   * Returns the perceived luminance of a color.
+   * Returns the perceived luminance of a colour.
    * @see http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
-   * @returns {number} a number in [0-1] range
+   * @returns {number} a number in the [0-1] range
    */
   get luminance() {
     const { r, g, b } = this;
@@ -678,8 +673,8 @@ export default class Color {
   }
 
   /**
-   * Returns the perceived brightness of the color.
-   * @returns {number} a number in [0-255] range
+   * Returns the perceived brightness of the colour.
+   * @returns {number} a number in the [0-255] range
    */
   get brightness() {
     const { r, g, b } = this;
@@ -687,7 +682,7 @@ export default class Color {
   }
 
   /**
-   * Returns the color as a RGBA object.
+   * Returns the colour as an RGBA object.
    * @returns {CP.RGBA}
    */
   toRgb() {
@@ -701,7 +696,7 @@ export default class Color {
 
   /**
    * Returns the RGBA values concatenated into a string.
-   * @returns {string} the CSS valid color in RGB/RGBA format
+   * @returns {string} the CSS valid colour in RGB/RGBA format
    */
   toRgbString() {
     const r = Math.round(this.r);
@@ -713,23 +708,23 @@ export default class Color {
   }
 
   /**
-   * Returns the HEX value of the color.
-   * @returns {string} the hexadecimal color format
+   * Returns the HEX value of the colour.
+   * @returns {string} the hexadecimal colour format
    */
   toHex() {
     return rgbToHex(this.r, this.g, this.b);
   }
 
   /**
-   * Returns the HEX value of the color.
-   * @returns {string} the CSS valid color in hexadecimal format
+   * Returns the HEX value of the colour.
+   * @returns {string} the CSS valid colour in hexadecimal format
    */
   toHexString() {
     return `#${this.toHex()}`;
   }
 
   /**
-   * Returns the color as a HSVA object.
+   * Returns the colour as a HSVA object.
    * @returns {CP.HSVA} the `{h,s,v,a}` object
    */
   toHsv() {
@@ -740,7 +735,7 @@ export default class Color {
   }
 
   /**
-   * Returns the color as a HSLA object.
+   * Returns the colour as a HSLA object.
    * @returns {CP.HSLA}
    */
   toHsl() {
@@ -752,7 +747,7 @@ export default class Color {
 
   /**
    * Returns the HSLA values concatenated into a string.
-   * @returns {string} the CSS valid color in HSL/HSLA format
+   * @returns {string} the CSS valid colour in HSL/HSLA format
    */
   toHslString() {
     let { h, s, l } = this.toHsl();
@@ -766,7 +761,7 @@ export default class Color {
   }
 
   /**
-   * Sets the alpha value on the current color.
+   * Sets the alpha value on the current colour.
    * @param {number} alpha a new alpha value in [0-1] range.
    * @returns {Color} a new `Color` instance
    */
@@ -777,7 +772,7 @@ export default class Color {
   }
 
   /**
-   * Saturate the color with a given amount.
+   * Saturate the colour with a given amount.
    * @param {number=} amount a value in [0-100] range
    * @returns {Color} a new `Color` instance
    */
@@ -790,7 +785,7 @@ export default class Color {
   }
 
   /**
-   * Desaturate the color with a given amount.
+   * Desaturate the colour with a given amount.
    * @param {number=} amount a value in [0-100] range
    * @returns {Color} a new `Color` instance
    */
@@ -799,7 +794,7 @@ export default class Color {
   }
 
   /**
-   * Completely desaturates a color into greyscale.
+   * Completely desaturates a colour into greyscale.
    * Same as calling `desaturate(100)`
    * @returns {Color} a new `Color` instance
    */
@@ -813,7 +808,7 @@ export default class Color {
   }
 
   /**
-   * Returns the color value in CSS valid string format.
+   * Returns the colour value in CSS valid string format.
    * @returns {string}
    */
   toString() {
@@ -830,7 +825,7 @@ export default class Color {
 }
 
 ObjectAssign(Color, {
-  colorNames,
+  webColors,
   CSS_INTEGER,
   CSS_NUMBER,
   CSS_UNIT,

@@ -1,7 +1,7 @@
 /**
  * A `Color` compatible object.
  */
-export interface ColorObject {
+ export interface ColorObject {
   r: number;
   g: number;
   b: number;
@@ -59,9 +59,8 @@ export interface HSVA extends HSV {
   a: number;
 }
 
-export interface ColorOptions { format: ColorFormats; }
 export type ColorInput = string | number | RGB | RGBA | HSL | HSLA | HSV | HSVA | ColorObject;
-export type ColorFormats = string | 'rgb' | 'hex' | 'hex3' | 'hex6' | 'hsl' | 'hsv';
+export type ColorFormats = string | 'rgb' | 'hex' | 'hex3' | 'hex4' | 'hex6' | 'hex8' | 'hsl' | 'hsv';
 
 export type GetInstance<T> = (element: string | HTMLInputElement) => T | null;
-export type InitCallback<T> = (element: string | HTMLInputElement, config?: ColorOptions) => T;
+export type InitCallback<T> = (element: string | HTMLInputElement, format?: ColorFormats | undefined) => T;

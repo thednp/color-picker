@@ -1,11 +1,18 @@
-declare module "color-picker/src/js/util/colorNames" {
-    export default colorNames;
+declare module "color-picker/src/js/util/webColors" {
+    export default webColors;
     /**
      * A complete list of web safe colors.
      * @see https://github.com/bahamas10/css-color-names/blob/master/css-color-names.json
      * @type {string[]}
      */
-    const colorNames: string[];
+    const webColors: string[];
+}
+declare module "color-picker/src/js/util/nonColors" {
+    export default nonColors;
+    /**
+     * A list of non-color values.
+     */
+    const nonColors: string[];
 }
 declare module "color-picker/src/js/color" {
     /**
@@ -17,9 +24,9 @@ declare module "color-picker/src/js/color" {
         /**
          * @constructor
          * @param {CP.ColorInput} input
-         * @param {CP.ColorOptions=} config
+         * @param {CP.ColorFormats=} config
          */
-        constructor(input: CP.ColorInput, config?: CP.ColorOptions | undefined);
+        constructor(input: CP.ColorInput, config?: CP.ColorFormats | undefined);
         /** @type {CP.ColorInput} */
         originalInput: CP.ColorInput;
         /** @type {number} */
@@ -47,71 +54,71 @@ declare module "color-picker/src/js/color" {
          */
         get isDark(): boolean;
         /**
-         * Returns the perceived luminance of a color.
+         * Returns the perceived luminance of a colour.
          * @see http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
-         * @returns {number} a number in [0-1] range
+         * @returns {number} a number in the [0-1] range
          */
         get luminance(): number;
         /**
-         * Returns the perceived brightness of the color.
-         * @returns {number} a number in [0-255] range
+         * Returns the perceived brightness of the colour.
+         * @returns {number} a number in the [0-255] range
          */
         get brightness(): number;
         /**
-         * Returns the color as a RGBA object.
+         * Returns the colour as an RGBA object.
          * @returns {CP.RGBA}
          */
         toRgb(): CP.RGBA;
         /**
          * Returns the RGBA values concatenated into a string.
-         * @returns {string} the CSS valid color in RGB/RGBA format
+         * @returns {string} the CSS valid colour in RGB/RGBA format
          */
         toRgbString(): string;
         /**
-         * Returns the HEX value of the color.
-         * @returns {string} the hexadecimal color format
+         * Returns the HEX value of the colour.
+         * @returns {string} the hexadecimal colour format
          */
         toHex(): string;
         /**
-         * Returns the HEX value of the color.
-         * @returns {string} the CSS valid color in hexadecimal format
+         * Returns the HEX value of the colour.
+         * @returns {string} the CSS valid colour in hexadecimal format
          */
         toHexString(): string;
         /**
-         * Returns the color as a HSVA object.
+         * Returns the colour as a HSVA object.
          * @returns {CP.HSVA} the `{h,s,v,a}` object
          */
         toHsv(): CP.HSVA;
         /**
-         * Returns the color as a HSLA object.
+         * Returns the colour as a HSLA object.
          * @returns {CP.HSLA}
          */
         toHsl(): CP.HSLA;
         /**
          * Returns the HSLA values concatenated into a string.
-         * @returns {string} the CSS valid color in HSL/HSLA format
+         * @returns {string} the CSS valid colour in HSL/HSLA format
          */
         toHslString(): string;
         /**
-         * Sets the alpha value on the current color.
+         * Sets the alpha value on the current colour.
          * @param {number} alpha a new alpha value in [0-1] range.
          * @returns {Color} a new `Color` instance
          */
         setAlpha(alpha: number): Color;
         /**
-         * Saturate the color with a given amount.
+         * Saturate the colour with a given amount.
          * @param {number=} amount a value in [0-100] range
          * @returns {Color} a new `Color` instance
          */
         saturate(amount?: number | undefined): Color;
         /**
-         * Desaturate the color with a given amount.
+         * Desaturate the colour with a given amount.
          * @param {number=} amount a value in [0-100] range
          * @returns {Color} a new `Color` instance
          */
         desaturate(amount?: number | undefined): Color;
         /**
-         * Completely desaturates a color into greyscale.
+         * Completely desaturates a colour into greyscale.
          * Same as calling `desaturate(100)`
          * @returns {Color} a new `Color` instance
          */
@@ -119,11 +126,24 @@ declare module "color-picker/src/js/color" {
         /** Returns a clone of the current `Color` instance. */
         clone(): Color;
         /**
-         * Returns the color value in CSS valid string format.
+         * Returns the colour value in CSS valid string format.
          * @returns {string}
          */
         toString(): string;
     }
+}
+declare module "color-picker/src/js/util/colorPickerLabels" {
+    export default colorPickerLabels;
+    /** @type {Record<string, string>} */
+    const colorPickerLabels: Record<string, string>;
+}
+declare module "color-picker/src/js/util/colorNames" {
+    export default colorNames;
+    /**
+     * A list of 17 color names used for WAI-ARIA compliance.
+     * @type {string[]}
+     */
+    const colorNames: string[];
 }
 declare module "color-picker/src/js/util/vHidden" {
     export default vHidden;
@@ -131,32 +151,44 @@ declare module "color-picker/src/js/util/vHidden" {
 }
 declare module "color-picker/src/js/util/getColorForm" {
     /**
-     * Returns the color form.
+     * Returns the color form for `ColorPicker`.
+     *
      * @param {CP.ColorPicker} self the `ColorPicker` instance
-     * @returns {HTMLElement | Element}
+     * @returns {HTMLElement | Element} a new `<div>` element with color component `<input>`
      */
     export default function getColorForm(self: CP.ColorPicker): HTMLElement | Element;
 }
-declare module "color-picker/src/js/util/getColorControl" {
+declare module "color-picker/src/js/util/getColorControls" {
     /**
-     * Returns a new color control `HTMLElement`.
-     * @param {number} iteration
-     * @param {number} id
-     * @param {number} width
-     * @param {number} height
-     * @param {string=} labelledby
-     * @returns {HTMLElement | Element}
+     * Returns all color controls for `ColorPicker`.
+     *
+     * @param {CP.ColorPicker} self the `ColorPicker` instance
+     * @returns {HTMLElement | Element} color controls
      */
-    export default function getColorControl(iteration: number, id: number, width: number, height: number, labelledby?: string | undefined): HTMLElement | Element;
+    export default function getColorControls(self: CP.ColorPicker): HTMLElement | Element;
+}
+declare module "color-picker/src/js/util/isValidJSON" {
+    /**
+     * Check if a string is valid JSON string.
+     * @param {string} str the string input
+     * @returns {boolean} the query result
+     */
+    export default function isValidJSON(str: string): boolean;
+}
+declare module "color-picker/src/js/version" {
+    export default Version;
+    const Version: string;
 }
 declare module "color-picker/src/js/color-picker" {
     /**
-     * Color Picker
+     * Color Picker Web Component
      * @see http://thednp.github.io/color-picker
      */
     export default class ColorPicker {
         /**
-         * Returns a new ColorPicker instance.
+         * Returns a new `ColorPicker` instance. The target of this constructor
+         * must be an `HTMLInputElement`.
+         *
          * @param {HTMLInputElement | string} target the target `<input>` element
          */
         constructor(target: HTMLInputElement | string);
@@ -255,9 +287,9 @@ declare module "color-picker/src/js/color-picker" {
         /** @type {HTMLElement} */
         menuToggle: HTMLElement;
         /** @type {HTMLElement} */
-        colorMenu: HTMLElement;
-        /** @type {HTMLElement} */
         colorPicker: HTMLElement;
+        /** @type {HTMLElement} */
+        colorMenu: HTMLElement;
         /** @type {HTMLElement} */
         controls: HTMLElement;
         /** @type {HTMLInputElement[]} */
@@ -268,8 +300,6 @@ declare module "color-picker/src/js/color-picker" {
         visuals: HTMLCanvasElement[];
         /** @type {HTMLLabelElement[]} */
         knobLabels: HTMLLabelElement[];
-        /** @type {HTMLLabelElement} */
-        appearance: HTMLLabelElement;
         /** @type {number} */
         width1: number;
         /** @type {number} */
@@ -289,43 +319,36 @@ declare module "color-picker/src/js/color-picker" {
         /** @type {*} */
         ctx3: any;
         /**
-         * Sets a new color value.
-         * @param {string} v new color value
+         * Sets a new colour value.
+         * @param {string} v new colour value
          */
         set value(arg: string);
-        /** Returns the current color value */
+        /** Returns the current colour value */
         get value(): string;
-        /** Check if the input is required to have a valid value. */
-        get required(): boolean;
         /**
          * Returns the colour format.
-         * @returns {CP.ColorFormats | string}
+         * @returns {CP.ColorFormats}
          */
         get format(): string;
-        /** Returns the input name. */
-        get name(): string | null;
-        /**
-         * Returns the label associated to the input.
-         * @returns {HTMLLabelElement?}
-         */
-        get label(): HTMLLabelElement | null;
-        /** Check if the color presets include any non-color. */
+        /** Check if the colour presets include any non-colour. */
         get includeNonColor(): boolean;
-        /** Returns hexadecimal value of the current color. */
+        /** Check if the parent of the target is a `ColorPickerElement` instance. */
+        get isCE(): boolean;
+        /** Returns hexadecimal value of the current colour. */
         get hex(): string;
-        /** Returns the current color value in {h,s,v,a} object format. */
+        /** Returns the current colour value in {h,s,v,a} object format. */
         get hsv(): CP.HSVA;
-        /** Returns the current color value in {h,s,l,a} object format. */
+        /** Returns the current colour value in {h,s,l,a} object format. */
         get hsl(): CP.HSLA;
-        /** Returns the current color value in {r,g,b,a} object format. */
+        /** Returns the current colour value in {r,g,b,a} object format. */
         get rgb(): CP.RGBA;
-        /** Returns the current color brightness. */
+        /** Returns the current colour brightness. */
         get brightness(): number;
-        /** Returns the current color luminance. */
+        /** Returns the current colour luminance. */
         get luminance(): number;
-        /** Checks if the current colour requires a light text color. */
+        /** Checks if the current colour requires a light text colour. */
         get isDark(): boolean;
-        /** Checks if the current input value is a valid color. */
+        /** Checks if the current input value is a valid colour. */
         get isValid(): boolean;
         /** Updates `ColorPicker` visuals. */
         updateVisuals(): void;
@@ -334,24 +357,25 @@ declare module "color-picker/src/js/color-picker" {
          * * `lightness` and `saturation` for HEX/RGB;
          * * `lightness` and `hue` for HSL.
          *
-         * @param {Record<string, number>} offsets
+         * @param {number} X the X component of the offset
+         * @param {number} Y the Y component of the offset
          */
-        changeControl1(offsets: Record<string, number>): void;
+        changeControl1(X: number, Y: number): void;
         /**
          * Updates `ColorPicker` second control:
          * * `hue` for HEX/RGB;
          * * `saturation` for HSL.
          *
-         * @param {Record<string, number>} offset
+         * @param {number} Y the Y offset
          */
-        changeControl2(offset: Record<string, number>): void;
+        changeControl2(Y: number): void;
         /**
          * Updates `ColorPicker` last control,
          * the `alpha` channel for RGB/HSL.
          *
-         * @param {Record<string, number>} offset
+         * @param {number} Y
          */
-        changeAlpha(offset: Record<string, number>): void;
+        changeAlpha(Y: number): void;
         /** Update opened dropdown position on scroll. */
         updateDropdownPosition(): void;
         /** Update control knobs' positions. */
@@ -372,6 +396,7 @@ declare module "color-picker/src/js/color-picker" {
          * @param {boolean=} focusPrevented
          */
         hide(focusPrevented?: boolean | undefined): void;
+        /** Removes `ColorPicker` from target `<input>`. */
         dispose(): void;
     }
     import Color from "color-picker/src/js/color";
@@ -379,30 +404,34 @@ declare module "color-picker/src/js/color-picker" {
 declare module "color-picker/src/js/color-picker-element" {
     export default ColorPickerElement;
     /**
-     * @see https://codepen.io/dgrammatiko/pen/zLvXwR
-     * @see https://codepen.io/thednp/pen/yLVzZzW
-     * @see https://www.eyecon.ro/colorpicker/
-     * @see http://www.dematte.at/colorPicker/
-     *
+     * `ColorPickerElement` Web Component.
      * @example
      * <color-picker>
      *   <input type="text">
      * </color-picker>
      */
     class ColorPickerElement extends HTMLElement {
-        /** @type {ColorPicker?} */
-        colorPicker: ColorPicker | null;
-        /** @type {HTMLInputElement} */
-        input: HTMLInputElement;
         /** @type {boolean} */
         isDisconnected: boolean;
-        get value(): string;
+        /**
+         * Returns the current color value.
+         * @returns {string?}
+         */
+        get value(): string | null;
+        /**
+         * Returns the `Color` instance.
+         * @returns {Color?}
+         */
         get color(): Color | null;
         connectedCallback(): void;
+        /** @type {HTMLInputElement} */
+        input: HTMLInputElement | undefined;
+        /** @type {ColorPicker} */
+        colorPicker: ColorPicker | undefined;
         disconnectedCallback(): void;
     }
-    import ColorPicker from "color-picker/src/js/color-picker";
     import Color from "color-picker/src/js/color";
+    import ColorPicker from "color-picker/src/js/color-picker";
 }
 declare module "color-picker/types/source/source" {
     export { default as Color } from "color-picker/src/js/color";

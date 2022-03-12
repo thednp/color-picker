@@ -4,6 +4,7 @@ import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 
 import Color from './color';
 import ColorPicker from './color-picker';
+import Version from './version';
 
 /**
  * `ColorPickerElement` Web Component.
@@ -20,11 +21,17 @@ class ColorPickerElement extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
-  /** Returns the current color value. */
-  get value() { return this.input && this.input.value; }
+  /**
+   * Returns the current color value.
+   * @returns {string?}
+   */
+  get value() { return this.input ? this.input.value : null; }
 
-  /** Returns the `Color` instance. */
-  get color() { return this.colorPicker && this.colorPicker.color; }
+  /**
+   * Returns the `Color` instance.
+   * @returns {Color?}
+   */
+  get color() { return this.colorPicker ? this.colorPicker.color : null; }
 
   connectedCallback() {
     if (this.colorPicker) {
@@ -33,17 +40,31 @@ class ColorPickerElement extends HTMLElement {
       }
       return;
     }
-    /** @type {HTMLInputElement?} */
-    // @ts-ignore -- <INPUT> is also `HTMLElement`
-    this.input = querySelector('input', this);
-    /** @type {ColorPicker} */
-    if (this.input) {
-      this.colorPicker = new ColorPicker(this.input);
-    }
-    this.isDisconnected = false;
 
-    if (this.shadowRoot) {
-      this.shadowRoot.append(createElement('slot'));
+    let input = querySelector('input', this);
+    if (!input) {
+      input = createElement({
+        tagName: 'input',
+        type: 'text',
+        value: '#069',
+        className: 'color-preview button-appearance',
+      });
+      this.append(input);
+    }
+
+    /** @type {HTMLInputElement} */
+    // @ts-ignore -- <INPUT> is also `HTMLElement`
+    this.input = input;
+
+    if (this.input) {
+      /** @type {ColorPicker} */
+      this.colorPicker = new ColorPicker(this.input);
+
+      if (this.shadowRoot) {
+        this.shadowRoot.append(createElement('slot'));
+      }
+
+      this.isDisconnected = false;
     }
   }
 
@@ -56,6 +77,7 @@ class ColorPickerElement extends HTMLElement {
 ObjectAssign(ColorPickerElement, {
   Color,
   ColorPicker,
+  Version,
 });
 
 customElements.define('color-picker', ColorPickerElement);

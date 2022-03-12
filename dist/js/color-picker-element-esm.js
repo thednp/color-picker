@@ -1,5 +1,5 @@
 /*!
-* ColorPickerElement v0.0.1alpha1 (http://thednp.github.io/color-picker)
+* ColorPickerElement v0.0.1alpha2 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -115,7 +115,7 @@ const setElementStyle = (element, styles) => { ObjectAssign(element.style, style
  * @see https://github.com/bahamas10/css-color-names/blob/master/css-color-names.json
  * @type {string[]}
  */
-const colorNames = [
+const webColors = [
   'aliceblue',
   'antiquewhite',
   'aqua',
@@ -265,6 +265,11 @@ const colorNames = [
   'yellow',
   'yellowgreen',
 ];
+
+/**
+ * A list of non-color values.
+ */
+const nonColors = ['transparent', 'currentColor', 'inherit', 'initial'];
 
 // <http://www.w3.org/TR/css3-values/#integers>
 const CSS_INTEGER = '[-\\+]?\\d+%?';
@@ -420,7 +425,7 @@ function pad2(c) {
 // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
 // <http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript>
 /**
- * Handle bounds / percentage checking to conform to CSS color spec
+ * Handle bounds / percentage checking to conform to CSS colour spec
  * * *Assumes:* r, g, b in [0, 255] or [0, 1]
  * * *Returns:* { r, g, b } in [0, 255]
  * @see http://www.w3.org/TR/css3-color/
@@ -438,7 +443,7 @@ function rgbToRgb(r, g, b) {
 }
 
 /**
- * Converts an RGB color value to HSL.
+ * Converts an RGB colour value to HSL.
  * *Assumes:* r, g, and b are contained in [0, 255] or [0, 1]
  * *Returns:* { h, s, l } in [0,1]
  * @param {number} R
@@ -579,7 +584,7 @@ function rgbToHsv(R, G, B) {
 }
 
 /**
- * Converts an HSV color value to RGB.
+ * Converts an HSV colour value to RGB.
  *
  * *Assumes:* h is contained in [0, 1] or [0, 360] and s and v are contained in [0, 1] or [0, 100]
  * *Returns:* { r, g, b } in the set [0, 255]
@@ -605,7 +610,7 @@ function hsvToRgb(H, S, V) {
 }
 
 /**
- * Converts an RGB color to hex
+ * Converts an RGB colour to hex
  *
  * Assumes r, g, and b are contained in the set [0, 255]
  * Returns a 3 or 6 character hex
@@ -643,7 +648,7 @@ function parseIntFromHex(val) {
 }
 
 /**
- * Returns an `{r,g,b}` color object corresponding to a given number.
+ * Returns an `{r,g,b}` colour object corresponding to a given number.
  * @param {number} color
  * @returns {CP.RGB}
  */
@@ -671,12 +676,12 @@ function stringInputToObject(input) {
     };
   }
   let named = false;
-  if (colorNames.includes(color)) {
+  if (webColors.includes(color)) {
     color = getHexFromColorName(color);
     named = true;
-  } else if (color === 'transparent') {
+  } else if (nonColors.includes(color)) {
     return {
-      r: 0, g: 0, b: 0, a: 0, format: 'name',
+      r: 255, g: 255, b: 255, a: 1, format: 'rgb',
     };
   }
 
@@ -722,7 +727,7 @@ function stringInputToObject(input) {
       g: parseIntFromHex(match[2]),
       b: parseIntFromHex(match[3]),
       a: convertHexToDecimal(match[4]),
-      format: named ? 'name' : 'hex8',
+      format: named ? 'rgb' : 'hex8',
     };
   }
   match = matchers.hex6.exec(color);
@@ -731,7 +736,7 @@ function stringInputToObject(input) {
       r: parseIntFromHex(match[1]),
       g: parseIntFromHex(match[2]),
       b: parseIntFromHex(match[3]),
-      format: named ? 'name' : 'hex',
+      format: named ? 'rgb' : 'hex',
     };
   }
   match = matchers.hex4.exec(color);
@@ -741,7 +746,7 @@ function stringInputToObject(input) {
       g: parseIntFromHex(match[2] + match[2]),
       b: parseIntFromHex(match[3] + match[3]),
       a: convertHexToDecimal(match[4] + match[4]),
-      format: named ? 'name' : 'hex8',
+      format: named ? 'rgb' : 'hex8',
     };
   }
   match = matchers.hex3.exec(color);
@@ -750,7 +755,7 @@ function stringInputToObject(input) {
       r: parseIntFromHex(match[1] + match[1]),
       g: parseIntFromHex(match[2] + match[2]),
       b: parseIntFromHex(match[3] + match[3]),
-      format: named ? 'name' : 'hex',
+      format: named ? 'rgb' : 'hex',
     };
   }
   return false;
@@ -823,11 +828,6 @@ function inputToRGB(input) {
   };
 }
 
-/** @type {CP.ColorOptions} */
-const colorPickerDefaults = {
-  format: 'hex',
-};
-
 /**
  * Returns a new `Color` instance.
  * @see https://github.com/bgrins/TinyColor
@@ -837,13 +837,12 @@ class Color {
   /**
    * @constructor
    * @param {CP.ColorInput} input
-   * @param {CP.ColorOptions=} config
+   * @param {CP.ColorFormats=} config
    */
   constructor(input, config) {
     let color = input;
-    const opts = typeof config === 'object'
-      ? ObjectAssign(colorPickerDefaults, config)
-      : ObjectAssign({}, colorPickerDefaults);
+    const configFormat = config && ['hex', 'rgb', 'hsl'].includes(config)
+      ? config : 'hex';
 
     // If input is already a `Color`, return itself
     if (color instanceof Color) {
@@ -871,7 +870,7 @@ class Color {
     /** @type {number} */
     this.roundA = Math.round(100 * this.a) / 100;
     /** @type {CP.ColorFormats} */
-    this.format = opts.format || format;
+    this.format = configFormat || format;
 
     // Don't let the range of [0,255] come back in [0,1].
     // Potentially lose a little bit of precision here, but will fix issues where
@@ -905,9 +904,9 @@ class Color {
   }
 
   /**
-   * Returns the perceived luminance of a color.
+   * Returns the perceived luminance of a colour.
    * @see http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
-   * @returns {number} a number in [0-1] range
+   * @returns {number} a number in the [0-1] range
    */
   get luminance() {
     const { r, g, b } = this;
@@ -937,8 +936,8 @@ class Color {
   }
 
   /**
-   * Returns the perceived brightness of the color.
-   * @returns {number} a number in [0-255] range
+   * Returns the perceived brightness of the colour.
+   * @returns {number} a number in the [0-255] range
    */
   get brightness() {
     const { r, g, b } = this;
@@ -946,7 +945,7 @@ class Color {
   }
 
   /**
-   * Returns the color as a RGBA object.
+   * Returns the colour as an RGBA object.
    * @returns {CP.RGBA}
    */
   toRgb() {
@@ -960,7 +959,7 @@ class Color {
 
   /**
    * Returns the RGBA values concatenated into a string.
-   * @returns {string} the CSS valid color in RGB/RGBA format
+   * @returns {string} the CSS valid colour in RGB/RGBA format
    */
   toRgbString() {
     const r = Math.round(this.r);
@@ -972,23 +971,23 @@ class Color {
   }
 
   /**
-   * Returns the HEX value of the color.
-   * @returns {string} the hexadecimal color format
+   * Returns the HEX value of the colour.
+   * @returns {string} the hexadecimal colour format
    */
   toHex() {
     return rgbToHex(this.r, this.g, this.b);
   }
 
   /**
-   * Returns the HEX value of the color.
-   * @returns {string} the CSS valid color in hexadecimal format
+   * Returns the HEX value of the colour.
+   * @returns {string} the CSS valid colour in hexadecimal format
    */
   toHexString() {
     return `#${this.toHex()}`;
   }
 
   /**
-   * Returns the color as a HSVA object.
+   * Returns the colour as a HSVA object.
    * @returns {CP.HSVA} the `{h,s,v,a}` object
    */
   toHsv() {
@@ -999,7 +998,7 @@ class Color {
   }
 
   /**
-   * Returns the color as a HSLA object.
+   * Returns the colour as a HSLA object.
    * @returns {CP.HSLA}
    */
   toHsl() {
@@ -1011,7 +1010,7 @@ class Color {
 
   /**
    * Returns the HSLA values concatenated into a string.
-   * @returns {string} the CSS valid color in HSL/HSLA format
+   * @returns {string} the CSS valid colour in HSL/HSLA format
    */
   toHslString() {
     let { h, s, l } = this.toHsl();
@@ -1025,7 +1024,7 @@ class Color {
   }
 
   /**
-   * Sets the alpha value on the current color.
+   * Sets the alpha value on the current colour.
    * @param {number} alpha a new alpha value in [0-1] range.
    * @returns {Color} a new `Color` instance
    */
@@ -1036,7 +1035,7 @@ class Color {
   }
 
   /**
-   * Saturate the color with a given amount.
+   * Saturate the colour with a given amount.
    * @param {number=} amount a value in [0-100] range
    * @returns {Color} a new `Color` instance
    */
@@ -1049,7 +1048,7 @@ class Color {
   }
 
   /**
-   * Desaturate the color with a given amount.
+   * Desaturate the colour with a given amount.
    * @param {number=} amount a value in [0-100] range
    * @returns {Color} a new `Color` instance
    */
@@ -1058,7 +1057,7 @@ class Color {
   }
 
   /**
-   * Completely desaturates a color into greyscale.
+   * Completely desaturates a colour into greyscale.
    * Same as calling `desaturate(100)`
    * @returns {Color} a new `Color` instance
    */
@@ -1072,7 +1071,7 @@ class Color {
   }
 
   /**
-   * Returns the color value in CSS valid string format.
+   * Returns the colour value in CSS valid string format.
    * @returns {string}
    */
   toString() {
@@ -1089,7 +1088,7 @@ class Color {
 }
 
 ObjectAssign(Color, {
-  colorNames,
+  webColors,
   CSS_INTEGER,
   CSS_NUMBER,
   CSS_UNIT,
@@ -1216,6 +1215,18 @@ const removeListener = (element, eventType, listener, options) => {
 };
 
 /**
+ * A global namespace for aria-description.
+ * @type {string}
+ */
+const ariaDescription = 'aria-description';
+
+/**
+ * A global namespace for aria-label.
+ * @type {string}
+ */
+const ariaLabel = 'aria-label';
+
+/**
  * A global namespace for aria-selected.
  * @type {string}
  */
@@ -1226,6 +1237,24 @@ const ariaSelected = 'aria-selected';
  * @type {string}
  */
 const ariaExpanded = 'aria-expanded';
+
+/**
+ * A global namespace for aria-valuetext.
+ * @type {string}
+ */
+const ariaValueText = 'aria-valuetext';
+
+/**
+ * A global namespace for aria-valuenow.
+ * @type {string}
+ */
+const ariaValueNow = 'aria-valuenow';
+
+/**
+ * A global namespace for aria-haspopup.
+ * @type {string}
+ */
+const ariaHasPopup = 'aria-haspopup';
 
 /**
  * A global namespace for aria-hidden.
@@ -1281,6 +1310,105 @@ const keySpace = 'Space';
  */
 const keyEscape = 'Escape';
 
+/**
+ * A global namespace for `focusin` event.
+ * @type {string}
+ */
+const focusinEvent = 'focusin';
+
+/**
+ * A global namespace for `click` event.
+ * @type {string}
+ */
+const mouseclickEvent = 'click';
+
+/**
+ * A global namespace for `keydown` event.
+ * @type {string}
+ */
+const keydownEvent = 'keydown';
+
+/**
+ * Returns the `Window` object of a target node.
+ * @see https://github.com/floating-ui/floating-ui
+ *
+ * @param {(Node | HTMLElement | Element | Window)=} node target node
+ * @returns {globalThis}
+ */
+function getWindow(node) {
+  if (node == null) {
+    return window;
+  }
+
+  if (!(node instanceof Window)) {
+    const { ownerDocument } = node;
+    return ownerDocument ? ownerDocument.defaultView || window : window;
+  }
+
+  // @ts-ignore
+  return node;
+}
+
+/**
+ * A global namespace for `change` event.
+ * @type {string}
+ */
+const changeEvent = 'change';
+
+/**
+ * A global namespace for `touchstart` event.
+ * @type {string}
+ */
+const touchstartEvent = 'touchstart';
+
+/**
+ * A global namespace for `touchmove` event.
+ * @type {string}
+ */
+const touchmoveEvent = 'touchmove';
+
+/**
+ * A global namespace for `touchend` event.
+ * @type {string}
+ */
+const touchendEvent = 'touchend';
+
+/**
+ * A global namespace for `mousedown` event.
+ * @type {string}
+ */
+const mousedownEvent = 'mousedown';
+
+/**
+ * A global namespace for `mousemove` event.
+ * @type {string}
+ */
+const mousemoveEvent = 'mousemove';
+
+/**
+ * A global namespace for `mouseup` event.
+ * @type {string}
+ */
+const mouseupEvent = 'mouseup';
+
+/**
+ * A global namespace for `scroll` event.
+ * @type {string}
+ */
+const scrollEvent = 'scroll';
+
+/**
+ * A global namespace for `keyup` event.
+ * @type {string}
+ */
+const keyupEvent = 'keyup';
+
+/**
+ * A global namespace for `focusout` event.
+ * @type {string}
+ */
+const focusoutEvent = 'focusout';
+
 // @ts-ignore
 const { userAgentData: uaDATA } = navigator;
 
@@ -1312,7 +1440,8 @@ if (userAgentData) {
  */
 const isMobile = isMobileCheck;
 
-let elementUID = 1;
+let elementUID = 0;
+let elementMapUID = 0;
 const elementIDMap = new Map();
 
 /**
@@ -1323,27 +1452,25 @@ const elementIDMap = new Map();
  * @returns {number} an existing or new unique ID
  */
 function getUID(element, key) {
-  elementUID += 1;
-  let elMap = elementIDMap.get(element);
-  let result = elementUID;
+  let result = key ? elementUID : elementMapUID;
 
-  if (key && key.length) {
-    if (elMap) {
-      const elMapId = elMap.get(key);
-      if (!Number.isNaN(elMapId)) {
-        result = elMapId;
-      } else {
-        elMap.set(key, result);
-      }
-    } else {
-      elementIDMap.set(element, new Map());
-      elMap = elementIDMap.get(element);
-      elMap.set(key, result);
+  if (key) {
+    const elID = getUID(element);
+    const elMap = elementIDMap.get(elID) || new Map();
+    if (!elementIDMap.has(elID)) {
+      elementIDMap.set(elID, elMap);
     }
-  } else if (!Number.isNaN(elMap)) {
-    result = elMap;
+    if (!elMap.has(key)) {
+      elMap.set(key, result);
+      elementUID += 1;
+    } else result = elMap.get(key);
   } else {
-    elementIDMap.set(element, result);
+    const elkey = element.id || element;
+
+    if (!elementIDMap.has(elkey)) {
+      elementIDMap.set(elkey, result);
+      elementMapUID += 1;
+    } else result = elementIDMap.get(elkey);
   }
   return result;
 }
@@ -1383,6 +1510,36 @@ function getBoundingClientRect(element, includeScale) {
 }
 
 /**
+ * A global namespace for 'transitionDuration' string.
+ * @type {string}
+ */
+const transitionDuration = 'transitionDuration';
+
+/**
+ * A global namespace for `transitionProperty` string for modern browsers.
+ *
+ * @type {string}
+ */
+const transitionProperty = 'transitionProperty';
+
+/**
+ * Utility to get the computed `transitionDuration`
+ * from Element in miliseconds.
+ *
+ * @param {HTMLElement | Element} element target
+ * @return {number} the value in miliseconds
+ */
+function getElementTransitionDuration(element) {
+  const propertyValue = getElementStyle(element, transitionProperty);
+  const durationValue = getElementStyle(element, transitionDuration);
+  const durationScale = durationValue.includes('ms') ? 1 : 1000;
+  const duration = propertyValue && propertyValue !== 'none'
+    ? parseFloat(durationValue) * durationScale : 0;
+
+  return !Number.isNaN(duration) ? duration : 0;
+}
+
+/**
  * A shortcut for `(document|Element).querySelectorAll`.
  *
  * @param {string} selector the input selector
@@ -1411,6 +1568,20 @@ function closest(element, selector) {
   return element ? (element.closest(selector)
     // @ts-ignore -- break out of `ShadowRoot`
     || closest(element.getRootNode().host, selector)) : null;
+}
+
+/**
+ * Shortcut for `HTMLElement.getElementsByClassName` method. Some `Node` elements
+ * like `ShadowRoot` do not support `getElementsByClassName`.
+ *
+ * @param {string} selector the class name
+ * @param {(HTMLElement | Element | Document)=} parent optional Element to look into
+ * @return {HTMLCollectionOf<HTMLElement | Element>} the 'HTMLCollection'
+ */
+function getElementsByClassName(selector, parent) {
+  const lookUp = parent && parentNodes.some((x) => parent instanceof x)
+    ? parent : getDocument();
+  return lookUp.getElementsByClassName(selector);
 }
 
 /**
@@ -1521,6 +1692,15 @@ const Data = {
 const getInstance = (target, component) => Data.get(target, component);
 
 /**
+ * Utility to force re-paint of an `HTMLElement` target.
+ *
+ * @param {HTMLElement | Element} element is the target
+ * @return {number} the `Element.offsetHeight` value
+ */
+// @ts-ignore
+const reflow = (element) => element.offsetHeight;
+
+/**
  * Check class in `HTMLElement.classList`.
  *
  * @param {HTMLElement | Element} element target
@@ -1554,14 +1734,6 @@ function removeClass(element, classNAME) {
 }
 
 /**
- * Shortcut for `HTMLElement.hasAttribute()` method.
- * @param  {HTMLElement | Element} element target element
- * @param  {string} attribute attribute name
- * @returns {boolean} the query result
- */
-const hasAttribute = (element, attribute) => element.hasAttribute(attribute);
-
-/**
  * Shortcut for `HTMLElement.setAttribute()` method.
  * @param  {HTMLElement | Element} element target element
  * @param  {string} attribute attribute name
@@ -1586,6 +1758,30 @@ const getAttribute = (element, attribute) => element.getAttribute(attribute);
  */
 const removeAttribute = (element, attribute) => element.removeAttribute(attribute);
 
+/** @type {Record<string, string>} */
+const colorPickerLabels = {
+  pickerLabel: 'Colour Picker',
+  appearanceLabel: 'Colour Appearance',
+  valueLabel: 'Colour Value',
+  toggleLabel: 'Select Colour',
+  menuLabel: 'Colour Presets',
+  formatLabel: 'Format',
+  alphaLabel: 'Alpha',
+  hexLabel: 'Hexadecimal',
+  hueLabel: 'Hue',
+  saturationLabel: 'Saturation',
+  lightnessLabel: 'Lightness',
+  redLabel: 'Red',
+  greenLabel: 'Green',
+  blueLabel: 'Blue',
+};
+
+/**
+ * A list of 17 color names used for WAI-ARIA compliance.
+ * @type {string[]}
+ */
+const colorNames = ['white', 'black', 'grey', 'red', 'orange', 'brown', 'gold', 'olive', 'yellow', 'lime', 'green', 'teal', 'cyan', 'blue', 'violet', 'magenta', 'pink'];
+
 /**
  * Shortcut for `String.toUpperCase()`.
  *
@@ -1597,12 +1793,13 @@ const toUpperCase = (source) => source.toUpperCase();
 const vHidden = 'v-hidden';
 
 /**
- * Returns the color form.
+ * Returns the color form for `ColorPicker`.
+ *
  * @param {CP.ColorPicker} self the `ColorPicker` instance
- * @returns {HTMLElement | Element}
+ * @returns {HTMLElement | Element} a new `<div>` element with color component `<input>`
  */
 function getColorForm(self) {
-  const { format, id } = self;
+  const { format, id, componentLabels } = self;
   const colorForm = createElement({
     tagName: 'div',
     className: `color-form ${format}`,
@@ -1615,15 +1812,17 @@ function getColorForm(self) {
   components.forEach((c) => {
     const [C] = format === 'hex' ? ['#'] : toUpperCase(c).split('');
     const cID = `color_${format}_${c}_${id}`;
+    const formatLabel = componentLabels[`${c}Label`];
     const cInputLabel = createElement({ tagName: 'label' });
     setAttribute(cInputLabel, 'for', cID);
     cInputLabel.append(
       createElement({ tagName: 'span', ariaHidden: 'true', innerText: `${C}:` }),
-      createElement({ tagName: 'span', className: vHidden, innerText: `${c}` }),
+      createElement({ tagName: 'span', className: vHidden, innerText: formatLabel }),
     );
     const cInput = createElement({
       tagName: 'input',
-      id: cID, // name: cID,
+      id: cID,
+      // name: cID, - prevent saving the value to a form
       type: format === 'hex' ? 'text' : 'number',
       value: c === 'alpha' ? '1' : '0',
       className: `color-input ${c}`,
@@ -1635,7 +1834,13 @@ function getColorForm(self) {
       let max = '1';
       let step = '0.01';
       if (c !== 'alpha') {
-        if (format === 'rgb') { max = '255'; step = '1'; } else if (c === 'hue') { max = '360'; step = '1'; } else { max = '100'; step = '1'; }
+        if (format === 'rgb') {
+          max = '255'; step = '1';
+        } else if (c === 'hue') {
+          max = '360'; step = '1';
+        } else {
+          max = '100'; step = '1';
+        }
       }
       ObjectAssign(cInput, {
         min: '0',
@@ -1649,74 +1854,145 @@ function getColorForm(self) {
 }
 
 /**
- * Returns a new color control `HTMLElement`.
- * @param {number} iteration
- * @param {number} id
- * @param {number} width
- * @param {number} height
- * @param {string=} labelledby
- * @returns {HTMLElement | Element}
+ * A global namespace for aria-valuemin.
+ * @type {string}
  */
-function getColorControl(iteration, id, width, height, labelledby) {
-  const labelID = `appearance${iteration}_${id}`;
-  const knobClass = iteration === 1 ? 'color-pointer' : 'color-slider';
-  const control = createElement({
-    tagName: 'div',
-    className: 'color-control',
-  });
-  setAttribute(control, 'role', 'presentation');
+const ariaValueMin = 'aria-valuemin';
 
-  control.append(
-    createElement({
-      id: labelID,
-      tagName: 'label',
-      className: `color-label ${vHidden}`,
+/**
+ * A global namespace for aria-valuemax.
+ * @type {string}
+ */
+const ariaValueMax = 'aria-valuemax';
+
+/**
+ * Returns all color controls for `ColorPicker`.
+ *
+ * @param {CP.ColorPicker} self the `ColorPicker` instance
+ * @returns {HTMLElement | Element} color controls
+ */
+function getColorControls(self) {
+  const { format, componentLabels } = self;
+  const {
+    hueLabel, alphaLabel, lightnessLabel, saturationLabel,
+  } = componentLabels;
+
+  const cv1w = isMobile ? 150 : 230;
+  const cvh = isMobile ? 150 : 230;
+  const cv2w = 21;
+  const max1 = format === 'hsl' ? 360 : 100;
+  const max2 = format === 'hsl' ? 100 : 360;
+  const max3 = 100;
+  const ctrl1Label = format === 'hsl'
+    ? `${hueLabel} & ${lightnessLabel}`
+    : `${lightnessLabel} & ${saturationLabel}`;
+  const ctrl2Label = format === 'hsl'
+    ? `${saturationLabel}`
+    : `${hueLabel}`;
+
+  const colorControls = createElement({
+    tagName: 'div',
+    className: `color-controls ${format}`,
+  });
+
+  const colorPointer = 'color-pointer';
+  const colorSlider = 'color-slider';
+
+  const controls = [
+    {
+      w: cv1w,
+      h: cvh,
+      i: 1,
+      c: colorPointer,
+      l: ctrl1Label,
+      min: 0,
+      max: max1,
+    },
+    {
+      w: cv2w,
+      h: cvh,
+      i: 2,
+      c: colorSlider,
+      l: ctrl2Label,
+      min: 0,
+      max: max2,
+    },
+  ];
+
+  if (format !== 'hex') {
+    controls.push({
+      w: cv2w,
+      h: cvh,
+      i: 3,
+      c: colorSlider,
+      l: alphaLabel,
+      min: 0,
+      max: max3,
+    });
+  }
+
+  controls.forEach((template) => {
+    const {
+      w, h, i, c, l, min, max,
+    } = template;
+    const control = createElement({
+      tagName: 'div',
+      className: 'color-control',
+    });
+    setAttribute(control, 'role', 'presentation');
+
+    control.append(
+      createElement({
+        tagName: 'canvas',
+        className: `visual-control${i}`,
+        ariaHidden: 'true',
+        width: `${w}`,
+        height: `${h}`,
+      }),
+    );
+
+    const knob = createElement({
+      tagName: 'div',
+      className: `${c} knob`,
       ariaLive: 'polite',
-    }),
-    createElement({
-      tagName: 'canvas',
-      className: `visual-control${iteration}`,
-      ariaHidden: 'true',
-      width: `${width}`,
-      height: `${height}`,
-    }),
-  );
+    });
 
-  const knob = createElement({
-    tagName: 'div',
-    className: `${knobClass} knob`,
+    setAttribute(knob, ariaLabel, l);
+    setAttribute(knob, 'role', 'slider');
+    setAttribute(knob, 'tabindex', '0');
+    setAttribute(knob, ariaValueMin, `${min}`);
+    setAttribute(knob, ariaValueMax, `${max}`);
+    control.append(knob);
+    colorControls.append(control);
   });
-  setAttribute(knob, ariaLabelledBy, labelledby || labelID);
-  setAttribute(knob, 'tabindex', '0');
-  control.append(knob);
-  return control;
+
+  return colorControls;
 }
+
+/**
+ * Check if a string is valid JSON string.
+ * @param {string} str the string input
+ * @returns {boolean} the query result
+ */
+function isValidJSON(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+var version = "0.0.1alpha2";
+
+// @ts-ignore
+
+const Version = version;
 
 // ColorPicker GC
 // ==============
 const colorPickerString = 'color-picker';
 const colorPickerSelector = `[data-function="${colorPickerString}"]`;
-const nonColors = ['transparent', 'currentColor', 'inherit', 'initial'];
-const colorNames$1 = ['white', 'black', 'grey', 'red', 'orange', 'brown', 'gold', 'olive', 'yellow', 'lime', 'green', 'teal', 'cyan', 'blue', 'violet', 'magenta', 'pink'];
-const colorPickerLabels = {
-  pickerLabel: 'Colour Picker',
-  toggleLabel: 'Select colour',
-  menuLabel: 'Select colour preset',
-  requiredLabel: 'Required',
-  formatLabel: 'Colour Format',
-  formatHEX: 'Hexadecimal Format',
-  formatRGB: 'RGB Format',
-  formatHSL: 'HSL Format',
-  alphaLabel: 'Alpha',
-  appearanceLabel: 'Colour Appearance',
-  hexLabel: 'Hexadecimal',
-  hueLabel: 'Hue',
-  saturationLabel: 'Saturation',
-  lightnessLabel: 'Lightness',
-  redLabel: 'Red',
-  greenLabel: 'Green',
-  blueLabel: 'Blue',
-};
 
 // ColorPicker Static Methods
 // ==========================
@@ -1731,25 +2007,6 @@ const initColorPicker = (element) => new ColorPicker(element);
 // ===========================
 
 /**
- * Add / remove `ColorPicker` main event listeners.
- * @param {ColorPicker} self
- * @param {boolean=} action
- */
-function toggleEvents(self, action) {
-  const fn = action ? addListener : removeListener;
-  const { input, pickerToggle, menuToggle } = self;
-
-  fn(input, 'focusin', self.showPicker);
-  fn(pickerToggle, 'click', self.togglePicker);
-
-  fn(input, 'keydown', self.keyHandler);
-
-  if (menuToggle) {
-    fn(menuToggle, 'click', self.toggleMenu);
-  }
-}
-
-/**
  * Generate HTML markup and update instance properties.
  * @param {ColorPicker} self
  */
@@ -1760,89 +2017,46 @@ function initCallback(self) {
   const colorValue = getAttribute(input, 'value') || '#fff';
 
   const {
-    toggleLabel, menuLabel, formatLabel, pickerLabel, appearanceLabel,
+    toggleLabel, menuLabel, pickerLabel, formatLabel, hexLabel,
   } = componentLabels;
 
   // update color
   const color = nonColors.includes(colorValue) ? '#fff' : colorValue;
-  self.color = new Color(color, { format });
+  self.color = new Color(color, format);
 
   // set initial controls dimensions
   // make the controls smaller on mobile
-  const cv1w = isMobile ? 150 : 230;
-  const cvh = isMobile ? 150 : 230;
-  const cv2w = 21;
   const dropClass = isMobile ? ' mobile' : '';
-  const ctrl1Labelledby = format === 'hsl' ? `appearance_${id} appearance1_${id}` : `appearance1_${id}`;
-  const ctrl2Labelledby = format === 'hsl' ? `appearance2_${id}` : `appearance_${id} appearance2_${id}`;
+  const formatString = format === 'hex' ? hexLabel : format.toUpperCase();
 
   const pickerBtn = createElement({
+    id: `picker-btn-${id}`,
     tagName: 'button',
     className: 'picker-toggle button-appearance',
-    ariaExpanded: 'false',
-    ariaHasPopup: 'true',
-    ariaLive: 'polite',
   });
-  setAttribute(pickerBtn, 'tabindex', '-1');
+  setAttribute(pickerBtn, ariaExpanded, 'false');
+  setAttribute(pickerBtn, ariaHasPopup, 'true');
   pickerBtn.append(createElement({
     tagName: 'span',
     className: vHidden,
-    innerText: 'Open Color Picker',
+    innerText: `${pickerLabel}. ${formatLabel}: ${formatString}`,
   }));
 
-  const colorPickerDropdown = createElement({
+  const pickerDropdown = createElement({
     tagName: 'div',
     className: `color-dropdown picker${dropClass}`,
   });
-  setAttribute(colorPickerDropdown, ariaLabelledBy, `picker-label-${id} format-label-${id}`);
-  setAttribute(colorPickerDropdown, 'role', 'group');
-  colorPickerDropdown.append(
-    createElement({
-      tagName: 'label',
-      className: vHidden,
-      ariaHidden: 'true',
-      id: `picker-label-${id}`,
-      innerText: `${pickerLabel}`,
-    }),
-    createElement({
-      tagName: 'label',
-      className: vHidden,
-      ariaHidden: 'true',
-      id: `format-label-${id}`,
-      innerText: `${formatLabel}`,
-    }),
-    createElement({
-      tagName: 'label',
-      className: `color-appearance ${vHidden}`,
-      ariaHidden: 'true',
-      ariaLive: 'polite',
-      id: `appearance_${id}`,
-      innerText: `${appearanceLabel}`,
-    }),
-  );
+  setAttribute(pickerDropdown, ariaLabelledBy, `picker-btn-${id}`);
+  setAttribute(pickerDropdown, 'role', 'group');
 
-  const colorControls = createElement({
-    tagName: 'div',
-    className: `color-controls ${format}`,
-  });
+  const colorControls = getColorControls(self);
 
-  colorControls.append(
-    getColorControl(1, id, cv1w, cvh, ctrl1Labelledby),
-    getColorControl(2, id, cv2w, cvh, ctrl2Labelledby),
-  );
-
-  if (format !== 'hex') {
-    colorControls.append(
-      getColorControl(3, id, cv2w, cvh),
-    );
-  }
-
-  // @ts-ignore
   const colorForm = getColorForm(self);
-  colorPickerDropdown.append(colorControls, colorForm);
-  parent.append(pickerBtn, colorPickerDropdown);
+  pickerDropdown.append(colorControls, colorForm);
+  input.before(pickerBtn);
+  parent.append(pickerDropdown);
 
-  // set color key menu template
+  // set colour key menu template
   if (keywords) {
     const colorKeys = keywords;
     const presetsDropdown = createElement({
@@ -1851,44 +2065,44 @@ function initCallback(self) {
     });
     const presetsMenu = createElement({
       tagName: 'ul',
-      ariaLabel: `${menuLabel}`,
       className: 'color-menu',
     });
     setAttribute(presetsMenu, 'role', 'listbox');
+    setAttribute(presetsMenu, ariaLabel, `${menuLabel}`);
     presetsDropdown.append(presetsMenu);
 
     colorKeys.forEach((x) => {
       const xKey = x.trim();
-      const xRealColor = new Color(xKey, { format }).toString();
+      const xRealColor = new Color(xKey, format).toString();
       const isActive = xRealColor === getAttribute(input, 'value');
       const active = isActive ? ' active' : '';
 
       const keyOption = createElement({
         tagName: 'li',
         className: `color-option${active}`,
-        ariaSelected: isActive ? 'true' : 'false',
         innerText: `${x}`,
       });
-      setAttribute(keyOption, 'role', 'option');
       setAttribute(keyOption, 'tabindex', '0');
       setAttribute(keyOption, 'data-value', `${xKey}`);
+      setAttribute(keyOption, 'role', 'option');
+      setAttribute(keyOption, ariaSelected, isActive ? 'true' : 'false');
       presetsMenu.append(keyOption);
     });
     const presetsBtn = createElement({
       tagName: 'button',
       className: 'menu-toggle button-appearance',
-      ariaExpanded: 'false',
-      ariaHasPopup: 'true',
     });
+    setAttribute(presetsBtn, ariaExpanded, 'false');
+    setAttribute(presetsBtn, ariaHasPopup, 'true');
     const xmlns = encodeURI('http://www.w3.org/2000/svg');
     const presetsIcon = createElementNS(xmlns, { tagName: 'svg' });
     setAttribute(presetsIcon, 'xmlns', xmlns);
-    setAttribute(presetsIcon, ariaHidden, 'true');
     setAttribute(presetsIcon, 'viewBox', '0 0 512 512');
-    const piPath = createElementNS(xmlns, { tagName: 'path' });
-    setAttribute(piPath, 'd', 'M98,158l157,156L411,158l27,27L255,368L71,185L98,158z');
-    setAttribute(piPath, 'fill', '#fff');
-    presetsIcon.append(piPath);
+    setAttribute(presetsIcon, ariaHidden, 'true');
+    const path = createElementNS(xmlns, { tagName: 'path' });
+    setAttribute(path, 'd', 'M98,158l157,156L411,158l27,27L255,368L71,185L98,158z');
+    setAttribute(path, 'fill', '#fff');
+    presetsIcon.append(path);
     presetsBtn.append(createElement({
       tagName: 'span',
       className: vHidden,
@@ -1902,6 +2116,26 @@ function initCallback(self) {
   if (keywords && nonColors.includes(colorValue)) {
     self.value = colorValue;
   }
+  setAttribute(input, 'tabindex', '-1');
+}
+
+/**
+ * Add / remove `ColorPicker` main event listeners.
+ * @param {ColorPicker} self
+ * @param {boolean=} action
+ */
+function toggleEvents(self, action) {
+  const fn = action ? addListener : removeListener;
+  const { input, pickerToggle, menuToggle } = self;
+
+  fn(input, focusinEvent, self.showPicker);
+  fn(pickerToggle, mouseclickEvent, self.togglePicker);
+
+  fn(input, keydownEvent, self.keyHandler);
+
+  if (menuToggle) {
+    fn(menuToggle, mouseclickEvent, self.toggleMenu);
+  }
 }
 
 /**
@@ -1911,26 +2145,31 @@ function initCallback(self) {
  */
 function toggleEventsOnShown(self, action) {
   const fn = action ? addListener : removeListener;
-  const pointerEvents = 'ontouchstart' in document
-    ? { down: 'touchstart', move: 'touchmove', up: 'touchend' }
-    : { down: 'mousedown', move: 'mousemove', up: 'mouseup' };
+  const { input, colorMenu, parent } = self;
+  const doc = getDocument(input);
+  const win = getWindow(input);
+  const pointerEvents = `on${touchstartEvent}` in doc
+    ? { down: touchstartEvent, move: touchmoveEvent, up: touchendEvent }
+    : { down: mousedownEvent, move: mousemoveEvent, up: mouseupEvent };
 
   fn(self.controls, pointerEvents.down, self.pointerDown);
-  self.controlKnobs.forEach((x) => fn(x, 'keydown', self.handleKnobs));
+  self.controlKnobs.forEach((x) => fn(x, keydownEvent, self.handleKnobs));
 
-  fn(window, 'scroll', self.handleScroll);
+  // @ts-ignore -- this is `Window`
+  fn(win, scrollEvent, self.handleScroll);
 
-  [self.input, ...self.inputs].forEach((x) => fn(x, 'change', self.changeHandler));
+  [input, ...self.inputs].forEach((x) => fn(x, changeEvent, self.changeHandler));
 
-  if (self.colorMenu) {
-    fn(self.colorMenu, 'click', self.menuClickHandler);
-    fn(self.colorMenu, 'keydown', self.menuKeyHandler);
+  if (colorMenu) {
+    fn(colorMenu, mouseclickEvent, self.menuClickHandler);
+    fn(colorMenu, keydownEvent, self.menuKeyHandler);
   }
 
-  fn(document, pointerEvents.move, self.pointerMove);
-  fn(document, pointerEvents.up, self.pointerUp);
-  fn(window, 'keyup', self.handleDismiss);
-  fn(self.parent, 'focusout', self.handleFocusOut);
+  fn(doc, pointerEvents.move, self.pointerMove);
+  fn(doc, pointerEvents.up, self.pointerUp);
+  fn(parent, focusoutEvent, self.handleFocusOut);
+  // @ts-ignore -- this is `Window`
+  fn(win, keyupEvent, self.handleDismiss);
 }
 
 /**
@@ -1942,31 +2181,41 @@ function firePickerChange(self) {
 }
 
 /**
- * Toggles the visibility of a dropdown or returns false if none is visible.
+ * Hides a visible dropdown.
  * @param {HTMLElement} element
- * @param {boolean=} check
- * @returns {void | boolean}
+ * @returns {void}
  */
-function classToggle(element, check) {
-  const fn1 = !check ? 'forEach' : 'some';
-  const fn2 = !check ? removeClass : hasClass;
-
+function removePosition(element) {
   if (element) {
-    return ['show', 'show-top'][fn1]((x) => fn2(element, x));
+    ['bottom', 'top'].forEach((x) => removeClass(element, x));
   }
-
-  return false;
 }
 
 /**
- * Shows the `ColorPicker` presets menu.
+ * Shows a `ColorPicker` dropdown and close the curent open dropdown.
  * @param {ColorPicker} self
+ * @param {HTMLElement | Element} dropdown
  */
-function showMenu(self) {
-  classToggle(self.colorPicker);
-  addClass(self.colorMenu, 'show');
+function showDropdown(self, dropdown) {
+  const {
+    colorPicker, colorMenu, menuToggle, pickerToggle, parent,
+  } = self;
+  const isPicker = dropdown === colorPicker;
+  const openDropdown = isPicker ? colorMenu : colorPicker;
+  const activeBtn = isPicker ? menuToggle : pickerToggle;
+  const nextBtn = !isPicker ? menuToggle : pickerToggle;
+
+  if (!hasClass(parent, 'open')) {
+    addClass(parent, 'open');
+  }
+  removeClass(openDropdown, 'show');
+  removePosition(openDropdown);
+  addClass(dropdown, 'bottom');
+  reflow(dropdown);
+  addClass(dropdown, 'show');
   self.show();
-  setAttribute(self.menuToggle, ariaExpanded, 'true');
+  setAttribute(nextBtn, ariaExpanded, 'true');
+  setAttribute(activeBtn, ariaExpanded, 'false');
 }
 
 /**
@@ -1976,9 +2225,9 @@ function showMenu(self) {
 class ColorPicker {
   /**
    * Returns a new `ColorPicker` instance. The target of this constructor
-   * must be an `HTMLInputElement` or a contenteditable `HTMLElement`.
+   * must be an `HTMLInputElement`.
    *
-   * @param {HTMLInputElement | HTMLElement | string} target the target `<input>` element
+   * @param {HTMLInputElement | string} target the target `<input>` element
    */
   constructor(target) {
     const self = this;
@@ -1988,6 +2237,11 @@ class ColorPicker {
     // invalidate
     if (!self.input) throw new TypeError(`ColorPicker target ${target} cannot be found.`);
     const { input } = self;
+
+    // prevent double initialization, this is important
+    // to preventing the creation of duplicated content
+    const previousInstance = getColorPickerInstance(input);
+    if (previousInstance) return previousInstance;
 
     /** @type {HTMLElement} */
     // @ts-ignore
@@ -2011,19 +2265,24 @@ class ColorPicker {
     /** @type {Array<string> | false} */
     self.keywords = false;
     /** @type {Color} */
-    self.color = new Color('white', { format: self.format });
-    /** @type {Record<string, string>} */
-    self.componentLabels = ObjectAssign({}, colorPickerLabels);
+    self.color = new Color('white', self.format);
 
     const { componentLabels, colorLabels, keywords } = input.dataset;
-    const temp = componentLabels ? JSON.parse(componentLabels) : {};
-    self.componentLabels = ObjectAssign(self.componentLabels, temp);
-
     const translatedColorLabels = colorLabels && colorLabels.split(',').length === 17
-      ? colorLabels.split(',') : colorNames$1;
+      ? colorLabels.split(',') : colorNames;
 
-    // expose color labels to all methods
-    colorNames$1.forEach((c, i) => { self.colorLabels[c] = translatedColorLabels[i]; });
+    // expose colour labels to all methods
+    colorNames.forEach((c, i) => {
+      self.colorLabels[c] = translatedColorLabels[i].trim();
+    });
+
+    // update and expose component labels
+    const tempLabels = ObjectAssign({}, colorPickerLabels);
+    const jsonLabels = componentLabels && isValidJSON(componentLabels)
+      ? JSON.parse(componentLabels) : {};
+
+    /** @type {Record<string, string>} */
+    self.componentLabels = ObjectAssign(tempLabels, jsonLabels);
 
     // set colour presets
     if (keywords !== 'false') {
@@ -2050,6 +2309,7 @@ class ColorPicker {
     initCallback(self);
 
     const { parent } = self;
+    const [colorPicker, colorMenu] = getElementsByClassName('color-dropdown', parent);
     // set main elements
     /** @type {HTMLElement} */
     // @ts-ignore
@@ -2059,10 +2319,10 @@ class ColorPicker {
     self.menuToggle = querySelector('.menu-toggle', parent);
     /** @type {HTMLElement} */
     // @ts-ignore
-    self.colorMenu = querySelector('.color-dropdown.menu', parent);
+    self.colorPicker = colorPicker;
     /** @type {HTMLElement} */
     // @ts-ignore
-    self.colorPicker = querySelector('.color-dropdown.picker', parent);
+    self.colorMenu = colorMenu;
     /** @type {HTMLElement} */
     // @ts-ignore
     self.controls = querySelector('.color-controls', parent);
@@ -2078,9 +2338,6 @@ class ColorPicker {
     /** @type {HTMLLabelElement[]} */
     // @ts-ignore
     self.knobLabels = [...querySelectorAll('.color-label', parent)];
-    /** @type {HTMLLabelElement} */
-    // @ts-ignore
-    self.appearance = querySelector('.color-appearance', parent);
 
     const [v1, v2, v3] = self.visuals;
     // set dimensions
@@ -2114,7 +2371,7 @@ class ColorPicker {
       self.ctx3.rect(0, 0, self.width3, self.height3);
     }
 
-    // update color picker controls, inputs and visuals
+    // update colour picker controls, inputs and visuals
     this.setControlPositions();
     this.setColorAppearence();
     // don't trigger change at initialization
@@ -2128,65 +2385,57 @@ class ColorPicker {
     Data.set(input, colorPickerString, self);
   }
 
-  /** Returns the current color value */
+  /** Returns the current colour value */
   get value() { return this.input.value; }
 
   /**
-   * Sets a new color value.
-   * @param {string} v new color value
+   * Sets a new colour value.
+   * @param {string} v new colour value
    */
   set value(v) { this.input.value = v; }
 
-  /** Check if the input is required to have a valid value. */
-  get required() { return hasAttribute(this.input, 'required'); }
-
   /**
    * Returns the colour format.
-   * @returns {CP.ColorFormats | string}
+   * @returns {CP.ColorFormats}
    */
-  get format() { return getAttribute(this.input, 'format') || 'hex'; }
+  get format() {
+    return this.input.dataset.format || 'rgb';
+  }
 
-  /** Returns the input name. */
-  get name() { return getAttribute(this.input, 'name'); }
-
-  /**
-   * Returns the label associated to the input.
-   * @returns {HTMLLabelElement?}
-   */
-  // @ts-ignore
-  get label() { return querySelector(`[for="${this.input.id}"]`); }
-
-  /** Check if the color presets include any non-color. */
+  /** Check if the colour presets include any non-colour. */
   get includeNonColor() {
     return this.keywords instanceof Array
       && this.keywords.some((x) => nonColors.includes(x));
   }
 
-  /** Returns hexadecimal value of the current color. */
+  /** Check if the parent of the target is a `ColorPickerElement` instance. */
+  get isCE() { return this.parent.tagName === colorPickerString; }
+
+  /** Returns hexadecimal value of the current colour. */
   get hex() { return this.color.toHex(); }
 
-  /** Returns the current color value in {h,s,v,a} object format. */
+  /** Returns the current colour value in {h,s,v,a} object format. */
   get hsv() { return this.color.toHsv(); }
 
-  /** Returns the current color value in {h,s,l,a} object format. */
+  /** Returns the current colour value in {h,s,l,a} object format. */
   get hsl() { return this.color.toHsl(); }
 
-  /** Returns the current color value in {r,g,b,a} object format. */
+  /** Returns the current colour value in {r,g,b,a} object format. */
   get rgb() { return this.color.toRgb(); }
 
-  /** Returns the current color brightness. */
+  /** Returns the current colour brightness. */
   get brightness() { return this.color.brightness; }
 
-  /** Returns the current color luminance. */
+  /** Returns the current colour luminance. */
   get luminance() { return this.color.luminance; }
 
-  /** Checks if the current colour requires a light text color. */
+  /** Checks if the current colour requires a light text colour. */
   get isDark() {
     const { rgb, brightness } = this;
     return brightness < 120 && rgb.a > 0.33;
   }
 
-  /** Checks if the current input value is a valid color. */
+  /** Checks if the current input value is a valid colour. */
   get isValid() {
     const inputValue = this.input.value;
     return inputValue !== '' && new Color(inputValue).isValid;
@@ -2348,7 +2597,7 @@ class ColorPicker {
     const newOption = (getAttribute(target, 'data-value') || '').trim();
     const currentActive = self.colorMenu.querySelector('li.active');
     const newColor = nonColors.includes(newOption) ? 'white' : newOption;
-    self.color = new Color(newColor, { format });
+    self.color = new Color(newColor, format);
     self.setControlPositions();
     self.setColorAppearence();
     self.updateInputs(true);
@@ -2397,13 +2646,13 @@ class ColorPicker {
 
     if (target === v1 || target === c1) {
       self.dragElement = visual;
-      self.changeControl1({ offsetX, offsetY });
+      self.changeControl1(offsetX, offsetY);
     } else if (target === v2 || target === c2) {
       self.dragElement = visual;
-      self.changeControl2({ offsetY });
+      self.changeControl2(offsetY);
     } else if (format !== 'hex' && (target === v3 || target === c3)) {
       self.dragElement = visual;
-      self.changeAlpha({ offsetY });
+      self.changeAlpha(offsetY);
     }
     e.preventDefault();
   }
@@ -2448,15 +2697,15 @@ class ColorPicker {
     const offsetY = Y - window.pageYOffset - controlRect.top;
 
     if (dragElement === v1) {
-      self.changeControl1({ offsetX, offsetY });
+      self.changeControl1(offsetX, offsetY);
     }
 
     if (dragElement === v2) {
-      self.changeControl2({ offsetY });
+      self.changeControl2(offsetY);
     }
 
     if (dragElement === v3 && format !== 'hex') {
-      self.changeAlpha({ offsetY });
+      self.changeAlpha(offsetY);
     }
   }
 
@@ -2489,15 +2738,15 @@ class ColorPicker {
 
         offsetX = self.controlPositions.c1x;
         offsetY = self.controlPositions.c1y;
-        self.changeControl1({ offsetX, offsetY });
+        self.changeControl1(offsetX, offsetY);
       } else if (target === c2) {
         self.controlPositions.c2y += [keyArrowDown, keyArrowRight].includes(code) ? +1 : -1;
         offsetY = self.controlPositions.c2y;
-        self.changeControl2({ offsetY });
+        self.changeControl2(offsetY);
       } else if (target === c3) {
         self.controlPositions.c3y += [keyArrowDown, keyArrowRight].includes(code) ? +1 : -1;
         offsetY = self.controlPositions.c3y;
-        self.changeAlpha({ offsetY });
+        self.changeAlpha(offsetY);
       }
 
       self.setColorAppearence();
@@ -2536,7 +2785,7 @@ class ColorPicker {
         colorSource = `rgba(${inputs.map((x) => x.value).join(',')})`;
       }
 
-      self.color = new Color(colorSource, { format });
+      self.color = new Color(colorSource, format);
       self.setControlPositions();
       self.setColorAppearence();
       self.updateInputs();
@@ -2555,12 +2804,12 @@ class ColorPicker {
    * * `lightness` and `saturation` for HEX/RGB;
    * * `lightness` and `hue` for HSL.
    *
-   * @param {Record<string, number>} offsets
+   * @param {number} X the X component of the offset
+   * @param {number} Y the Y component of the offset
    */
-  changeControl1(offsets) {
+  changeControl1(X, Y) {
     const self = this;
     let [offsetX, offsetY] = [0, 0];
-    const { offsetX: X, offsetY: Y } = offsets;
     const {
       format, controlPositions,
       height1, height2, height3, width1,
@@ -2591,7 +2840,7 @@ class ColorPicker {
     const tempFormat = format !== 'hsl' ? 'hsva' : 'hsla';
 
     // new color
-    self.color = new Color(`${tempFormat}(${hue},${saturation}%,${lightness}%,${alpha})`, { format });
+    self.color = new Color(`${tempFormat}(${hue},${saturation}%,${lightness}%,${alpha})`, format);
     // new positions
     self.controlPositions.c1x = offsetX;
     self.controlPositions.c1y = offsetY;
@@ -2608,11 +2857,10 @@ class ColorPicker {
    * * `hue` for HEX/RGB;
    * * `saturation` for HSL.
    *
-   * @param {Record<string, number>} offset
+   * @param {number} Y the Y offset
    */
-  changeControl2(offset) {
+  changeControl2(Y) {
     const self = this;
-    const { offsetY: Y } = offset;
     const {
       format, width1, height1, height2, height3, controlPositions,
     } = self;
@@ -2631,7 +2879,7 @@ class ColorPicker {
     const colorFormat = format !== 'hsl' ? 'hsva' : 'hsla';
 
     // new color
-    self.color = new Color(`${colorFormat}(${hue},${saturation}%,${lightness}%,${alpha})`, { format });
+    self.color = new Color(`${colorFormat}(${hue},${saturation}%,${lightness}%,${alpha})`, format);
     // new position
     self.controlPositions.c2y = offsetY;
     // update color picker
@@ -2645,12 +2893,11 @@ class ColorPicker {
    * Updates `ColorPicker` last control,
    * the `alpha` channel for RGB/HSL.
    *
-   * @param {Record<string, number>} offset
+   * @param {number} Y
    */
-  changeAlpha(offset) {
+  changeAlpha(Y) {
     const self = this;
     const { height3 } = self;
-    const { offsetY: Y } = offset;
     let offsetY = 0;
 
     if (Y > height3) {
@@ -2668,7 +2915,7 @@ class ColorPicker {
     self.updateInputs();
     self.updateControls();
     // alpha?
-    self.updateVisuals();
+    // self.updateVisuals();
   }
 
   /** Update opened dropdown position on scroll. */
@@ -2678,7 +2925,7 @@ class ColorPicker {
     const elRect = getBoundingClientRect(input);
     const { offsetHeight: elHeight } = input;
     const windowHeight = document.documentElement.clientHeight;
-    const isPicker = classToggle(colorPicker, true);
+    const isPicker = hasClass(colorPicker, 'show');
     const dropdown = isPicker ? colorPicker : colorMenu;
     const { offsetHeight: dropHeight } = dropdown;
     const distanceBottom = windowHeight - elRect.bottom;
@@ -2686,13 +2933,12 @@ class ColorPicker {
     const bottomExceed = elRect.top + dropHeight + elHeight > windowHeight; // show
     const topExceed = elRect.top - dropHeight < 0; // show-top
 
-    if (hasClass(dropdown, 'show') && distanceBottom < distanceTop && bottomExceed) {
-      removeClass(dropdown, 'show');
-      addClass(dropdown, 'show-top');
-    }
-    if (hasClass(dropdown, 'show-top') && distanceBottom > distanceTop && topExceed) {
-      removeClass(dropdown, 'show-top');
-      addClass(dropdown, 'show');
+    if ((hasClass(dropdown, 'bottom') || !topExceed) && distanceBottom < distanceTop && bottomExceed) {
+      removeClass(dropdown, 'bottom');
+      addClass(dropdown, 'top');
+    } else {
+      removeClass(dropdown, 'top');
+      addClass(dropdown, 'bottom');
     }
   }
 
@@ -2720,13 +2966,14 @@ class ColorPicker {
   setColorAppearence() {
     const self = this;
     const {
-      componentLabels, colorLabels, hsl, hsv, hex, format, knobLabels,
+      componentLabels, colorLabels, color,
+      hsl, hsv, hex, format, controlKnobs,
     } = self;
     const {
-      lightnessLabel, saturationLabel, hueLabel, alphaLabel, appearanceLabel, hexLabel,
+      appearanceLabel, hexLabel, valueLabel,
     } = componentLabels;
-    let { requiredLabel } = componentLabels;
-    const [knob1Lbl, knob2Lbl, knob3Lbl] = knobLabels;
+    const { r, g, b } = color.toRgb();
+    const [knob1, knob2, knob3] = controlKnobs;
     const hue = Math.round(hsl.h);
     const alpha = hsv.a;
     const saturationSource = format === 'hsl' ? hsl.s : hsv.s;
@@ -2767,32 +3014,28 @@ class ColorPicker {
       colorName = colorLabels.pink;
     }
 
+    let colorLabel = `${hexLabel} ${hex.split('').join(' ')}`;
+
     if (format === 'hsl') {
-      knob1Lbl.innerText = `${hueLabel}: ${hue}°. ${lightnessLabel}: ${lightness}%`;
-      knob2Lbl.innerText = `${saturationLabel}: ${saturation}%`;
+      colorLabel = `HSL: ${hue}, ${saturation}%, ${lightness}%`;
+      setAttribute(knob1, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
+      setAttribute(knob1, ariaValueText, `${hue}° & ${lightness}%`);
+      setAttribute(knob1, ariaValueNow, `${hue}`);
+      setAttribute(knob2, ariaValueText, `${saturation}%`);
+      setAttribute(knob2, ariaValueNow, `${saturation}`);
     } else {
-      knob1Lbl.innerText = `${lightnessLabel}: ${lightness}%. ${saturationLabel}: ${saturation}%`;
-      knob2Lbl.innerText = `${hueLabel}: ${hue}°`;
+      setAttribute(knob1, ariaValueText, `${lightness}% & ${saturation}%`);
+      setAttribute(knob1, ariaValueNow, `${lightness}`);
+      setAttribute(knob2, ariaValueText, `${hue}°`);
+      setAttribute(knob2, ariaValueNow, `${hue}`);
+      colorLabel = format === 'rgb' ? `RGB: ${r}, ${g}, ${b}` : colorLabel;
+      setAttribute(knob2, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
     }
 
     if (format !== 'hex') {
       const alphaValue = Math.round(alpha * 100);
-      knob3Lbl.innerText = `${alphaLabel}: ${alphaValue}%`;
-    }
-
-    // update color labels
-    self.appearance.innerText = `${appearanceLabel}: ${colorName}.`;
-    const colorLabel = format === 'hex'
-      ? `${hexLabel} ${hex.split('').join(' ')}.`
-      : self.value.toUpperCase();
-
-    if (self.label) {
-      const fieldLabel = self.label.innerText.replace('*', '').trim();
-      /** @type {HTMLSpanElement} */
-      // @ts-ignore
-      const [pickerBtnSpan] = self.pickerToggle.children;
-      requiredLabel = self.required ? ` ${requiredLabel}` : '';
-      pickerBtnSpan.innerText = `${fieldLabel}: ${colorLabel}${requiredLabel}`;
+      setAttribute(knob3, ariaValueText, `${alphaValue}%`);
+      setAttribute(knob3, ariaValueNow, `${alphaValue}`);
     }
   }
 
@@ -2897,34 +3140,31 @@ class ColorPicker {
   togglePicker(e) {
     e.preventDefault();
     const self = this;
-    const pickerIsOpen = classToggle(self.colorPicker, true);
+    const { colorPicker } = self;
 
-    if (self.isOpen && pickerIsOpen) {
+    if (self.isOpen && hasClass(colorPicker, 'show')) {
       self.hide(true);
     } else {
-      self.showPicker();
+      showDropdown(self, colorPicker);
     }
   }
 
   /** Shows the `ColorPicker` dropdown. */
   showPicker() {
     const self = this;
-    classToggle(self.colorMenu);
-    addClass(self.colorPicker, 'show');
-    self.input.focus();
-    self.show();
-    setAttribute(self.pickerToggle, ariaExpanded, 'true');
+    showDropdown(self, self.colorPicker);
+    removeAttribute(self.input, 'tabindex');
   }
 
   /** Toggles the visibility of the `ColorPicker` presets menu. */
   toggleMenu() {
     const self = this;
-    const menuIsOpen = classToggle(self.colorMenu, true);
+    const { colorMenu } = self;
 
-    if (self.isOpen && menuIsOpen) {
+    if (self.isOpen && hasClass(colorMenu, 'show')) {
       self.hide(true);
     } else {
-      showMenu(self);
+      showDropdown(self, colorMenu);
     }
   }
 
@@ -2932,7 +3172,6 @@ class ColorPicker {
   show() {
     const self = this;
     if (!self.isOpen) {
-      addClass(self.parent, 'open');
       toggleEventsOnShown(self, true);
       self.updateDropdownPosition();
       self.isOpen = true;
@@ -2946,24 +3185,33 @@ class ColorPicker {
   hide(focusPrevented) {
     const self = this;
     if (self.isOpen) {
-      const { pickerToggle, colorMenu } = self;
-      toggleEventsOnShown(self);
+      const {
+        pickerToggle, menuToggle, colorPicker, colorMenu, parent, input,
+      } = self;
+      const openPicker = hasClass(colorPicker, 'show');
+      const openDropdown = openPicker ? colorPicker : colorMenu;
+      const relatedBtn = openPicker ? pickerToggle : menuToggle;
+      const animationDuration = getElementTransitionDuration(openDropdown);
 
-      removeClass(self.parent, 'open');
-
-      classToggle(self.colorPicker);
-      setAttribute(pickerToggle, ariaExpanded, 'false');
-
-      if (colorMenu) {
-        classToggle(colorMenu);
-        setAttribute(self.menuToggle, ariaExpanded, 'false');
+      if (openDropdown) {
+        removeClass(openDropdown, 'show');
+        setAttribute(relatedBtn, ariaExpanded, 'false');
+        setTimeout(() => {
+          removePosition(openDropdown);
+          if (!querySelector('.show', parent)) {
+            removeClass(parent, 'open');
+            toggleEventsOnShown(self);
+            self.isOpen = false;
+          }
+        }, animationDuration);
+      }
+      if (openPicker) {
+        setAttribute(input, 'tabindex', '-1');
       }
 
       if (!self.isValid) {
         self.value = self.color.toString();
       }
-
-      self.isOpen = false;
 
       if (!focusPrevented) {
         pickerToggle.focus();
@@ -2971,6 +3219,7 @@ class ColorPicker {
     }
   }
 
+  /** Removes `ColorPicker` from target `<input>`. */
   dispose() {
     const self = this;
     const { input, parent } = self;
@@ -2979,12 +3228,15 @@ class ColorPicker {
     [...parent.children].forEach((el) => {
       if (el !== input) el.remove();
     });
+    setElementStyle(input, { backgroundColor: '' });
+    ['light', 'dark'].forEach((c) => removeClass(parent, c));
     Data.remove(input, colorPickerString);
   }
 }
 
 ObjectAssign(ColorPicker, {
   Color,
+  Version,
   getInstance: getColorPickerInstance,
   init: initColorPicker,
   selector: colorPickerSelector,
@@ -3005,11 +3257,17 @@ class ColorPickerElement extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
-  /** Returns the current color value. */
-  get value() { return this.input && this.input.value; }
+  /**
+   * Returns the current color value.
+   * @returns {string?}
+   */
+  get value() { return this.input ? this.input.value : null; }
 
-  /** Returns the `Color` instance. */
-  get color() { return this.colorPicker && this.colorPicker.color; }
+  /**
+   * Returns the `Color` instance.
+   * @returns {Color?}
+   */
+  get color() { return this.colorPicker ? this.colorPicker.color : null; }
 
   connectedCallback() {
     if (this.colorPicker) {
@@ -3018,17 +3276,31 @@ class ColorPickerElement extends HTMLElement {
       }
       return;
     }
-    /** @type {HTMLInputElement?} */
-    // @ts-ignore -- <INPUT> is also `HTMLElement`
-    this.input = querySelector('input', this);
-    /** @type {ColorPicker} */
-    if (this.input) {
-      this.colorPicker = new ColorPicker(this.input);
-    }
-    this.isDisconnected = false;
 
-    if (this.shadowRoot) {
-      this.shadowRoot.append(createElement('slot'));
+    let input = querySelector('input', this);
+    if (!input) {
+      input = createElement({
+        tagName: 'input',
+        type: 'text',
+        value: '#069',
+        className: 'color-preview button-appearance',
+      });
+      this.append(input);
+    }
+
+    /** @type {HTMLInputElement} */
+    // @ts-ignore -- <INPUT> is also `HTMLElement`
+    this.input = input;
+
+    if (this.input) {
+      /** @type {ColorPicker} */
+      this.colorPicker = new ColorPicker(this.input);
+
+      if (this.shadowRoot) {
+        this.shadowRoot.append(createElement('slot'));
+      }
+
+      this.isDisconnected = false;
     }
   }
 
@@ -3041,6 +3313,7 @@ class ColorPickerElement extends HTMLElement {
 ObjectAssign(ColorPickerElement, {
   Color,
   ColorPicker,
+  Version,
 });
 
 customElements.define('color-picker', ColorPickerElement);

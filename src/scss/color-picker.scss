@@ -12,42 +12,45 @@ color-picker:focus,
 
 .color-dropdown {
   position: absolute;
-  left: 0;
   z-index: 50;
   display: none;
   flex-direction: column;
   width: min-content;
-  /* width: 100%; */
-  /* max-width: calc(100% - 1rem); */
   padding: .5rem;
   color: rgba(255,255,255,.8);
   background: rgba(0,0,0,.75);
   border-radius: .5rem;
   box-shadow: 0 6px 12px rgba(0, 0, 0, .4);
+  opacity: 0;
+  transition: transform .33s ease, opacity .33s ease;
 }
-.color-dropdown.menu {
-  right: 0; left: auto;
+
+.color-dropdown.picker { left: 0; }
+.color-dropdown.menu { right: 0; }
+
+.open .color-dropdown.top {
+  top: auto;
+  bottom: 100%;
 }
+.color-dropdown.bottom { top: 100%; }
+
+.open .color-dropdown.top,
+.open .color-dropdown.bottom {
+  display: flex;
+}
+
 
 .color-dropdown.show {
-  top: calc(100% + 5px);
-  display: flex;
+  opacity: 1;
 }
-
-.color-dropdown.show-top {
-  top: auto;
-  bottom: calc(100% + 5px);
-  display: flex;
-}
+.color-dropdown.show.top { transform: translate(0, -5px); }
+.color-dropdown.show.bottom { transform: translate(0, 5px); }
 
 .color-controls {
   display: none;
   flex-wrap: wrap;
   justify-content: space-between;
   width: max-content;
-}
-.picker-toggle:focus + .color-preview {
-  box-shadow: 0 0 0 5px rgba(0,0,0,.33);
 }
 
 .button-appearance {
@@ -60,6 +63,8 @@ color-picker:focus,
   border-radius: .25rem;
   outline: none;
   appearance: none;
+  transition-duration: .33s;
+  transition-property: box-shadow, border;
 }
 
 .color-preview {
@@ -115,7 +120,6 @@ color-picker:focus,
   cursor: pointer;
   border: 0;
   border-radius: 0 .25rem .25rem 0;
-  transition: all .33s ease;
 }
 
 .light .menu-toggle {
