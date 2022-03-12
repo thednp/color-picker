@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>ColorPicker Web Component</title>
-  <link rel="stylesheet" href="./style.css">
-  <link id="styles" rel="stylesheet" href="./color-picker.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <link id="styles" rel="stylesheet" href="./css/color-picker.css">
 </head>
 <body>
 
@@ -82,9 +82,9 @@
 
 
 <!-- partial -->
-<script src="./color-picker.js"></script>
+<script src="./js/color-picker.js"></script>
 <!-- <script type="module" src="./dist/js/color-picker-element-esm.js"></script> -->
-<script src="./color-picker-element.js"></script>
+<script src="./js/color-picker-element.js"></script>
 <script>
   const { init, selector } = ColorPicker;
   [...document.querySelectorAll(selector)].forEach(init);
