@@ -2098,6 +2098,7 @@
         tagName: 'button',
         className: 'menu-toggle button-appearance',
       });
+      setAttribute(presetsBtn, 'tabindex', '-1');
       setAttribute(presetsBtn, ariaExpanded, 'false');
       setAttribute(presetsBtn, ariaHasPopup, 'true');
       const xmlns = encodeURI('http://www.w3.org/2000/svg');
@@ -2929,15 +2930,16 @@
       const self = this;
       const { input, colorPicker, colorMenu } = self;
       const elRect = getBoundingClientRect(input);
+      const { top, bottom } = elRect;
       const { offsetHeight: elHeight } = input;
       const windowHeight = document.documentElement.clientHeight;
       const isPicker = hasClass(colorPicker, 'show');
       const dropdown = isPicker ? colorPicker : colorMenu;
       const { offsetHeight: dropHeight } = dropdown;
-      const distanceBottom = windowHeight - elRect.bottom;
-      const distanceTop = elRect.top;
-      const bottomExceed = elRect.top + dropHeight + elHeight > windowHeight; // show
-      const topExceed = elRect.top - dropHeight < 0; // show-top
+      const distanceBottom = windowHeight - bottom;
+      const distanceTop = top;
+      const bottomExceed = top + dropHeight + elHeight > windowHeight; // show
+      const topExceed = top - dropHeight < 0; // show-top
 
       if ((hasClass(dropdown, 'bottom') || !topExceed) && distanceBottom < distanceTop && bottomExceed) {
         removeClass(dropdown, 'bottom');
@@ -3158,7 +3160,11 @@
     /** Shows the `ColorPicker` dropdown. */
     showPicker() {
       const self = this;
-      showDropdown(self, self.colorPicker);
+      const { colorPicker } = self;
+
+      if (!hasClass(colorPicker, 'show')) {
+        showDropdown(self, colorPicker);
+      }
     }
 
     /** Toggles the visibility of the `ColorPicker` presets menu. */
@@ -3181,6 +3187,7 @@
         self.updateDropdownPosition();
         self.isOpen = true;
         setAttribute(self.input, 'tabindex', '0');
+        setAttribute(self.menuToggle, 'tabindex', '0');
       }
     }
 
@@ -3219,6 +3226,7 @@
           pickerToggle.focus();
         }
         setAttribute(input, 'tabindex', '-1');
+        setAttribute(menuToggle, 'tabindex', '-1');
       }
     }
 
