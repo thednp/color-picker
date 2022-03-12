@@ -3153,7 +3153,6 @@ class ColorPicker {
   showPicker() {
     const self = this;
     showDropdown(self, self.colorPicker);
-    removeAttribute(self.input, 'tabindex');
   }
 
   /** Toggles the visibility of the `ColorPicker` presets menu. */
@@ -3175,6 +3174,7 @@ class ColorPicker {
       toggleEventsOnShown(self, true);
       self.updateDropdownPosition();
       self.isOpen = true;
+      setAttribute(self.input, 'tabindex', '0');
     }
   }
 
@@ -3205,17 +3205,14 @@ class ColorPicker {
           }
         }, animationDuration);
       }
-      if (openPicker) {
-        setAttribute(input, 'tabindex', '-1');
-      }
 
       if (!self.isValid) {
         self.value = self.color.toString();
       }
-
       if (!focusPrevented) {
         pickerToggle.focus();
       }
+      setAttribute(input, 'tabindex', '-1');
     }
   }
 
