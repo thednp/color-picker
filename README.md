@@ -27,7 +27,7 @@ Download the package and check the `index.html`, or check it online [here](http:
 For an in depth guide on all things **ColorPicker**, check out the wiki pages:
 * [Home](https://github.com/thednp/color-picker/wiki) - the **ColorPicker** wiki home.
 * [NPM](https://github.com/thednp/color-picker/wiki/NPM) - quick installation guide.
-* [CDN Link](https://github.com/thednp/color-picker/wiki/CDN) - quick remove implementation guide.
+* [CDN Link](https://github.com/thednp/color-picker/wiki/CDN) - quick implementation guide.
 * [Usage](https://github.com/thednp/color-picker/wiki/Usage) - an in-depth browser usage.
 * [ES6+](https://github.com/thednp/color-picker/wiki/ES6) - your usual quick ES6+ guide.
 * [Node.js](https://github.com/thednp/color-picker/wiki/Node.js) - is this a thing?
