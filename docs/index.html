@@ -2,111 +2,185 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ColorPicker Web Component</title>
+  <title>ColorPicker Modern Web Component</title>
+  <meta name="description" content="A modern and fully featured color picker web component">
+  <meta name="keywords" content="color, picker, colorpicker, web component, hwb, hex, rgb, hsl, hsv">
+  <meta property="og:title" content="ColorPicker Modern Web Component">
+  <meta property="og:description" content="A modern and fully featured color picker web component">
+  <meta property="og:image" content="./img/color-picker.png">
+  <meta property="og:image:width" content="800">
+  <meta property="og:image:height" content="400">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="./css/style.css">
   <link id="styles" rel="stylesheet" href="./css/color-picker.css">
+  <link id="favicon" rel="shortcut icon" href="data:image/svg+xml;utf8,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='rgb(0,102,153)'&gt;&lt;path d='M0 32a32 32 0 1 0 64 0a32 32 0 1 0 -64 0M21.83 47.18v-30.3q0 -4.65 2.66 -6.79T33 7.96c2.78 -0.15 5.55 0.42 8.04 1.67c0.23 0.13 0.45 0.28 0.66 0.43q2.85 2.1 2.85 6.9v9.97l-6.37 0.82v-9.22q0 -2.55 -0.98 -3.94t-4.05 -1.39q-2.93 0 -3.86 1.46t-0.94 3.79v27.23q0 1.95 1.05 3.23t3.75 1.27q2.77 0 3.9 -1.27t1.13 -3.23v-8.7l6.38 -0.75v10.95q0 3.98 -2.92 6.15t-8.4 2.17c-2.79 0.17 -5.57 -0.45 -8.03 -1.79C25.01 53.6 24.82 53.47 24.64 53.33q-2.81 -2.17 -2.81 -6.15z'&gt;&lt;/path&gt;&lt;/svg&gt;">
 </head>
 <body>
 
-<h1>ColorPicker Web Component</h1>
-<a class="button-appearance switch" id="rtlSwitch" href="#" title="Switch language direction" aria-label="Right To Left Languages Testing">RTL</a>
-<p>
-  <a target="_blank" href="https://github.com/thednp/color-picker" title="ColorPicker on Github">Github</a> |
-  <a target="_blank" href="https://www.jsdelivr.com/package/npm/@thednp/color-picker" title="ColorPicker on jsDelivr CDN">CDN</a> |
-  <a target="_blank" href="https://www.npmjs.com/package/@thednp/color-picker" title="ColorPicker on NPM">NPM</a>.
-</p>
+<header>
+  <h1>ColorPicker Web Component</h1>
+</header>
 
-<h2>Regular Input</h2>
-<div class="row">
-  <div class="col">
-    <label for="picker1">Primary Color</label>
-    <div class="color-picker">
-      <input type="text" data-function="color-picker" class="color-preview button-appearance" name="picker1" id="picker1" value="#069" data-format="hex" autocomplete="off" spellcheck="false" placeholder="Set color HEXADECIMAL format">
+<main>
+  <h2>Regular Input</h2>
+  <button class="btn-appearance switch" id="rtlSwitch" title="Switch language direction" aria-label="Right To Left Languages Testing">RTL</button>
+  <div class="row">
+    <div class="col">
+      <label for="picker0">Primary Color</label>
+      <div class="color-picker">
+        <input type="text" data-function="color-picker" data-color-keywords="red,orange,yellow,lime,green,blue,magenta,pink" class="color-preview btn-appearance" name="picker0" id="picker0" value="rgb(29 78 216 / 90%)" autocomplete="off" spellcheck="false" placeholder="Set colour RGB format">
+      </div>
+      <ul class="mb-5">
+        <li>manually initialized with the default selector;</li>
+        <li>when changed, creates a colour tetrad with the others in the line;</li>
+        <li><code>format</code> option is default (<code>rgb</code>);</li>
+        <li><code>componentLabels</code> option is default;</li>
+        <li><code>colorLabels</code> option is default;</li>
+        <li><code>colorPresets</code> option is default (<code>undefined</code>);</li>
+        <li><code>colorKeywords</code> option is set via DATA API with a couple of web colors.</li>
+      </ul>
     </div>
-    <ul class="mb-5">
-      <li>This instance uses the default <code>componentLabels</code> option value.</li>
-      <li>This instance uses the default <code>colorLabels</code> option value.</li>
-      <li>This instance uses <code>data-format="hex"</code> for the target <code>&lt;input&gt;</code> element.</li>
-    </ul>
-  </div>
-  <div class="col" lang="ro-RO">
-    <label for="picker2">Culoare Secundară</label>
-    <div class="color-picker">
-      <input type="text" data-function="color-picker" class="color-preview button-appearance" name="picker2" id="picker2" value="rgb(0,160,10)" data-format="rgb" autocomplete="off" spellcheck="false"
-        placeholder="Aplică culoare în format RGB"
-        data-component-labels='{"pickerLabel": "Panel de culori","appearanceLabel": "Aparența vizuală","valueLabel":"Valoarea actuală","toggleLabel": "Selectează culoare", "menuLabel": "Culori prestabilite", "alphaLabel": "Alfa", "hexLabel": "Hexazecimal", "hueLabel": "Nuanță", "saturationLabel": "Saturație", "lightnessLabel": "Luminozitate", "redLabel": "Roșu", "greenLabel": "Verde", "blueLabel": "Albastru"}'
-        data-color-labels="alb, negru, gri, roșu, portocaliu, maro, auriu, măsliniu, galben, lămâi, verde, albastru verzui, aqua, albastru, violet, magenta, roz">
+    <div class="col">
+      <label for="picker1">Secondary Color</label>
+      <div class="color-picker">
+        <input type="text" data-format="hex" class="color-preview btn-appearance" name="picker1" id="picker1" value="#be185de6" autocomplete="off" spellcheck="false" placeholder="Set color HEXADECIMAL format">
+      </div>
+      <ul class="mb-5">
+        <li>manually initialized via JavaScript;</li>
+        <li><code>data-format="hex"</code> attribute is used;</li>
+        <li><code>componentLabels</code> option is default;</li>
+        <li><code>colorLabels</code> option is default;</li>
+        <li><code>colorPresets</code> option is set to <a href="https://getbootstrap.com/docs/5.0/customize/color/#all-colors" target="_blank" title="All Bootstrap Colors">Bootstrap Colors</a>;</li>
+        <li><code>colorKeywords</code> option is set to use some non-color values.</li>
+      </ul>
     </div>
-    <ul class="mb-5">
-      <li>This instance uses ro-RO (Romanian) language for the <code>componentLabels</code> option via the <code>data-component-labels</code> attribute.</li>
-      <li>This instance uses ro-RO (Romanian) language for the <code>colorLabels</code> option via the <code>data-color-labels</code> attribute.</li>
-      <li>This instance uses the default colour format, <code>rgb</code>.</li>
-    </ul>
-  </div>
-  <div class="col">
-    <label for="picker3">Accent Color</label>
-    <div class="color-picker">
-      <input type="text" data-function="color-picker" class="color-preview button-appearance" name="picker3" id="picker3" value="hsl(15,100%,40%)" data-format="hsl" autocomplete="off" spellcheck="false"  placeholder="Set color HSL format">
+    <div class="col" lang="ro-RO">
+      <label for="picker2">Culoare Terțiară</label>
+      <div class="color-picker">
+        <input type="text" class="color-preview btn-appearance" name="picker2" id="picker2" value="hwb(17deg 5% 24% 90%)" autocomplete="off" spellcheck="false" placeholder="Alege o culoare în format HWB">
+      </div>
+      <ul class="mb-5">
+        <li>manually initialized via JavaScript;</li>
+        <li><code>format</code> option is set via JavaScript to <code>hwb</code>;</li>
+        <li><code>componentLabels</code> option is set via JavaScript;</li>
+        <li><code>colorLabels</code> option is set to via JavaScript;</li>
+        <li><code>colorPresets</code> option is set to <a href="https://tailwindcolor.com/" target="_blank" title="Tailwind Colors">Tailwind Colors</a>;</li>
+        <li><code>colorKeywords</code> option is disabled;</li>
+        <li><code>colorpicker.change</code> event listener used, see console.</li>
+      </ul>
     </div>
-    <ul class="mb-5">
-      <li>This instance uses the default <code>componentLabels</code> option value.</li>
-      <li>This instance uses the default <code>colorLabels</code> option value.</li>
-      <li>This instance uses <code>data-format="hsl"</code> for the target <code>&lt;input&gt;</code> element.</li>
-    </ul>
+    <div class="col">
+      <label for="picker3">Accent Color</label>
+      <div class="color-picker">
+        <input type="text" class="color-preview btn-appearance" name="picker3" id="picker3" value="hsl(86deg 78% 27% / 90%)" data-format="hsl" autocomplete="off" spellcheck="false"  placeholder="Set color HSL format">
+      </div>
+      <ul class="mb-5">
+        <li>manually initialized via JavaScript;</li>
+        <li><code>componentLabels</code> option is default;</li>
+        <li><code>colorLabels</code> option is default;</li>
+        <li><code>data-format="hsl"</code> attribute is used;</li>
+        <li><code>colorPresets</code> option is set to <a href="https://material.io/archive/guidelines/style/color.html" target="_blank" title="Material Design Colors">Material Colors</a>;</li>
+      </ul>
+    </div>
   </div>
-</div>
+  
+  <h2>Custom Element</h2>
+  <div class="row">
+    <div class="col">
+      <label for="picker4">Background Color</label>
+      <color-picker
+        data-color-keywords="#cfe2ff54:reset,transparent"
+        data-color-presets="#3d8bfd,#6ea8fe,#9ec5fe,#cfe2ff,#8540f5,#a370f7,#c29ffa,#e0cffc,#e35d6a,#ea868f,#f1aeb5,#f8d7da,#ffcd39,#ffda6a,#ffe69c,#fff3cd,#3dd5f3,#6edff6,#9eeaf9,#cff4fc">
+        <input type="text" class="color-preview btn-appearance" name="picker4" id="picker4" value="rgba(207,226,255,0.33)" autocomplete="off" spellcheck="false" placeholder="Set color RGB format">
+      </color-picker>
+      <ul class="mb-5">
+        <li>this is a <code>CustomElement</code> instance;</li>
+        <li>when changed, it also changes this page background-color;</li>
+        <li><code>componentLabels</code> option is default;</li>
+        <li><code>colorLabels</code> option is default;</li>
+        <li><code>format</code> option is default (<code>rgb</code>);</li>
+        <li><code>colorPresets</code> option is set via DATA API;</li>
+        <li><code>colorKeywords</code> option is set via DATA API;</li>
+      </ul>
+    </div>
+    <div class="col">
+      <label for="picker5">Paragraph Color</label>
+      <color-picker data-format="hex"
+        data-color-keywords="green:green,blue:default,red:red"
+        data-color-presets="#0a58ca,#0d6efd,#3d8bfd,#8540f5,#6610f2,#6f42c1,#59359a,#ab296a,#d63384,#de5c9d,#e35d6a,#dc3545,#b02a37,#ca6510,#fd7e14,#ffc107,#ffcd39,#479f76,#198754,#146c43,#1aa179,#20c997,#4dd4ac,#3dd5f3,#0dcaf0">
+        <input type="text" class="color-preview btn-appearance" name="picker5" id="picker5" value="#FF8900" autocomplete="off" spellcheck="false" placeholder="Set color HEXADECIMAL format">
+      </color-picker>
+      <ul class="mb-5">
+        <li>this is a <code>CustomElement</code> instance;</li>
+        <li><code>componentLabels</code> option is default;</li>
+        <li><code>colorLabels</code> option is default;</li>
+        <li><code>data-format="hex"</code> attribute is used;</li>
+        <li><code>colorPresets</code> option is set via DATA API;</li>
+        <li><code>colorKeywords</code> option is set via DATA API;</li>
+      </ul>
+    </div>
+    <div class="col">
+      <label for="picker6">Title Color</label>
+      <color-picker data-format="hwb" 
+        data-color-presets='{"hue": 270, "hueSteps": 24, "lightSteps": 10}'
+        data-color-keywords="red,orange,yellow,lime,green,blue,magenta">
+        <input type="text" class="color-preview btn-appearance" name="picker6" id="picker6" value="hwb(12deg 0% 11%)" autocomplete="off" spellcheck="false" placeholder="Selectează culoarea în format RGB">
+      </color-picker>
+      <ul class="mb-5">
+        <li>this is a <code>CustomElement</code> instance;</li>
+        <li><code>componentLabels</code> option is default;</li>
+        <li><code>colorLabels</code> option is default;</li>
+        <li><code>data-format="hwb"</code> attribute is used;</li>
+        <li><code>colorPresets</code> option is set to use a ColorPalette;</li>
+        <li><code>colorKeywords</code> option is set via DATA API;</li>
+      </ul>
+    </div>
+    <div class="col">
+      <label for="picker7">Button Color</label>
+      <color-picker data-format="hsl">
+        <input type="text" class="color-preview btn-appearance" name="picker7" id="picker7" value="hsl(261deg 82% 33%)" autocomplete="off" spellcheck="false"  placeholder="Set color HSL format">
+      </color-picker>
+      <ul class="mb-5">
+        <li>this is a <code>CustomElement</code> instance;</li>
+        <li><code>componentLabels</code> option is default;</li>
+        <li><code>colorLabels</code> option is default;</li>
+        <li><code>data-format="hsl"</code> attribute is used;</li>
+        <li><code>colorPresets</code> option is default (<code>undefined</code>);</li>
+        <li><code>colorKeywords</code> option is default (all non-color keyword values are avaiable);</li>
+      </ul>
+    </div>
+  </div>
 
-<h2>Custom Element</h2>
-<div class="row">
-  <div class="col">
-    <label for="picker4">Paragraph Color</label>
-    <color-picker format="hex">
-      <input type="text" class="color-preview button-appearance" name="picker4" id="picker4" value="#9d00a8" autocomplete="off" spellcheck="false" placeholder="Set color HEXADECIMAL format">
-    </color-picker>
+  <h2>ColorPicker PlayGround</h2>
+  <div class="row mb-5">
+    <div class="col col-md-3">
+      <p class="mb-3">Click the button below to add a new <code>&lt;color-picker&gt;</code> instance. Since forms aren't valid without input labels,
+        calling <code>new ColorPickerElement()</code> will also create a <code>&lt;label&gt;</code>, with proper <code>name</code> &lt;-&gt; <code>id</code> association.</p>
+      <button class="btn-appearance add" id="addCP" title="Add ColorPicker" aria-label="Add new ColorPicker into the page">Add ColorPickerElement</button>
+    </div>
   </div>
-  <div class="col">
-    <label for="picker5">Heading Color</label>
-    <color-picker format="rgb">
-      <input type="text" class="color-preview button-appearance" name="picker5" id="picker5" value="rgb(100,0,200)" autocomplete="off" spellcheck="false" placeholder="Set color RGB format">
-    </color-picker>
-  </div>
-  <div class="col">
-    <label for="picker6">Button Color</label>
-    <color-picker format="hsl">
-      <input type="text" class="color-preview button-appearance" name="picker6" id="picker6" value="hsl(200,100%,40%)" autocomplete="off" spellcheck="false"  placeholder="Set color HSL format">
-    </color-picker>  
-  </div>
-</div>
+</main>
 
-<p class="copy"><a target="_blank" href="https://github.com/thednp">thednp</a> © 2022</p>
-
+<footer>
+  <p class="copy"><a target="_blank" href="https://github.com/thednp">thednp</a> © 2022</p>
+  
+  <p class="links">
+    <a target="_blank" href="https://github.com/thednp/color-picker" title="ColorPicker on Github">Github</a> |
+    <a target="_blank" href="https://www.jsdelivr.com/package/npm/@thednp/color-picker" title="ColorPicker on jsDelivr CDN">CDN</a> |
+    <a target="_blank" href="https://www.npmjs.com/package/@thednp/color-picker" title="ColorPicker on NPM">NPM</a>.
+  </p>
+</footer>
 
 <!-- partial -->
-<script src="./js/color-picker.js"></script>
-<!-- <script type="module" src="./dist/js/color-picker-element-esm.js"></script> -->
-<script src="./js/color-picker-element.js"></script>
-<script>
-  const { init, selector } = ColorPicker;
-  [...document.querySelectorAll(selector)].forEach(init);
-</script>
-<script>
-document.querySelectorAll('[data-function="color-picker"]')[2].addEventListener('colorpicker.change', function handleCustomEvent(e) {
-  console.log('The "change" event has fired for color-picker#picker3 with new value: '+ e.target.value + '\nThis listener is set to fire *only* once for performance reasons.');
-}, {once: true});
+<!-- <script src="./js/color-picker.js"></script> -->
+<!-- <script type="module" src="./js/color-picker-element.js"></script> -->
+<script src="../dist/js/color-picker.js"></script>
+<script src="../dist/js/color-picker-element.js"></script>
 
-const styles = document.getElementById('styles');
-const rtlSwitch = document.getElementById('rtlSwitch');
-const html = document.documentElement;
-
-rtlSwitch.addEventListener('click', (e) => {
-  e.preventDefault();
-  const isRTL = html.dir === 'rtl';
-  const href = styles.getAttribute('href');
-  const href1 = isRTL ? href.replace('.rtl', '') : href.replace('.css', '.rtl.css');
-  rtlSwitch.innerText = isRTL ? 'RTL' : 'LTR';
-  styles.setAttribute('href', href1);
-  html.setAttribute('dir', isRTL ? '' : 'rtl');
-});
-</script>
+<script src="./js/bootstrapColors.js"></script>
+<script src="./js/materialColors.js"></script>
+<script src="./js/tailwindColors.js"></script>
+<script src="./js/script.js"></script>
 </body>
 </html>

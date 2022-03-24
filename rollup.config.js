@@ -24,7 +24,7 @@ const banner =
 const miniBannerJS = `// ${NAME} v${pkg.version} | ${pkg.author} © ${year} | ${pkg.license}-License`;
 
 const INPUTFILE = IN ? IN : 'src/js/index.js';
-const OUTPUTFILE = OUT ? OUT : ('dist/js/color-picker'+(FORMAT!=='umd'?'.'+FORMAT:'')+(ES?`.${ES}`:'')+(MIN?'.min':'')+'.js');
+const OUTPUTFILE = OUT ? OUT : ('dist/js/color-picker'+(FORMAT!=='umd'?'-'+FORMAT:'')+(ES?`.${ES}`:'')+(MIN?'.min':'')+'.js');
 
 const OUTPUT = {
   file: OUTPUTFILE,

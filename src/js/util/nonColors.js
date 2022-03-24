@@ -1,5 +1,5 @@
 /**
- * A list of non-color values.
+ * A list of explicit default non-color values.
  */
-const nonColors = ['transparent', 'currentColor', 'inherit', 'initial'];
+const nonColors = ['transparent', 'currentColor', 'inherit', 'revert', 'initial'];
 export default nonColors;

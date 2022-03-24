@@ -1,5 +1,5 @@
 export as namespace CP;
-export {Color, ColorPicker, ColorPickerElement};
+export {Color, ColorPicker, ColorPalette, ColorPickerElement};
 
 export {
   HSL,
@@ -8,6 +8,9 @@ export {
   RGBA,
   HSV,
   HSVA,
+  HWB,
+  HWBA,
+  ColorPickerOptions,
   ColorObject,
   ColorFormats,
   ColorInput,
@@ -17,6 +20,7 @@ export {
 
 import './cp';
 import { default as Color } from "color-picker/src/js/color";
+import { default as ColorPalette } from "color-picker/src/js/color-palette";
 import { default as ColorPicker } from "color-picker/src/js/color-picker";
 import { default as ColorPickerElement } from "color-picker/src/js/color-picker-element";
 
@@ -26,6 +30,10 @@ declare module "@thednp/color-picker" {
 
 declare module "@thednp/color-picker/src/js/color" {
   export default Color;
+}
+
+declare module "@thednp/color-picker/src/js/color-palette" {
+  export default ColorPalette;
 }
 
 declare module "@thednp/color-picker/src/js/color-picker" {

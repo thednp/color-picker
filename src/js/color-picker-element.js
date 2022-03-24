@@ -1,10 +1,14 @@
-import querySelector from 'shorter-js/src/selectors/querySelector';
+import getElementsByTagName from 'shorter-js/src/selectors/getElementsByTagName';
 import createElement from 'shorter-js/src/misc/createElement';
 import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
+import setAttribute from 'shorter-js/src/attr/setAttribute';
+import getAttribute from 'shorter-js/src/attr/getAttribute';
 
 import Color from './color';
 import ColorPicker from './color-picker';
 import Version from './version';
+
+let CPID = 0;
 
 /**
  * `ColorPickerElement` Web Component.
@@ -27,12 +31,6 @@ class ColorPickerElement extends HTMLElement {
    */
   get value() { return this.input ? this.input.value : null; }
 
-  /**
-   * Returns the `Color` instance.
-   * @returns {Color?}
-   */
-  get color() { return this.colorPicker ? this.colorPicker.color : null; }
-
   connectedCallback() {
     if (this.colorPicker) {
       if (this.isDisconnected) {
@@ -41,24 +39,44 @@ class ColorPickerElement extends HTMLElement {
       return;
     }
 
-    let input = querySelector('input', this);
-    if (!input) {
-      input = createElement({
+    const inputs = getElementsByTagName('input', this);
+
+    if (!inputs.length) {
+      const label = getAttribute(this, 'data-label');
+      const value = getAttribute(this, 'data-value') || '#069';
+      const format = getAttribute(this, 'data-format') || 'rgb';
+      const newInput = createElement({
         tagName: 'input',
         type: 'text',
-        value: '#069',
-        className: 'color-preview button-appearance',
+        className: 'color-preview btn-appearance',
       });
-      this.append(input);
+      let id = getAttribute(this, 'data-id');
+      if (!id) {
+        id = `color-picker-${format}-${CPID}`;
+        CPID += 1;
+      }
+
+      const labelElement = createElement({ tagName: 'label', innerText: label || 'Color Picker' });
+      this.before(labelElement);
+      setAttribute(labelElement, 'for', id);
+      setAttribute(newInput, 'id', id);
+      setAttribute(newInput, 'name', id);
+      setAttribute(newInput, 'autocomplete', 'off');
+      setAttribute(newInput, 'spellcheck', 'false');
+      setAttribute(newInput, 'value', value);
+      this.append(newInput);
     }
 
-    /** @type {HTMLInputElement} */
-    // @ts-ignore -- <INPUT> is also `HTMLElement`
-    this.input = input;
+    const [input] = inputs;
 
-    if (this.input) {
-      /** @type {ColorPicker} */
-      this.colorPicker = new ColorPicker(this.input);
+    if (input) {
+      /** @type {HTMLInputElement} */
+      // @ts-ignore - `HTMLInputElement` is `HTMLElement`
+      this.input = input;
+
+      // @ts-ignore - `HTMLInputElement` is `HTMLElement`
+      this.colorPicker = new ColorPicker(input);
+      this.color = this.colorPicker.color;
 
       if (this.shadowRoot) {
         this.shadowRoot.append(createElement('slot'));

@@ -21,6 +21,7 @@ export default function getColorForm(self) {
   let components = ['hex'];
   if (format === 'rgb') components = ['red', 'green', 'blue', 'alpha'];
   else if (format === 'hsl') components = ['hue', 'saturation', 'lightness', 'alpha'];
+  else if (format === 'hwb') components = ['hue', 'whiteness', 'blackness', 'alpha'];
 
   components.forEach((c) => {
     const [C] = format === 'hex' ? ['#'] : toUpperCase(c).split('');
@@ -37,30 +38,28 @@ export default function getColorForm(self) {
       id: cID,
       // name: cID, - prevent saving the value to a form
       type: format === 'hex' ? 'text' : 'number',
-      value: c === 'alpha' ? '1' : '0',
+      value: c === 'alpha' ? '100' : '0',
       className: `color-input ${c}`,
-      autocomplete: 'off',
-      spellcheck: 'false',
     });
-    if (format !== 'hex') {
-      // alpha
-      let max = '1';
-      let step = '0.01';
-      if (c !== 'alpha') {
-        if (format === 'rgb') {
-          max = '255'; step = '1';
-        } else if (c === 'hue') {
-          max = '360'; step = '1';
-        } else {
-          max = '100'; step = '1';
-        }
+    setAttribute(cInput, 'autocomplete', 'off');
+    setAttribute(cInput, 'spellcheck', 'false');
+
+    // alpha
+    let max = '100';
+    let step = '1';
+    if (c !== 'alpha') {
+      if (format === 'rgb') {
+        max = '255'; step = '1';
+      } else if (c === 'hue') {
+        max = '360'; step = '1';
       }
-      ObjectAssign(cInput, {
-        min: '0',
-        max,
-        step,
-      });
     }
+    ObjectAssign(cInput, {
+      min: '0',
+      max,
+      step,
+    });
+    // }
     colorForm.append(cInputLabel, cInput);
   });
   return colorForm;

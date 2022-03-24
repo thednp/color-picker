@@ -1,6 +1,8 @@
 # ColorPicker Web Component
 The feature rich **ColorPicker** component for the modern web built with TypeScript definitions, WAI-ARIA compliant and lots of goodies. In addition, it features its own version of [TinyColor](https://github.com/bgrins/TinyColor) called simply `Color`.
 
+![image](./docs/img/color-picker.png)
+
 [![NPM Version](https://img.shields.io/npm/v/@thednp/color-picker.svg?style=flat-square)](https://www.npmjs.com/package/@thednp/color-picker)
 [![NPM Downloads](https://img.shields.io/npm/dm/@thednp/color-picker.svg?style=flat-square)](http://npm-stat.com/charts.html?package=@thednp/color-picker)
 [![jsDeliver](https://data.jsdelivr.com/v1/package/npm/@thednp/color-picker/badge)](https://www.jsdelivr.com/package/npm/@thednp/color-picker)
@@ -15,11 +17,17 @@ Download the package and check the `index.html`, or check it online [here](http:
 * Supports keyboard and touch events
 * Automatic repositioning of the popup dropdown on show / window scroll
 * SCSS sources with minimal style required
-* RTL languages supported
+* Right To Left Languages Supported
 * light footprint, `10kb` in size when minified and gZipped
 
 # Wiki
-Work in progress..
+For an in depth guide on all things **ColorPicker**, check out the wiki pages:
+* [Home](https://github.com/thednp/color-picker/wiki).
+* [NPM](https://github.com/thednp/color-picker/wiki/NPM).
+* [CDN](https://github.com/thednp/color-picker/wiki/CDN).
+* [Browser](https://github.com/thednp/color-picker/wiki/Usage).
+* [ES6+](https://github.com/thednp/color-picker/wiki/ES6).
+* [Node.js](https://github.com/thednp/color-picker/wiki/Node.js).
 
 # NPM
 You can install **ColorPicker** through NPM:
@@ -87,6 +95,7 @@ let myPicker = new ColorPicker('#myPicker')
 * Dimitris Grammatikogiannis for his [initial project](https://codepen.io/dgrammatiko/pen/zLvXwR) as well as testing and contributions
 * Serhii Kulykov for his [Vanilla Colorful](https://github.com/web-padawan/vanilla-colorful)
 * Brian Grinstead for his [TinyColor](https://github.com/bgrins/TinyColor)
+* Jonathan Neal for his [convert-colors](https://github.com/jonathantneal/convert-colors)
 * Peter Dematté  for his [colorPicker](http://www.dematte.at/colorPicker/)
 * Ștefan Petre at eyecon for his [colorPicker](https://www.eyecon.ro/colorpicker/)
 * Brian Teeman for his [patience](https://github.com/joomla/joomla-cms/pull/35639)

@@ -59,8 +59,32 @@ export interface HSVA extends HSV {
   a: number;
 }
 
-export type ColorInput = string | number | RGB | RGBA | HSL | HSLA | HSV | HSVA | ColorObject;
-export type ColorFormats = string | 'rgb' | 'hex' | 'hex3' | 'hex4' | 'hex6' | 'hex8' | 'hsl' | 'hsv';
+/**
+ * The HWB model describes colors in terms of
+ * hue, whiteness, and blackness.
+ * @link https://www.w3.org/TR/css-color-4/#hwb-to-rgb
+ * @link http://alvyray.com/Papers/CG/hwb2rgb.htm
+ */
+ export interface HWB {
+  h: number;
+  w: number;
+  b: number;
+}
+
+export interface HWBA extends HWB {
+  a: number;
+}
+
+export interface ColorPickerOptions {
+  colorLabels?: string[];
+  componentLabels?: Record<string, string>;
+  format?: ColorFormats;
+  colorPresets?: string[];
+  colorKeywords?: string[];
+}
+
+export type ColorInput = string | number | RGB | RGBA | HSL | HSLA | HSV | HSVA | HWB | ColorObject;
+export type ColorFormats = string | 'rgb' | 'hex' | 'hex3' | 'hex4' | 'hex6' | 'hex8' | 'hsl' | 'hsv' | 'hwb';
 
 export type GetInstance<T> = (element: string | HTMLInputElement) => T | null;
-export type InitCallback<T> = (element: string | HTMLInputElement, format?: ColorFormats | undefined) => T;
+export type InitCallback<T> = (element: string | HTMLInputElement) => T;

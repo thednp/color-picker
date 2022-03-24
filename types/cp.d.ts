@@ -1,30 +1,22 @@
-declare module "color-picker/src/js/util/webColors" {
-    export default webColors;
-    /**
-     * A complete list of web safe colors.
-     * @see https://github.com/bahamas10/css-color-names/blob/master/css-color-names.json
-     * @type {string[]}
-     */
-    const webColors: string[];
-}
 declare module "color-picker/src/js/util/nonColors" {
     export default nonColors;
     /**
-     * A list of non-color values.
+     * A list of explicit default non-color values.
      */
     const nonColors: string[];
 }
 declare module "color-picker/src/js/color" {
+    export default Color;
     /**
+     * @class
      * Returns a new `Color` instance.
      * @see https://github.com/bgrins/TinyColor
-     * @class
      */
-    export default class Color {
+    class Color {
         /**
          * @constructor
-         * @param {CP.ColorInput} input
-         * @param {CP.ColorFormats=} config
+         * @param {CP.ColorInput} input the given colour value
+         * @param {CP.ColorFormats=} config the given format
          */
         constructor(input: CP.ColorInput, config?: CP.ColorFormats | undefined);
         /** @type {CP.ColorInput} */
@@ -39,8 +31,6 @@ declare module "color-picker/src/js/color" {
         a: number;
         /** @type {boolean} */
         ok: boolean;
-        /** @type {number} */
-        roundA: number;
         /** @type {CP.ColorFormats} */
         format: CP.ColorFormats;
         /**
@@ -56,80 +46,170 @@ declare module "color-picker/src/js/color" {
         /**
          * Returns the perceived luminance of a colour.
          * @see http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
-         * @returns {number} a number in the [0-1] range
+         * @returns {number} a number in the [0, 1] range
          */
         get luminance(): number;
         /**
          * Returns the perceived brightness of the colour.
-         * @returns {number} a number in the [0-255] range
+         * @returns {number} a number in the [0, 255] range
          */
         get brightness(): number;
         /**
          * Returns the colour as an RGBA object.
-         * @returns {CP.RGBA}
+         * @returns {CP.RGBA} an {r,g,b,a} object with [0, 255] ranged values
          */
         toRgb(): CP.RGBA;
         /**
-         * Returns the RGBA values concatenated into a string.
+         * Returns the RGBA values concatenated into a CSS3 Module string format.
+         * * rgb(255,255,255)
+         * * rgba(255,255,255,0.5)
          * @returns {string} the CSS valid colour in RGB/RGBA format
          */
         toRgbString(): string;
         /**
-         * Returns the HEX value of the colour.
+         * Returns the RGBA values concatenated into a CSS4 Module string format.
+         * * rgb(255 255 255)
+         * * rgb(255 255 255 / 50%)
+         * @returns {string} the CSS valid colour in CSS4 RGB format
+         */
+        toRgbCSS4String(): string;
+        /**
+         * Returns the hexadecimal value of the colour. When the parameter is *true*
+         * it will find a 3 characters shorthand of the decimal value.
+         *
+         * @param {boolean=} allow3Char when `true` returns shorthand HEX
          * @returns {string} the hexadecimal colour format
          */
-        toHex(): string;
+        toHex(allow3Char?: boolean | undefined): string;
         /**
-         * Returns the HEX value of the colour.
+         * Returns the CSS valid hexadecimal vaue of the colour. When the parameter is *true*
+         * it will find a 3 characters shorthand of the value.
+         *
+         * @param {boolean=} allow3Char when `true` returns shorthand HEX
          * @returns {string} the CSS valid colour in hexadecimal format
          */
-        toHexString(): string;
+        toHexString(allow3Char?: boolean | undefined): string;
+        /**
+         * Returns the HEX8 value of the colour.
+         * @param {boolean=} allow4Char when `true` returns shorthand HEX
+         * @returns {string} the CSS valid colour in hexadecimal format
+         */
+        toHex8(allow4Char?: boolean | undefined): string;
+        /**
+         * Returns the HEX8 value of the colour.
+         * @param {boolean=} allow4Char  when `true` returns shorthand HEX
+         * @returns {string} the CSS valid colour in hexadecimal format
+         */
+        toHex8String(allow4Char?: boolean | undefined): string;
         /**
          * Returns the colour as a HSVA object.
-         * @returns {CP.HSVA} the `{h,s,v,a}` object
+         * @returns {CP.HSVA} the `{h,s,v,a}` object with [0, 1] ranged values
          */
         toHsv(): CP.HSVA;
         /**
-         * Returns the colour as a HSLA object.
-         * @returns {CP.HSLA}
+         * Returns the colour as an HSLA object.
+         * @returns {CP.HSLA} the `{h,s,l,a}` object with [0, 1] ranged values
          */
         toHsl(): CP.HSLA;
         /**
-         * Returns the HSLA values concatenated into a string.
+         * Returns the HSLA values concatenated into a CSS3 Module format string.
+         * * `hsl(150, 100%, 50%)`
+         * * `hsla(150, 100%, 50%, 0.5)`
          * @returns {string} the CSS valid colour in HSL/HSLA format
          */
         toHslString(): string;
         /**
-         * Sets the alpha value on the current colour.
-         * @param {number} alpha a new alpha value in [0-1] range.
-         * @returns {Color} a new `Color` instance
+         * Returns the HSLA values concatenated into a CSS4 Module format string.
+         * * `hsl(150deg 100% 50%)`
+         * * `hsl(150deg 100% 50% / 50%)`
+         * @returns {string} the CSS valid colour in CSS4 HSL format
+         */
+        toHslCSS4String(): string;
+        /**
+         * Returns the colour as an HWBA object.
+         * @returns {CP.HWBA} the `{h,w,b,a}` object with [0, 1] ranged values
+         */
+        toHwb(): CP.HWBA;
+        /**
+         * Returns the HWBA values concatenated into a string.
+         * @returns {string} the CSS valid colour in HWB format
+         */
+        toHwbString(): string;
+        /**
+         * Sets the alpha value of the current colour.
+         * @param {number} alpha a new alpha value in the [0, 1] range.
+         * @returns {Color} the `Color` instance
          */
         setAlpha(alpha: number): Color;
         /**
          * Saturate the colour with a given amount.
-         * @param {number=} amount a value in [0-100] range
-         * @returns {Color} a new `Color` instance
+         * @param {number=} amount a value in the [0, 100] range
+         * @returns {Color} the `Color` instance
          */
         saturate(amount?: number | undefined): Color;
         /**
          * Desaturate the colour with a given amount.
-         * @param {number=} amount a value in [0-100] range
-         * @returns {Color} a new `Color` instance
+         * @param {number=} amount a value in the [0, 100] range
+         * @returns {Color} the `Color` instance
          */
         desaturate(amount?: number | undefined): Color;
         /**
          * Completely desaturates a colour into greyscale.
          * Same as calling `desaturate(100)`
-         * @returns {Color} a new `Color` instance
+         * @returns {Color} the `Color` instance
          */
         greyscale(): Color;
+        /**
+         * Increase the colour lightness with a given amount.
+         * @param {number=} amount a value in the [0, 100] range
+         * @returns {Color} the `Color` instance
+         */
+        lighten(amount?: number | undefined): Color;
+        /**
+         * Decrease the colour lightness with a given amount.
+         * @param {number=} amount a value in the [0, 100] range
+         * @returns {Color} the `Color` instance
+         */
+        darken(amount?: number | undefined): Color;
+        /**
+         * Spin takes a positive or negative amount within [-360, 360] indicating the change of hue.
+         * Values outside of this range will be wrapped into this range.
+         *
+         * @param {number=} amount a value in the [0, 100] range
+         * @returns {Color} the `Color` instance
+         */
+        spin(amount?: number | undefined): Color;
         /** Returns a clone of the current `Color` instance. */
         clone(): Color;
         /**
          * Returns the colour value in CSS valid string format.
-         * @returns {string}
+         * @param {boolean=} allowShort when *true*, HEX values can be shorthand
+         * @returns {string} the CSS valid colour in the configured format
          */
-        toString(): string;
+        toString(allowShort?: boolean | undefined): string;
+    }
+}
+declare module "color-picker/src/js/color-palette" {
+    /**
+     * @class
+     * Returns a color palette with a given set of parameters.
+     * @example
+     * new ColorPalette(0, 12, 10);
+     * // => { hue: 0, hueSteps: 12, lightSteps: 10, colors: array }
+     */
+    export default class ColorPalette {
+        /**
+         * The `hue` parameter is optional, which would be set to 0.
+         * @param {number[]} args represeinting hue, hueSteps, lightSteps
+         * * `args.hue` the starting Hue [0, 360]
+         * * `args.hueSteps` Hue Steps Count [5, 13]
+         * * `args.lightSteps` Lightness Steps Count [8, 10]
+         */
+        constructor(...args: number[]);
+        hue: number;
+        hueSteps: number;
+        lightSteps: number;
+        colors: string[];
     }
 }
 declare module "color-picker/src/js/util/colorPickerLabels" {
@@ -167,6 +247,16 @@ declare module "color-picker/src/js/util/getColorControls" {
      */
     export default function getColorControls(self: CP.ColorPicker): HTMLElement | Element;
 }
+declare module "color-picker/src/js/util/getColorMenu" {
+    /**
+     * Returns a color-defaults with given values and class.
+     * @param {CP.ColorPicker} self
+     * @param {CP.ColorPalette | string[]} colorsSource
+     * @param {string} menuClass
+     * @returns {HTMLElement | Element}
+     */
+    export default function getColorMenu(self: CP.ColorPicker, colorsSource: CP.ColorPalette | string[], menuClass: string): HTMLElement | Element;
+}
 declare module "color-picker/src/js/util/isValidJSON" {
     /**
      * Check if a string is valid JSON string.
@@ -190,28 +280,32 @@ declare module "color-picker/src/js/color-picker" {
          * must be an `HTMLInputElement`.
          *
          * @param {HTMLInputElement | string} target the target `<input>` element
+         * @param {CP.ColorPickerOptions=} config instance options
          */
-        constructor(target: HTMLInputElement | string);
-        /** @type {HTMLInputElement} */
+        constructor(target: HTMLInputElement | string, config?: CP.ColorPickerOptions | undefined);
         input: HTMLInputElement;
         /** @type {HTMLElement} */
         parent: HTMLElement;
         /** @type {number} */
         id: number;
-        /** @type {HTMLCanvasElement?} */
-        dragElement: HTMLCanvasElement | null;
+        /** @type {HTMLElement?} */
+        dragElement: HTMLElement | null;
         /** @type {boolean} */
         isOpen: boolean;
         /** @type {Record<string, number>} */
         controlPositions: Record<string, number>;
         /** @type {Record<string, string>} */
         colorLabels: Record<string, string>;
-        /** @type {Array<string> | false} */
-        keywords: Array<string> | false;
-        /** @type {Color} */
-        color: Color;
+        /** @type {string[]=} */
+        colorKeywords: string[] | undefined;
+        /** @type {(ColorPalette | string[])=} */
+        colorPresets: (ColorPalette | string[]) | undefined;
         /** @type {Record<string, string>} */
         componentLabels: Record<string, string>;
+        /** @type {Color} */
+        color: Color;
+        /** @type {CP.ColorFormats} */
+        format: CP.ColorFormats;
         /** Shows the `ColorPicker` dropdown. */
         showPicker(): void;
         /**
@@ -223,62 +317,69 @@ declare module "color-picker/src/js/color-picker" {
         /** Toggles the visibility of the `ColorPicker` presets menu. */
         toggleMenu(): void;
         /**
-         * Handles all `ColorPicker` click listeners.
+         * The `ColorPicker` click event listener for the colour menu presets / defaults.
          * @param {Partial<Event>} e
          * @this {ColorPicker}
          */
         menuClickHandler(this: ColorPicker, e: Partial<Event>): void;
         /**
-         * Handles all `ColorPicker` click listeners.
+         * The `ColorPicker` keyboard event listener for menu navigation.
          * @param {KeyboardEvent} e
          * @this {ColorPicker}
          */
         menuKeyHandler(this: ColorPicker, e: KeyboardEvent): void;
         /**
-         * Handles the `ColorPicker` touchstart / mousedown events listeners.
+         * The `ColorPicker` *touchstart* / *mousedown* events listener for control knobs.
          * @param {TouchEvent} e
          * @this {ColorPicker}
          */
         pointerDown(this: ColorPicker, e: TouchEvent): void;
         /**
-         * Handles the `ColorPicker` touchmove / mousemove events listeners.
+         * The `ColorPicker` *touchmove* / *mousemove* events listener for control knobs.
          * @param {TouchEvent} e
          */
         pointerMove(e: TouchEvent): void;
         /**
-         * Handles the `ColorPicker` touchend / mouseup events listeners.
+         * The `ColorPicker` *touchend* / *mouseup* events listener for control knobs.
          * @param {TouchEvent} e
          * @this {ColorPicker}
          */
         pointerUp(this: ColorPicker, { target }: TouchEvent): void;
         /**
-         * Handles the `ColorPicker` scroll listener when open.
+         * Updates `ColorPicker` control positions on:
+         * * initialization
+         * * window resize
+         */
+        update(): void;
+        /**
+         * The `ColorPicker` *scroll* event listener when open.
          * @param {Event} e
          * @this {ColorPicker}
          */
         handleScroll(this: ColorPicker, e: Event): void;
         /**
-         * Handles the `focusout` listener of the `ColorPicker`.
+         * The `ColorPicker` *focusout* event listener when open.
          * @param {FocusEvent} e
          * @this {ColorPicker}
          */
         handleFocusOut(this: ColorPicker, { relatedTarget }: FocusEvent): void;
-        /** Handles the event listeners of the color form. */
+        /** The event listener of the colour form inputs. */
         changeHandler(): void;
         /**
-         * Handles the `focusout` listener of the `ColorPicker`.
+         * The `ColorPicker` *keyup* event listener when open.
          * @param {KeyboardEvent} e
          * @this {ColorPicker}
          */
         handleDismiss(this: ColorPicker, { code }: KeyboardEvent): void;
         /**
-         * Handles the `Space` and `Enter` keys inputs.
+         * The `Space` & `Enter` keys specific event listener.
+         * Toggle visibility of the `ColorPicker` / the presets menu, showing one will hide the other.
          * @param {KeyboardEvent} e
          * @this {ColorPicker}
          */
-        keyHandler(this: ColorPicker, e: KeyboardEvent): void;
+        keyToggle(this: ColorPicker, e: KeyboardEvent): void;
         /**
-         * Handles the `ColorPicker` events listeners associated with the color knobs.
+         * The `ColorPicker` *keydown* event listener for control knobs.
          * @param {KeyboardEvent} e
          */
         handleKnobs(e: KeyboardEvent): void;
@@ -290,34 +391,13 @@ declare module "color-picker/src/js/color-picker" {
         colorPicker: HTMLElement;
         /** @type {HTMLElement} */
         colorMenu: HTMLElement;
-        /** @type {HTMLElement} */
-        controls: HTMLElement;
         /** @type {HTMLInputElement[]} */
         inputs: HTMLInputElement[];
+        controls: Element | HTMLElement;
+        /** @type {(HTMLElement | Element)[]} */
+        controlKnobs: (HTMLElement | Element)[];
         /** @type {(HTMLElement)[]} */
-        controlKnobs: (HTMLElement)[];
-        /** @type {HTMLCanvasElement[]} */
-        visuals: HTMLCanvasElement[];
-        /** @type {HTMLLabelElement[]} */
-        knobLabels: HTMLLabelElement[];
-        /** @type {number} */
-        width1: number;
-        /** @type {number} */
-        height1: number;
-        /** @type {number} */
-        width2: number;
-        /** @type {number} */
-        height2: number;
-        /** @type {*} */
-        ctx1: any;
-        /** @type {*} */
-        ctx2: any;
-        /** @type {number} */
-        width3: number;
-        /** @type {number} */
-        height3: number;
-        /** @type {*} */
-        ctx3: any;
+        visuals: (HTMLElement)[];
         /**
          * Sets a new colour value.
          * @param {string} v new colour value
@@ -325,11 +405,6 @@ declare module "color-picker/src/js/color-picker" {
         set value(arg: string);
         /** Returns the current colour value */
         get value(): string;
-        /**
-         * Returns the colour format.
-         * @returns {CP.ColorFormats}
-         */
-        get format(): string;
         /** Check if the colour presets include any non-colour. */
         get includeNonColor(): boolean;
         /** Check if the parent of the target is a `ColorPickerElement` instance. */
@@ -340,6 +415,8 @@ declare module "color-picker/src/js/color-picker" {
         get hsv(): CP.HSVA;
         /** Returns the current colour value in {h,s,l,a} object format. */
         get hsl(): CP.HSLA;
+        /** Returns the current colour value in {h,w,b,a} object format. */
+        get hwb(): CP.HWBA;
         /** Returns the current colour value in {r,g,b,a} object format. */
         get rgb(): CP.RGBA;
         /** Returns the current colour brightness. */
@@ -363,7 +440,7 @@ declare module "color-picker/src/js/color-picker" {
         changeControl1(X: number, Y: number): void;
         /**
          * Updates `ColorPicker` second control:
-         * * `hue` for HEX/RGB;
+         * * `hue` for HEX/RGB/HWB;
          * * `saturation` for HSL.
          *
          * @param {number} Y the Y offset
@@ -371,34 +448,35 @@ declare module "color-picker/src/js/color-picker" {
         changeControl2(Y: number): void;
         /**
          * Updates `ColorPicker` last control,
-         * the `alpha` channel for RGB/HSL.
+         * the `alpha` channel.
          *
          * @param {number} Y
          */
         changeAlpha(Y: number): void;
-        /** Update opened dropdown position on scroll. */
+        /** Updates the open dropdown position on *scroll* event. */
         updateDropdownPosition(): void;
-        /** Update control knobs' positions. */
+        /** Updates control knobs' positions. */
         setControlPositions(): void;
-        /** Update the visual appearance label. */
-        setColorAppearence(): void;
-        /** Updates the control knobs positions. */
+        /** Update the visual appearance label and control knob labels. */
+        updateAppearance(): void;
+        /** Updates the control knobs actual positions. */
         updateControls(): void;
         /**
-         * Update all color form inputs.
+         * Updates all color form inputs.
          * @param {boolean=} isPrevented when `true`, the component original event is prevented
          */
         updateInputs(isPrevented?: boolean | undefined): void;
-        /** Show the dropdown. */
+        /** Shows the `ColorPicker` dropdown or the presets menu. */
         show(): void;
         /**
-         * Hides the currently opened dropdown.
+         * Hides the currently open `ColorPicker` dropdown.
          * @param {boolean=} focusPrevented
          */
         hide(focusPrevented?: boolean | undefined): void;
         /** Removes `ColorPicker` from target `<input>`. */
         dispose(): void;
     }
+    import ColorPalette from "color-picker/src/js/color-palette";
     import Color from "color-picker/src/js/color";
 }
 declare module "color-picker/src/js/color-picker-element" {
@@ -418,23 +496,19 @@ declare module "color-picker/src/js/color-picker-element" {
          * @returns {string?}
          */
         get value(): string | null;
-        /**
-         * Returns the `Color` instance.
-         * @returns {Color?}
-         */
-        get color(): Color | null;
         connectedCallback(): void;
         /** @type {HTMLInputElement} */
         input: HTMLInputElement | undefined;
-        /** @type {ColorPicker} */
         colorPicker: ColorPicker | undefined;
+        color: Color | undefined;
         disconnectedCallback(): void;
     }
-    import Color from "color-picker/src/js/color";
     import ColorPicker from "color-picker/src/js/color-picker";
+    import Color from "color-picker/src/js/color";
 }
 declare module "color-picker/types/source/source" {
     export { default as Color } from "color-picker/src/js/color";
+    export { default as ColorPalette } from "color-picker/src/js/color-palette";
     export { default as ColorPicker } from "color-picker/src/js/color-picker";
     export { default as ColorPickerElement } from "color-picker/src/js/color-picker-element";
 }
