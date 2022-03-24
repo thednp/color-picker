@@ -73,9 +73,9 @@ To use the DATA-API, you need to provide the `data-function="color-picker"` attr
   <input id="myPicker" name="myPicker" data-function="color-picker" class="color-preview" value="#069">
 </div>
 ```
-The `data-function="color-picker"` attribute is useful for mass initialization, [check this usage section of the wiki](https://github.com/thednp/color-picker/wiki/Usage). 
+The `data-function="color-picker"` attribute is useful for mass initialization, [check this usage section of the wiki](https://github.com/thednp/color-picker/wiki/Usage#initialize-multiple-targets). 
 
-Alternatively you can use the `ColorPickerElement` custom element:
+Alternatively you can use the `ColorPickerElement` custom element, the `data-function="color-picker"` attribute is no longer required:
 ```html
 <label for="myPicker">Color Label</label>
 <color-picker>
@@ -84,15 +84,32 @@ Alternatively you can use the `ColorPickerElement` custom element:
 
 <script type="module" src="../path-to/color-picker-element-esm.js"></script>
 ```
-In this case the `data-function="color-picker"` attribute is no longer required.
 
 
-# ES6+
+# Initialize INPUT
 ```javascript
 import ColorPicker from '@thednp/color-picker';
 
-let myPicker = new ColorPicker('#myPicker')
+let myPicker = new ColorPicker('#myPicker');
 ```
+
+# Initialize Custom Element
+```javascript
+import ColorPickerElement from '@thednp/color-picker/src/color-picker-element';
+
+// initialize the CustomElement
+const myPicker = new ColorPickerElement();
+// set DATA API
+myPicker.setAttribute('data-format', 'hsl');
+myPicker.setAttribute('data-id', 'ADD_YOUR_UNIQUE_ID');
+myPicker.setAttribute('data-value', 'rgb(150 0 150 / 0.8)');
+myPicker.setAttribute('data-label', 'Color Picker Element Label');
+myPicker.setAttribute('data-color-keywords', 'false');
+
+// append, connectedCallback() is triggered
+document.body.append(myPicker);
+```
+Other configuration options apply, see [the API Guide](https://github.com/thednp/color-picker/wiki/API).
 
 
 # Thanks
