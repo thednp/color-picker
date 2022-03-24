@@ -7,6 +7,8 @@ The feature rich **ColorPicker** component for the modern web built with TypeScr
 [![NPM Downloads](https://img.shields.io/npm/dm/@thednp/color-picker.svg?style=flat-square)](http://npm-stat.com/charts.html?package=@thednp/color-picker)
 [![jsDeliver](https://data.jsdelivr.com/v1/package/npm/@thednp/color-picker/badge)](https://www.jsdelivr.com/package/npm/@thednp/color-picker)
 
+As shown, **ColorPicker** can use existing colour palettes or generate custom ones via DATA API configuration.
+
 # Demo
 Download the package and check the `index.html`, or check it online [here](http://thednp.github.io/color-picker).
 
@@ -14,6 +16,7 @@ Download the package and check the `index.html`, or check it online [here](http:
 # Highlights
 * Accessibility Focus for WAI-ARIA compliance
 * ES6+ sources with TypeScript definitions
+* Supporting HEX(a), RGB(a), HSL(a) and HWB, the last three also in CSS4 Color Module flavours
 * Supports keyboard and touch events
 * Automatic repositioning of the popup dropdown on show / window scroll
 * SCSS sources with minimal style required
@@ -22,12 +25,14 @@ Download the package and check the `index.html`, or check it online [here](http:
 
 # Wiki
 For an in depth guide on all things **ColorPicker**, check out the wiki pages:
-* [Home](https://github.com/thednp/color-picker/wiki).
-* [NPM](https://github.com/thednp/color-picker/wiki/NPM).
-* [CDN](https://github.com/thednp/color-picker/wiki/CDN).
-* [Browser](https://github.com/thednp/color-picker/wiki/Usage).
-* [ES6+](https://github.com/thednp/color-picker/wiki/ES6).
-* [Node.js](https://github.com/thednp/color-picker/wiki/Node.js).
+* [Home](https://github.com/thednp/color-picker/wiki) - the **ColorPicker** wiki home.
+* [NPM](https://github.com/thednp/color-picker/wiki/NPM) - quick installation guide.
+* [CDN Link](https://github.com/thednp/color-picker/wiki/CDN) - quick remove implementation guide.
+* [Usage](https://github.com/thednp/color-picker/wiki/Usage) - an in-depth browser usage.
+* [ES6+](https://github.com/thednp/color-picker/wiki/ES6) - your usual quick ES6+ guide.
+* [Node.js](https://github.com/thednp/color-picker/wiki/Node.js) - is this a thing?
+
+**Note** - the wiki pages are still under construction.
 
 # NPM
 You can install **ColorPicker** through NPM:
@@ -67,9 +72,10 @@ To use the DATA-API, you need to provide the `data-function="color-picker"` attr
 ```html
 <label for="myPicker">Color Label</label>
 <div class="color-picker">
-  <input id="myPicker" name="myPicker" class="color-preview" value="#069" data-function="color-picker">
+  <input id="myPicker" name="myPicker" data-function="color-picker" class="color-preview" value="#069">
 </div>
 ```
+The `data-function="color-picker"` attribute is useful for mass initialization, [check this usage section of the wiki](https://github.com/thednp/color-picker/wiki/Usage). 
 
 Alternatively you can use the `ColorPickerElement` custom element:
 ```html
