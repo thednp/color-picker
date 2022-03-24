@@ -1,21 +1,19 @@
 # ColorPicker Web Component
 The feature rich **ColorPicker** component for the modern web built with TypeScript definitions, WAI-ARIA compliant and lots of goodies. In addition, it features its own version of [TinyColor](https://github.com/bgrins/TinyColor) called simply `Color`.
 
-![image](./docs/img/color-picker.png)
+[![image](./docs/img/color-picker.png)](http://thednp.github.io/color-picker)
 
 [![NPM Version](https://img.shields.io/npm/v/@thednp/color-picker.svg?style=flat-square)](https://www.npmjs.com/package/@thednp/color-picker)
 [![NPM Downloads](https://img.shields.io/npm/dm/@thednp/color-picker.svg?style=flat-square)](http://npm-stat.com/charts.html?package=@thednp/color-picker)
 [![jsDeliver](https://data.jsdelivr.com/v1/package/npm/@thednp/color-picker/badge)](https://www.jsdelivr.com/package/npm/@thednp/color-picker)
 
-As shown, **ColorPicker** can use existing colour palettes or generate custom ones via DATA API configuration.
-
-# Demo
-Download the package and check the `index.html`, or check it online [here](http://thednp.github.io/color-picker).
+**ColorPicker** can use existing colour palettes or generate custom ones via DATA API configuration.
 
 
 # Highlights
 * Accessibility Focus for WAI-ARIA compliance
 * ES6+ sources with TypeScript definitions
+* Framework agnostic and flexible design
 * Supporting HEX(a), RGB(a), HSL(a) and HWB, the last three also in CSS4 Color Module flavours
 * Supports keyboard and touch events
 * Automatic repositioning of the popup dropdown on show / window scroll
