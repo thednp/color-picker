@@ -66,24 +66,25 @@ var myPicker = new ColorPicker('input.SELECTOR');
 </script>
 ```
 
-To use the DATA-API, you need to provide the `data-function="color-picker"` attribute to your target, like so:
+To use the DATA-API, you can provide for instance the `data-format="hex"`, and other specific attributes like so:
 ```html
 <label for="myPicker">Color Label</label>
 <div class="color-picker">
-  <input id="myPicker" name="myPicker" data-function="color-picker" class="color-preview" value="#069">
+  <input id="myPicker" name="myPicker" data-function="color-picker" data-format="hex" data-color-presets="red,green,blue" class="color-preview" value="#069">
 </div>
 ```
 The `data-function="color-picker"` attribute is useful for mass initialization, [check this usage section of the wiki](https://github.com/thednp/color-picker/wiki/Usage#initialize-multiple-targets). 
 
 Alternatively you can use the `ColorPickerElement` custom element, the `data-function="color-picker"` attribute is no longer required:
 ```html
-<label for="myPicker">Color Label</label>
-<color-picker>
-  <input id="myPicker" name="myPicker" class="color-preview" value="#069" data-format="rgb">
+<label for="myPicker">Colour Field Label</label>
+<color-picker data-format="rgb" data-color-keywords="#069:default,#111:revert">
+  <input id="myPicker" name="myPicker" class="color-preview" value="#069">
 </color-picker>
 
 <script type="module" src="../path-to/color-picker-element-esm.js"></script>
 ```
+As shown in the above example, all DATA API attributes for instance configuration are to be used on your **custom element**.
 
 
 # Initialize INPUT
