@@ -406,7 +406,7 @@ declare module "color-picker/src/js/color-picker" {
         /** Returns the current colour value */
         get value(): string;
         /** Check if the colour presets include any non-colour. */
-        get includeNonColor(): boolean;
+        get hasNonColor(): boolean;
         /** Check if the parent of the target is a `ColorPickerElement` instance. */
         get isCE(): boolean;
         /** Returns hexadecimal value of the current colour. */
@@ -466,8 +466,6 @@ declare module "color-picker/src/js/color-picker" {
          * @param {boolean=} isPrevented when `true`, the component original event is prevented
          */
         updateInputs(isPrevented?: boolean | undefined): void;
-        /** Shows the `ColorPicker` dropdown or the presets menu. */
-        show(): void;
         /**
          * Hides the currently open `ColorPicker` dropdown.
          * @param {boolean=} focusPrevented

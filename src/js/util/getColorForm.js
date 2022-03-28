@@ -59,7 +59,6 @@ export default function getColorForm(self) {
       max,
       step,
     });
-    // }
     colorForm.append(cInputLabel, cInput);
   });
   return colorForm;

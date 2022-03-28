@@ -5,7 +5,8 @@ import setAttribute from 'shorter-js/src/attr/setAttribute';
 import getAttribute from 'shorter-js/src/attr/getAttribute';
 
 import Color from './color';
-import ColorPicker from './color-picker';
+import ColorPicker, { getColorPickerInstance } from './color-picker';
+import ColorPalette from './color-palette';
 import Version from './version';
 
 let CPID = 0;
@@ -13,8 +14,9 @@ let CPID = 0;
 /**
  * `ColorPickerElement` Web Component.
  * @example
- * <color-picker>
- *   <input type="text">
+ * <label for="UNIQUE_ID">Label</label>
+ * <color-picker data-format="hex" data-value="#075">
+ *   <input id="UNIQUE_ID" type="text" class="color-preview btn-appearance">
  * </color-picker>
  */
 class ColorPickerElement extends HTMLElement {
@@ -95,6 +97,8 @@ class ColorPickerElement extends HTMLElement {
 ObjectAssign(ColorPickerElement, {
   Color,
   ColorPicker,
+  ColorPalette,
+  getInstance: getColorPickerInstance,
   Version,
 });
 

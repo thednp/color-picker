@@ -1,6 +1,6 @@
 {
   "name": "@thednp/color-picker",
-  "version": "0.0.1alpha2",
+  "version": "0.0.1alpha3",
   "description": "Modern Color Picker Web Component",
   "main": "dist/js/color-picker.min.js",
   "module": "dist/js/color-picker.esm.js",

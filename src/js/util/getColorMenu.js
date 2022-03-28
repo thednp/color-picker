@@ -5,6 +5,8 @@ import getAttribute from 'shorter-js/src/attr/getAttribute';
 import createElement from 'shorter-js/src/misc/createElement';
 import setElementStyle from 'shorter-js/src/misc/setElementStyle';
 
+import setCSSProperties from './setCSSProperties';
+import tabIndex from './tabindex';
 import Color from '../color';
 import ColorPalette from '../color-palette';
 
@@ -25,45 +27,38 @@ export default function getColorMenu(self, colorsSource, menuClass) {
   colorsArray = colorsArray instanceof Array ? colorsArray : [];
   const colorsCount = colorsArray.length;
   const { lightSteps } = isPalette ? colorsSource : { lightSteps: null };
-  let fit = lightSteps
-    || Math.max(...[5, 6, 7, 8, 9, 10].filter((x) => colorsCount > (x * 2) && !(colorsCount % x)));
-  fit = Number.isFinite(fit) ? fit : 5;
+  const fit = lightSteps || [9, 10].find((x) => colorsCount > x * 2 && !(colorsCount % x)) || 5;
   const isMultiLine = isOptionsMenu && colorsCount > fit;
-  let rowCountHover = 1;
-  rowCountHover = isMultiLine && colorsCount < 27 ? 2 : rowCountHover;
-  rowCountHover = colorsCount >= 27 ? 3 : rowCountHover;
-  rowCountHover = colorsCount >= 36 ? 4 : rowCountHover;
-  rowCountHover = colorsCount >= 45 ? 5 : rowCountHover;
-  const rowCount = rowCountHover - (colorsCount < 27 ? 1 : 2);
-  const isScrollable = isMultiLine && colorsCount > rowCountHover * fit;
+  let rowCountHover = 2;
+  rowCountHover = isMultiLine && colorsCount >= fit * 2 ? 3 : rowCountHover;
+  rowCountHover = colorsCount >= fit * 3 ? 4 : rowCountHover;
+  rowCountHover = colorsCount >= fit * 4 ? 5 : rowCountHover;
+  const rowCount = rowCountHover - (colorsCount < fit * 3 ? 1 : 2);
+  const isScrollable = isMultiLine && colorsCount > rowCount * fit;
   let finalClass = menuClass;
   finalClass += isScrollable ? ' scrollable' : '';
   finalClass += isMultiLine ? ' multiline' : '';
   const gap = isMultiLine ? '1px' : '0.25rem';
   let optionSize = isMultiLine ? 1.75 : 2;
-  optionSize = !(colorsCount % 10) && isMultiLine ? 1.5 : optionSize;
+  optionSize = fit > 5 && isMultiLine ? 1.5 : optionSize;
   const menuHeight = `${(rowCount || 1) * optionSize}rem`;
   const menuHeightHover = `calc(${rowCountHover} * ${optionSize}rem + ${rowCountHover - 1} * ${gap})`;
-  const gridTemplateColumns = `repeat(${fit}, ${optionSize}rem)`;
-  const gridTemplateRows = `repeat(auto-fill, ${optionSize}rem)`;
 
   const menu = createElement({
     tagName: 'ul',
     className: finalClass,
   });
   setAttribute(menu, 'role', 'listbox');
-  setAttribute(menu, ariaLabel, `${menuLabel}`);
+  setAttribute(menu, ariaLabel, menuLabel);
 
-  if (isOptionsMenu) {
-    if (isScrollable) {
-      const styleText = 'this.style.height=';
-      setAttribute(menu, 'onmouseout', `${styleText}'${menuHeight}'`);
-      setAttribute(menu, 'onmouseover', `${styleText}'${menuHeightHover}'`);
-    }
-    const menuStyle = {
-      height: isScrollable ? menuHeight : '', gridTemplateColumns, gridTemplateRows, gap,
-    };
-    setElementStyle(menu, menuStyle);
+  if (isScrollable) { // @ts-ignore
+    setCSSProperties(menu, {
+      '--grid-item-size': `${optionSize}rem`,
+      '--grid-fit': fit,
+      '--grid-gap': gap,
+      '--grid-height': menuHeight,
+      '--grid-hover-height': menuHeightHover,
+    });
   }
 
   colorsArray.forEach((x) => {
@@ -78,15 +73,13 @@ export default function getColorMenu(self, colorsSource, menuClass) {
       innerText: `${label || x}`,
     });
 
-    setAttribute(option, 'tabindex', '0');
+    setAttribute(option, tabIndex, '0');
     setAttribute(option, 'data-value', `${value}`);
     setAttribute(option, 'role', 'option');
     setAttribute(option, ariaSelected, isActive ? 'true' : 'false');
 
     if (isOptionsMenu) {
-      setElementStyle(option, {
-        width: `${optionSize}rem`, height: `${optionSize}rem`, backgroundColor: x,
-      });
+      setElementStyle(option, { backgroundColor: x });
     }
 
     menu.append(option);

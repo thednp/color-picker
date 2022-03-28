@@ -1,3 +1,4 @@
+import roundPart from './util/roundPart';
 import Color from './color';
 
 /**
@@ -12,8 +13,8 @@ export default class ColorPalette {
    * The `hue` parameter is optional, which would be set to 0.
    * @param {number[]} args represeinting hue, hueSteps, lightSteps
    * * `args.hue` the starting Hue [0, 360]
-   * * `args.hueSteps` Hue Steps Count [5, 13]
-   * * `args.lightSteps` Lightness Steps Count [8, 10]
+   * * `args.hueSteps` Hue Steps Count [5, 24]
+   * * `args.lightSteps` Lightness Steps Count [5, 12]
    */
   constructor(...args) {
     let hue = 0;
@@ -26,24 +27,32 @@ export default class ColorPalette {
     } else if (args.length === 2) {
       [hueSteps, lightSteps] = args;
     } else {
-      throw TypeError('The ColorPalette requires minimum 2 arguments');
+      throw TypeError('ColorPalette requires minimum 2 arguments');
     }
 
     /** @type {string[]} */
     const colors = [];
 
     const hueStep = 360 / hueSteps;
-    const lightStep = 100 / (lightSteps + (lightSteps % 2 ? 0 : 1)) / 100;
-    const half = Math.round((lightSteps - (lightSteps % 2 ? 1 : 0)) / 2);
+    const half = roundPart((lightSteps - (lightSteps % 2 ? 1 : 0)) / 2);
+    const estimatedStep = 100 / (lightSteps + (lightSteps % 2 ? 0 : 1)) / 100;
+
+    let lightStep = 0.25;
+    lightStep = [4, 5].includes(lightSteps) ? 0.2 : lightStep;
+    lightStep = [6, 7].includes(lightSteps) ? 0.15 : lightStep;
+    lightStep = [8, 9].includes(lightSteps) ? 0.11 : lightStep;
+    lightStep = [10, 11].includes(lightSteps) ? 0.09 : lightStep;
+    lightStep = [12, 13].includes(lightSteps) ? 0.075 : lightStep;
+    lightStep = lightSteps > 13 ? estimatedStep : lightStep;
 
     // light tints
-    for (let i = 0; i < half; i += 1) {
-      lightnessArray = [...lightnessArray, (0.5 + lightStep * (i + 1))];
+    for (let i = 1; i < half + 1; i += 1) {
+      lightnessArray = [...lightnessArray, (0.5 + lightStep * (i))];
     }
 
     // dark tints
-    for (let i = 0; i < lightSteps - half - 1; i += 1) {
-      lightnessArray = [(0.5 - lightStep * (i + 1)), ...lightnessArray];
+    for (let i = 1; i < lightSteps - half; i += 1) {
+      lightnessArray = [(0.5 - lightStep * (i)), ...lightnessArray];
     }
 
     // feed `colors` Array

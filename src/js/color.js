@@ -4,6 +4,7 @@ import setElementStyle from 'shorter-js/src/misc/setElementStyle';
 import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 
 import nonColors from './util/nonColors';
+import roundPart from './util/roundPart';
 
 // Color supported formats
 const COLOR_FORMAT = ['rgb', 'hex', 'hsl', 'hsb', 'hwb'];
@@ -172,7 +173,7 @@ function getRGBFromName(name) {
  * @returns {string} - the hexadecimal value
  */
 function convertDecimalToHex(d) {
-  return Math.round(d * 255).toString(16);
+  return roundPart(d * 255).toString(16);
 }
 
 /**
@@ -426,9 +427,9 @@ function hsvToRgb(H, S, V) {
  */
 function rgbToHex(r, g, b, allow3Char) {
   const hex = [
-    pad2(Math.round(r).toString(16)),
-    pad2(Math.round(g).toString(16)),
-    pad2(Math.round(b).toString(16)),
+    pad2(roundPart(r).toString(16)),
+    pad2(roundPart(g).toString(16)),
+    pad2(roundPart(b).toString(16)),
   ];
 
   // Return a 3 character hex if possible
@@ -453,9 +454,9 @@ function rgbToHex(r, g, b, allow3Char) {
  */
 function rgbaToHex(r, g, b, a, allow4Char) {
   const hex = [
-    pad2(Math.round(r).toString(16)),
-    pad2(Math.round(g).toString(16)),
-    pad2(Math.round(b).toString(16)),
+    pad2(roundPart(r).toString(16)),
+    pad2(roundPart(g).toString(16)),
+    pad2(roundPart(b).toString(16)),
     pad2(convertDecimalToHex(a)),
   ];
 
@@ -617,6 +618,8 @@ function inputToRGB(input) {
   let w = null;
   let b = null;
   let h = null;
+  let r = null;
+  let g = null;
   let ok = false;
   let format = 'hex';
 
@@ -627,7 +630,10 @@ function inputToRGB(input) {
   }
   if (typeof color === 'object') {
     if (isValidCSSUnit(color.r) && isValidCSSUnit(color.g) && isValidCSSUnit(color.b)) {
-      rgb = { r: color.r, g: color.g, b: color.b }; // RGB values in [0, 255] range
+      ({ r, g, b } = color);
+      [r, g, b] = [...[r, g, b]]
+        .map((n) => bound01(n, isPercentage(n) ? 100 : 255) * 255).map(roundPart);
+      rgb = { r, g, b }; // RGB values now are all in [0, 255] range
       ok = true;
       format = 'rgb';
     } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
@@ -715,14 +721,6 @@ export default class Color {
     self.ok = ok;
     /** @type {CP.ColorFormats} */
     self.format = configFormat || format;
-
-    // Don't let the range of [0,255] come back in [0,1].
-    // Potentially lose a little bit of precision here, but will fix issues where
-    // .5 gets interpreted as half of the total, instead of half of 1
-    // If it was supposed to be 128, this was already taken care of by `inputToRgb`
-    if (r < 1) self.r = Math.round(r);
-    if (g < 1) self.g = Math.round(g);
-    if (b < 1) self.b = Math.round(b);
   }
 
   /**
@@ -738,7 +736,7 @@ export default class Color {
    * @returns {boolean} the query result
    */
   get isDark() {
-    return this.brightness < 128;
+    return this.brightness < 120;
   }
 
   /**
@@ -790,13 +788,13 @@ export default class Color {
     const {
       r, g, b, a,
     } = this;
-    const [R, G, B] = [r, g, b].map((x) => Math.round(x));
+    const [R, G, B] = [r, g, b].map((x) => roundPart(x));
 
     return {
       r: R,
       g: G,
       b: B,
-      a: Math.round(a * 100) / 100,
+      a: roundPart(a * 100) / 100,
     };
   }
 
@@ -826,7 +824,7 @@ export default class Color {
     const {
       r, g, b, a,
     } = this.toRgb();
-    const A = a === 1 ? '' : ` / ${Math.round(a * 100)}%`;
+    const A = a === 1 ? '' : ` / ${roundPart(a * 100)}%`;
 
     return `rgb(${r} ${g} ${b}${A})`;
   }
@@ -921,10 +919,10 @@ export default class Color {
     let {
       h, s, l, a,
     } = this.toHsl();
-    h = Math.round(h * 360);
-    s = Math.round(s * 100);
-    l = Math.round(l * 100);
-    a = Math.round(a * 100) / 100;
+    h = roundPart(h * 360);
+    s = roundPart(s * 100);
+    l = roundPart(l * 100);
+    a = roundPart(a * 100) / 100;
 
     return a === 1
       ? `hsl(${h}, ${s}%, ${l}%)`
@@ -941,11 +939,11 @@ export default class Color {
     let {
       h, s, l, a,
     } = this.toHsl();
-    h = Math.round(h * 360);
-    s = Math.round(s * 100);
-    l = Math.round(l * 100);
-    a = Math.round(a * 100);
-    const A = a < 100 ? ` / ${Math.round(a)}%` : '';
+    h = roundPart(h * 360);
+    s = roundPart(s * 100);
+    l = roundPart(l * 100);
+    a = roundPart(a * 100);
+    const A = a < 100 ? ` / ${roundPart(a)}%` : '';
 
     return `hsl(${h}deg ${s}% ${l}%${A})`;
   }
@@ -972,11 +970,11 @@ export default class Color {
     let {
       h, w, b, a,
     } = this.toHwb();
-    h = Math.round(h * 360);
-    w = Math.round(w * 100);
-    b = Math.round(b * 100);
-    a = Math.round(a * 100);
-    const A = a < 100 ? ` / ${Math.round(a)}%` : '';
+    h = roundPart(h * 360);
+    w = roundPart(w * 100);
+    b = roundPart(b * 100);
+    a = roundPart(a * 100);
+    const A = a < 100 ? ` / ${roundPart(a)}%` : '';
 
     return `hwb(${h}deg ${w}% ${b}%${A})`;
   }
@@ -1122,5 +1120,6 @@ ObjectAssign(Color, {
   numberInputToObject,
   stringInputToObject,
   inputToRGB,
+  roundPart,
   ObjectAssign,
 });

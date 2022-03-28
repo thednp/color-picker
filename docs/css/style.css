@@ -21,7 +21,7 @@ body {
   font: 14px Arial; margin: 2rem; padding: 0;
   --color: #555;
   --heading-color: #333;
-  --btn-bg-color: rgb(190 24 93 / 90%);
+  --btn-bg-color: #3f0f99;
   --btn-color: rgb(255 255 255 / 70%);
   --body-bg: #f6f6f6;
   color: var(--color, #555);
@@ -37,6 +37,10 @@ h1, h2, h3, h4, h5, h6 {
 h1, h2, h3, h4, h5, h6,
 b, strong {
   color: var(--heading-color, #333);
+}
+h1 > a {
+  color: inherit;
+  text-decoration: none;
 }
 
 h1 { font-size: 3.2rem; font-weight: 600 }

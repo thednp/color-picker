@@ -67,7 +67,9 @@ import getColorForm from './util/getColorForm';
 import getColorControls from './util/getColorControls';
 import getColorMenu from './util/getColorMenu';
 import vHidden from './util/vHidden';
+import tabIndex from './util/tabindex';
 import isValidJSON from './util/isValidJSON';
+import roundPart from './util/roundPart';
 import Color from './color';
 import ColorPalette from './color-palette';
 import Version from './version';
@@ -81,15 +83,15 @@ const colorPickerDefaults = {
   componentLabels: colorPickerLabels,
   colorLabels: colorNames,
   format: 'rgb',
-  colorPresets: undefined,
-  colorKeywords: nonColors,
+  colorPresets: false,
+  colorKeywords: false,
 };
 
 // ColorPicker Static Methods
 // ==========================
 
 /** @type {CP.GetInstance<ColorPicker>} */
-const getColorPickerInstance = (element) => getInstance(element, colorPickerString);
+export const getColorPickerInstance = (element) => getInstance(element, colorPickerString);
 
 /** @type {CP.InitCallback<ColorPicker>} */
 const initColorPicker = (element) => new ColorPicker(element);
@@ -171,7 +173,7 @@ function initCallback(self) {
       tagName: 'button',
       className: 'menu-toggle btn-appearance',
     });
-    setAttribute(presetsBtn, 'tabindex', '-1');
+    setAttribute(presetsBtn, tabIndex, '-1');
     setAttribute(presetsBtn, ariaExpanded, 'false');
     setAttribute(presetsBtn, ariaHasPopup, 'true');
 
@@ -198,7 +200,7 @@ function initCallback(self) {
   if (colorKeywords && nonColors.includes(colorValue)) {
     self.value = colorValue;
   }
-  setAttribute(input, 'tabindex', '-1');
+  setAttribute(input, tabIndex, '-1');
 }
 
 /**
@@ -299,8 +301,19 @@ function showDropdown(self, dropdown) {
   addClass(dropdown, 'bottom');
   reflow(dropdown);
   addClass(dropdown, 'show');
+
   if (isPicker) self.update();
-  self.show();
+
+  if (!self.isOpen) {
+    toggleEventsOnShown(self, true);
+    self.updateDropdownPosition();
+    self.isOpen = true;
+    setAttribute(self.input, tabIndex, '0');
+    if (menuToggle) {
+      setAttribute(menuToggle, tabIndex, '0');
+    }
+  }
+
   setAttribute(nextBtn, ariaExpanded, 'true');
   if (activeBtn) {
     setAttribute(activeBtn, ariaExpanded, 'false');
@@ -470,7 +483,7 @@ export default class ColorPicker {
   set value(v) { this.input.value = v; }
 
   /** Check if the colour presets include any non-colour. */
-  get includeNonColor() {
+  get hasNonColor() {
     return this.colorKeywords instanceof Array
       && this.colorKeywords.some((x) => nonColors.includes(x));
   }
@@ -526,7 +539,7 @@ export default class ColorPicker {
     const { r, g, b } = Color.hslToRgb(hue, 1, 0.5);
     const whiteGrad = 'linear-gradient(rgb(255,255,255) 0%, rgb(255,255,255) 100%)';
     const alpha = 1 - controlPositions.c3y / offsetHeight;
-    const roundA = Math.round((alpha * 100)) / 100;
+    const roundA = roundPart((alpha * 100)) / 100;
 
     if (format !== 'hsl') {
       const fill = new Color({
@@ -544,7 +557,7 @@ export default class ColorPicker {
       });
       setElementStyle(v2, { background: hueGradient });
     } else {
-      const saturation = Math.round((controlPositions.c2y / offsetHeight) * 100);
+      const saturation = roundPart((controlPositions.c2y / offsetHeight) * 100);
       const fill0 = new Color({
         r: 255, g: 0, b: 0, a: alpha,
       }).saturate(-saturation).toRgbString();
@@ -699,12 +712,12 @@ export default class ColorPicker {
 
     self.update();
 
-    if (currentActive) {
-      removeClass(currentActive, 'active');
-      removeAttribute(currentActive, ariaSelected);
-    }
-
     if (currentActive !== target) {
+      if (currentActive) {
+        removeClass(currentActive, 'active');
+        removeAttribute(currentActive, ariaSelected);
+      }
+
       addClass(target, 'active');
       setAttribute(target, ariaSelected, 'true');
 
@@ -871,7 +884,7 @@ export default class ColorPicker {
     const [v1, v2, v3, v4] = format === 'rgb'
       ? inputs.map((i) => parseFloat(i.value) / (i === i4 ? 100 : 1))
       : inputs.map((i) => parseFloat(i.value) / (i !== i1 ? 100 : 360));
-    const isNonColorValue = self.includeNonColor && nonColors.includes(currentValue);
+    const isNonColorValue = self.hasNonColor && nonColors.includes(currentValue);
     const alpha = i4 ? v4 : (1 - controlPositions.c3y / offsetHeight);
 
     if (activeElement === input || (activeElement && inputs.includes(activeElement))) {
@@ -1130,11 +1143,11 @@ export default class ColorPicker {
     } = componentLabels;
     const { r, g, b } = color.toRgb();
     const [knob1, knob2, knob3] = controlKnobs;
-    const hue = Math.round(hsl.h * 360);
+    const hue = roundPart(hsl.h * 360);
     const alpha = color.a;
     const saturationSource = format === 'hsl' ? hsl.s : hsv.s;
-    const saturation = Math.round(saturationSource * 100);
-    const lightness = Math.round(hsl.l * 100);
+    const saturation = roundPart(saturationSource * 100);
+    const lightness = roundPart(hsl.l * 100);
     const hsvl = hsv.v * 100;
     let colorName;
 
@@ -1181,8 +1194,8 @@ export default class ColorPicker {
       setAttribute(knob2, ariaValueNow, `${saturation}`);
     } else if (format === 'hwb') {
       const { hwb } = self;
-      const whiteness = Math.round(hwb.w * 100);
-      const blackness = Math.round(hwb.b * 100);
+      const whiteness = roundPart(hwb.w * 100);
+      const blackness = roundPart(hwb.b * 100);
       colorLabel = `HWB: ${hue}°, ${whiteness}%, ${blackness}%`;
       setAttribute(knob1, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
       setAttribute(knob1, ariaValueText, `${whiteness}% & ${blackness}%`);
@@ -1198,7 +1211,7 @@ export default class ColorPicker {
       setAttribute(knob2, ariaValueNow, `${hue}`);
     }
 
-    const alphaValue = Math.round(alpha * 100);
+    const alphaValue = roundPart(alpha * 100);
     setAttribute(knob3, ariaValueText, `${alphaValue}%`);
     setAttribute(knob3, ariaValueNow, `${alphaValue}`);
 
@@ -1221,10 +1234,14 @@ export default class ColorPicker {
   /** Updates the control knobs actual positions. */
   updateControls() {
     const { controlKnobs, controlPositions } = this;
+    const {
+      c1x, c1y, c2y, c3y,
+    } = controlPositions;
     const [control1, control2, control3] = controlKnobs;
-    setElementStyle(control1, { transform: `translate3d(${controlPositions.c1x - 4}px,${controlPositions.c1y - 4}px,0)` });
-    setElementStyle(control2, { transform: `translate3d(0,${controlPositions.c2y - 4}px,0)` });
-    setElementStyle(control3, { transform: `translate3d(0,${controlPositions.c3y - 4}px,0)` });
+
+    setElementStyle(control1, { transform: `translate3d(${c1x - 4}px,${c1y - 4}px,0)` });
+    setElementStyle(control2, { transform: `translate3d(0,${c2y - 4}px,0)` });
+    setElementStyle(control3, { transform: `translate3d(0,${c3y - 4}px,0)` });
   }
 
   /**
@@ -1237,16 +1254,16 @@ export default class ColorPicker {
       value: oldColor, format, inputs, color, hsl,
     } = self;
     const [i1, i2, i3, i4] = inputs;
-    const alpha = Math.round(color.a * 100);
-    const hue = Math.round(hsl.h * 360);
+    const alpha = roundPart(color.a * 100);
+    const hue = roundPart(hsl.h * 360);
     let newColor;
 
     if (format === 'hex') {
       newColor = self.color.toHexString(true);
       i1.value = self.hex;
     } else if (format === 'hsl') {
-      const lightness = Math.round(hsl.l * 100);
-      const saturation = Math.round(hsl.s * 100);
+      const lightness = roundPart(hsl.l * 100);
+      const saturation = roundPart(hsl.s * 100);
       newColor = self.color.toHslString();
       i1.value = `${hue}`;
       i2.value = `${saturation}`;
@@ -1254,8 +1271,8 @@ export default class ColorPicker {
       i4.value = `${alpha}`;
     } else if (format === 'hwb') {
       const { w, b } = self.hwb;
-      const whiteness = Math.round(w * 100);
-      const blackness = Math.round(b * 100);
+      const whiteness = roundPart(w * 100);
+      const blackness = roundPart(b * 100);
 
       newColor = self.color.toHwbString();
       i1.value = `${hue}`;
@@ -1327,7 +1344,7 @@ export default class ColorPicker {
     const self = this;
     const { colorPicker } = self;
 
-    if (!hasClass(colorPicker, 'show')) {
+    if (!['top', 'bottom'].some((c) => hasClass(colorPicker, c))) {
       showDropdown(self, colorPicker);
     }
   }
@@ -1341,21 +1358,6 @@ export default class ColorPicker {
       self.hide(true);
     } else {
       showDropdown(self, colorMenu);
-    }
-  }
-
-  /** Shows the `ColorPicker` dropdown or the presets menu. */
-  show() {
-    const self = this;
-    const { menuToggle } = self;
-    if (!self.isOpen) {
-      toggleEventsOnShown(self, true);
-      self.updateDropdownPosition();
-      self.isOpen = true;
-      setAttribute(self.input, 'tabindex', '0');
-      if (menuToggle) {
-        setAttribute(menuToggle, 'tabindex', '0');
-      }
     }
   }
 
@@ -1393,9 +1395,9 @@ export default class ColorPicker {
       if (!focusPrevented) {
         focus(pickerToggle);
       }
-      setAttribute(input, 'tabindex', '-1');
+      setAttribute(input, tabIndex, '-1');
       if (menuToggle) {
-        setAttribute(menuToggle, 'tabindex', '-1');
+        setAttribute(menuToggle, tabIndex, '-1');
       }
     }
   }
@@ -1409,7 +1411,10 @@ export default class ColorPicker {
     [...parent.children].forEach((el) => {
       if (el !== input) el.remove();
     });
+
+    removeAttribute(input, tabIndex);
     setElementStyle(input, { backgroundColor: '' });
+
     ['txt-light', 'txt-dark'].forEach((c) => removeClass(parent, c));
     Data.remove(input, colorPickerString);
   }
@@ -1417,8 +1422,14 @@ export default class ColorPicker {
 
 ObjectAssign(ColorPicker, {
   Color,
+  ColorPalette,
   Version,
   getInstance: getColorPickerInstance,
   init: initColorPicker,
   selector: colorPickerSelector,
+  // utils important for render
+  roundPart,
+  setElementStyle,
+  setAttribute,
+  getBoundingClientRect,
 });

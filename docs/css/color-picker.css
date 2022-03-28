@@ -1,5 +1,5 @@
 /*!
-* ColorPicker v0.0.1alpha2 (http://thednp.github.io/color-picker)
+* ColorPicker v0.0.1alpha3 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -253,18 +253,34 @@ color-picker:focus,
   padding: 0;
   margin: 0;
   list-style: none;
+  --grid-item-size: 2rem;
+  --grid-fit: 5;
+  --grid-gap: .25rem;
+  --grid-height: auto;
+  --grid-hover-height: auto;
+  grid-template-columns: repeat(var(--grid-fit), var(--grid-item-size));
+  grid-template-rows: repeat(auto-fill, var(--grid-item-size));
+  gap: var(--grid-gap);
 }
 
 .color-options.scrollable {
+  height: var(--grid-height);
   margin: 0 -0.5rem 0 0;
   overflow-y: scroll;
   transition: height 0.33s ease;
 }
 
+.color-options.scrollable:hover {
+  height: var(--grid-hover-height);
+}
+
+.color-options + .color-defaults {
+  margin-top: 0.25rem;
+}
+
 .multiline + .color-defaults {
   flex-direction: row;
   flex-wrap: wrap;
-  margin-top: 0.25rem;
 }
 .multiline + .color-defaults .color-option {
   padding: 0.25rem 0.33rem;
@@ -273,16 +289,10 @@ color-picker:focus,
 
 .color-options .color-option {
   position: relative;
+  width: var(--grid-item-size);
+  height: var(--grid-item-size);
   overflow: hidden;
   text-indent: 2.1rem;
-  background: #eee;
-  opacity: 0.8;
-}
-
-.color-options .color-option:hover,
-.color-options .color-option:active,
-.color-options .color-option:focus {
-  opacity: 1;
 }
 
 .color-options .color-option:active,
@@ -290,14 +300,27 @@ color-picker:focus,
   outline: none;
 }
 
+.color-options .color-option::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.color-options .color-option:hover::before,
+.color-options .color-option:active::before,
+.color-options .color-option:focus::before {
+  content: "";
+  border: 3px solid rgba(255, 255, 255, 0.75);
+  mix-blend-mode: difference;
+}
+
 .color-options .color-option:active,
 .color-options .color-option:focus {
   box-shadow: 0 0 0 4px rgba(125, 125, 125, 0.75) inset;
 }
 
-.color-options .color-option.active {
-  opacity: 1;
-}
 .color-options .color-option.active:after {
   position: absolute;
   top: 50%;
@@ -305,7 +328,7 @@ color-picker:focus,
   width: 4px;
   height: 4px;
   margin: -2px 0 0 -2px;
-  content: " ";
+  content: "";
   border-radius: 4px;
 }
 
@@ -323,7 +346,7 @@ color-picker:focus,
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
-  padding: 0.5rem 0 0;
+  padding: 0.25rem 0 0;
   font: 12px sans-serif;
 }
 
@@ -421,7 +444,6 @@ color-picker:focus,
   background-color: #000;
   border: 1px solid #fff;
   outline: none;
-  will-change: transform;
 }
 
 .knob:hover {

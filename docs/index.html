@@ -19,7 +19,7 @@
 <body>
 
 <header>
-  <h1>ColorPicker Web Component</h1>
+  <h1><a target="_blank" href="https://github.com/thednp/color-picker" title="ColorPicker on Github">ColorPicker Web Component</a></h1>
 </header>
 
 <main>
@@ -37,7 +37,7 @@
         <li><code>format</code> option is default (<code>rgb</code>);</li>
         <li><code>componentLabels</code> option is default;</li>
         <li><code>colorLabels</code> option is default;</li>
-        <li><code>colorPresets</code> option is default (<code>undefined</code>);</li>
+        <li><code>colorPresets</code> option is default (<code>false</code>);</li>
         <li><code>colorKeywords</code> option is set via DATA API with a couple of web colors.</li>
       </ul>
     </div>
@@ -65,9 +65,8 @@
         <li><code>format</code> option is set via JavaScript to <code>hwb</code>;</li>
         <li><code>componentLabels</code> option is set via JavaScript;</li>
         <li><code>colorLabels</code> option is set to via JavaScript;</li>
-        <li><code>colorPresets</code> option is set to <a href="https://tailwindcolor.com/" target="_blank" title="Tailwind Colors">Tailwind Colors</a>;</li>
-        <li><code>colorKeywords</code> option is disabled;</li>
-        <li><code>colorpicker.change</code> event listener used, see console.</li>
+        <li><code>colorPresets</code> option is set via JavaScript to <a href="https://tailwindcolor.com/" target="_blank" title="Tailwind Colors">Tailwind Colors</a>;</li>
+        <li><code>colorKeywords</code> option is set via JavaScript;</li>
       </ul>
     </div>
     <div class="col">
@@ -81,6 +80,7 @@
         <li><code>colorLabels</code> option is default;</li>
         <li><code>data-format="hsl"</code> attribute is used;</li>
         <li><code>colorPresets</code> option is set to <a href="https://material.io/archive/guidelines/style/color.html" target="_blank" title="Material Design Colors">Material Colors</a>;</li>
+        <li><code>colorKeywords</code> option is set via JavaScript;</li>
       </ul>
     </div>
   </div>
@@ -91,12 +91,12 @@
       <label for="picker4">Background Color</label>
       <color-picker
         data-color-keywords="#cfe2ff54:reset,transparent"
-        data-color-presets="#3d8bfd,#6ea8fe,#9ec5fe,#cfe2ff,#8540f5,#a370f7,#c29ffa,#e0cffc,#e35d6a,#ea868f,#f1aeb5,#f8d7da,#ffcd39,#ffda6a,#ffe69c,#fff3cd,#3dd5f3,#6edff6,#9eeaf9,#cff4fc">
+        data-color-presets="#cfe2ff,#e0cffc,#f8d7da,#fff3cd,#cff4fc">
         <input type="text" class="color-preview btn-appearance" name="picker4" id="picker4" value="rgba(207,226,255,0.33)" autocomplete="off" spellcheck="false" placeholder="Set color RGB format">
       </color-picker>
       <ul class="mb-5">
         <li>this is a <code>CustomElement</code> instance;</li>
-        <li>when changed, it also changes this page background-color;</li>
+        <li>when changed, it also changes this page background-color, text color and headings color;</li>
         <li><code>componentLabels</code> option is default;</li>
         <li><code>colorLabels</code> option is default;</li>
         <li><code>format</code> option is default (<code>rgb</code>);</li>
@@ -132,7 +132,7 @@
         <li><code>componentLabels</code> option is default;</li>
         <li><code>colorLabels</code> option is default;</li>
         <li><code>data-format="hwb"</code> attribute is used;</li>
-        <li><code>colorPresets</code> option is set to use a ColorPalette;</li>
+        <li><code>colorPresets</code> option is set via DATA API to use a <b>ColorPalette</b>;</li>
         <li><code>colorKeywords</code> option is set via DATA API;</li>
       </ul>
     </div>
@@ -146,8 +146,8 @@
         <li><code>componentLabels</code> option is default;</li>
         <li><code>colorLabels</code> option is default;</li>
         <li><code>data-format="hsl"</code> attribute is used;</li>
-        <li><code>colorPresets</code> option is default (<code>undefined</code>);</li>
-        <li><code>colorKeywords</code> option is default (all non-color keyword values are avaiable);</li>
+        <li><code>colorPresets</code> option is default (<code>false</code>);</li>
+        <li><code>colorKeywords</code> option is default (<code>false</code>);</li>
       </ul>
     </div>
   </div>

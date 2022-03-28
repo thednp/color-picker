@@ -1,4 +1,5 @@
 const [picker0, picker1, picker2, picker3] = document.querySelectorAll('input');
+const [picker4, picker5, picker6, picker7] = [...document.querySelectorAll('color-picker')].map(c => c.querySelector('input'));
 
 const picker1Instance = new ColorPicker(picker1, {
   colorPresets: bootstrapColors,
@@ -42,8 +43,9 @@ CPs.forEach((input, i) => {
   input.addEventListener('colorpicker.change', (e) => {
     const { target } = e;
     let cp = target.parentNode.localName === 'color-picker'
-      ? ColorPickerElement.ColorPicker.getInstance(target)
+      ? ColorPickerElement.getInstance(target)
       : ColorPicker.getInstance(target);
+    const {color} = cp;
 
     if (target === picker0) {
       const {h, s, l, a} = cp.hsl;
@@ -53,37 +55,48 @@ CPs.forEach((input, i) => {
 
         pickerInstance.update();
       })
-
     }
     if (target === picker3 && !changed) {
       changed = 1;
-      console.log('The "colorpicker.change" event has fired for color-picker#picker3 with new value: '+ target.value + '\nThis listener is set to fire *only* once for performance reasons.');
+      console.log(`The "colorpicker.change" event has fired for <color-picker id="picker3"> with new value: ${target.value}\nThis listener is set to fire *only* once for performance reasons.`);
     }
-    if (target.id === 'picker4') {
+
+    if (target === picker4) {
       if (target.value === 'revert') {
         document.body.style.setProperty('--body-bg', '');
+        document.body.style.setProperty('--color', '');
+        document.body.style.setProperty('--heading-color', '');
       } else if (target.value === 'transparent') {
         document.body.style.setProperty('--body-bg', 'transparent');
+        document.body.style.setProperty('--color', '');
+        document.body.style.setProperty('--heading-color', '');
       } else {
-        const alpha = cp.color.a === 1 ? 0.33 : cp.color.a;
-        document.body.style.setProperty('--body-bg', cp.color.setAlpha(alpha).toString());
+        const lightModifier = cp.isDark ? 35 : -35;
+        const [cp5, cp6] = [picker5, picker6].map(ColorPickerElement.getInstance);
+        cp5.color = color.clone().setAlpha(1).lighten(lightModifier);
+        cp6.color = color.clone().setAlpha(1).spin(60).lighten(1.2 * lightModifier);
+        cp5.update(); cp6.update();
+        document.body.style.setProperty('--body-bg', color.toString());
+        document.body.style.setProperty('--color', cp5.color.toString());
+        document.body.style.setProperty('--heading-color', cp6.color.toString());
       }
     }
-    if (target.id === 'picker5') {
-      document.body.style.setProperty('--color', cp.color.toString());
+    if (target === picker5) {
+      document.body.style.setProperty('--color', color.toString());
     }
-    if (target.id === 'picker6') {
-      document.body.style.setProperty('--heading-color', cp.color.toString());
+    if (target === picker6) {
+      document.body.style.setProperty('--heading-color', color.toString());
     }
-    if (target.id === 'picker7') {
-      document.body.style.setProperty('--btn-bg-color', cp.color.toString());
-      if (cp.color.isDark) {
+    if (target === picker7) {
+      document.body.style.setProperty('--btn-bg-color', color.toString());
+      if (color.isDark) {
         document.body.style.setProperty('--btn-color', 'rgb(255 255 255 / 70%)');
       } else {
         document.body.style.setProperty('--btn-color', 'rgb(0 0 0 / 70%)');
       }
     }
-    favicon.setAttribute('href', `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="${cp.color.toString()}"><path d="M0 32a32 32 0 1 0 64 0a32 32 0 1 0 -64 0M21.83 47.18v-30.3q0 -4.65 2.66 -6.79T33 7.96c2.78 -0.15 5.55 0.42 8.04 1.67c0.23 0.13 0.45 0.28 0.66 0.43q2.85 2.1 2.85 6.9v9.97l-6.37 0.82v-9.22q0 -2.55 -0.98 -3.94t-4.05 -1.39q-2.93 0 -3.86 1.46t-0.94 3.79v27.23q0 1.95 1.05 3.23t3.75 1.27q2.77 0 3.9 -1.27t1.13 -3.23v-8.7l6.38 -0.75v10.95q0 3.98 -2.92 6.15t-8.4 2.17c-2.79 0.17 -5.57 -0.45 -8.03 -1.79C25.01 53.6 24.82 53.47 24.64 53.33q-2.81 -2.17 -2.81 -6.15z"></path></svg>`)
+    const favColor = new ColorPicker.Color({ r: color.r, g: color.g, b: color.b}).toString();
+    favicon.setAttribute('href', `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="${favColor}"><path d="M0 32a32 32 0 1 0 64 0a32 32 0 1 0 -64 0M21.83 47.18v-30.3q0 -4.65 2.66 -6.79T33 7.96c2.78 -0.15 5.55 0.42 8.04 1.67c0.23 0.13 0.45 0.28 0.66 0.43q2.85 2.1 2.85 6.9v9.97l-6.37 0.82v-9.22q0 -2.55 -0.98 -3.94t-4.05 -1.39q-2.93 0 -3.86 1.46t-0.94 3.79v27.23q0 1.95 1.05 3.23t3.75 1.27q2.77 0 3.9 -1.27t1.13 -3.23v-8.7l6.38 -0.75v10.95q0 3.98 -2.92 6.15t-8.4 2.17c-2.79 0.17 -5.57 -0.45 -8.03 -1.79C25.01 53.6 24.82 53.47 24.64 53.33q-2.81 -2.17 -2.81 -6.15z"></path></svg>`)
   })
 })
 
@@ -142,7 +155,7 @@ addCP.addEventListener('click', function(e){
   ul.className = 'mb-5';
 
   const li1 = document.createElement('li');
-  li1.innerHTML = `this is a dynamically <code>CustomElement</code> instance via <code>new ColorPickerElement()</code>;`;
+  li1.innerHTML = `<code>new ColorPickerElement()</code> was used;`;
   const li2 = document.createElement('li');
   li2.innerHTML = `<code>componentLabels</code> option is default;`;
   const li3 = document.createElement('li');
@@ -168,4 +181,4 @@ addCP.addEventListener('click', function(e){
   CPID += 1;
   
   addCP.closest('.row').before(row);
-})
+});

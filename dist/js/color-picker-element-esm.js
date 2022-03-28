@@ -1,5 +1,5 @@
 /*!
-* ColorPickerElement v0.0.1alpha2 (http://thednp.github.io/color-picker)
+* ColorPickerElement v0.0.1alpha3 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -111,17 +111,34 @@ function getElementStyle(element, property) {
 }
 
 /**
+ * Shortcut for `Object.keys()` static method.
+ * @param  {Record<string, any>} obj a target object
+ * @returns {string[]}
+ */
+const ObjectKeys = (obj) => Object.keys(obj);
+
+/**
  * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
  * @param  {HTMLElement | Element} element target element
  * @param  {Partial<CSSStyleDeclaration>} styles attribute value
  */
 // @ts-ignore
-const setElementStyle = (element, styles) => { ObjectAssign(element.style, styles); };
+const setElementStyle = (element, styles) => ObjectAssign(element.style, styles);
 
 /**
  * A list of explicit default non-color values.
  */
 const nonColors = ['transparent', 'currentColor', 'inherit', 'revert', 'initial'];
+
+/**
+ * Round colour components, for all formats except HEX.
+ * @param {number} v one of the colour components
+ * @returns {number} the rounded number
+ */
+function roundPart(v) {
+  const floor = Math.floor(v);
+  return v - floor < 0.5 ? floor : Math.round(v);
+}
 
 // Color supported formats
 const COLOR_FORMAT = ['rgb', 'hex', 'hsl', 'hsb', 'hwb'];
@@ -290,7 +307,7 @@ function getRGBFromName(name) {
  * @returns {string} - the hexadecimal value
  */
 function convertDecimalToHex(d) {
-  return Math.round(d * 255).toString(16);
+  return roundPart(d * 255).toString(16);
 }
 
 /**
@@ -542,9 +559,9 @@ function hsvToRgb(H, S, V) {
  */
 function rgbToHex(r, g, b, allow3Char) {
   const hex = [
-    pad2(Math.round(r).toString(16)),
-    pad2(Math.round(g).toString(16)),
-    pad2(Math.round(b).toString(16)),
+    pad2(roundPart(r).toString(16)),
+    pad2(roundPart(g).toString(16)),
+    pad2(roundPart(b).toString(16)),
   ];
 
   // Return a 3 character hex if possible
@@ -569,9 +586,9 @@ function rgbToHex(r, g, b, allow3Char) {
  */
 function rgbaToHex(r, g, b, a, allow4Char) {
   const hex = [
-    pad2(Math.round(r).toString(16)),
-    pad2(Math.round(g).toString(16)),
-    pad2(Math.round(b).toString(16)),
+    pad2(roundPart(r).toString(16)),
+    pad2(roundPart(g).toString(16)),
+    pad2(roundPart(b).toString(16)),
     pad2(convertDecimalToHex(a)),
   ];
 
@@ -733,6 +750,8 @@ function inputToRGB(input) {
   let w = null;
   let b = null;
   let h = null;
+  let r = null;
+  let g = null;
   let ok = false;
   let format = 'hex';
 
@@ -743,7 +762,10 @@ function inputToRGB(input) {
   }
   if (typeof color === 'object') {
     if (isValidCSSUnit(color.r) && isValidCSSUnit(color.g) && isValidCSSUnit(color.b)) {
-      rgb = { r: color.r, g: color.g, b: color.b }; // RGB values in [0, 255] range
+      ({ r, g, b } = color);
+      [r, g, b] = [...[r, g, b]]
+        .map((n) => bound01(n, isPercentage(n) ? 100 : 255) * 255).map(roundPart);
+      rgb = { r, g, b }; // RGB values now are all in [0, 255] range
       ok = true;
       format = 'rgb';
     } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
@@ -831,14 +853,6 @@ class Color {
     self.ok = ok;
     /** @type {CP.ColorFormats} */
     self.format = configFormat || format;
-
-    // Don't let the range of [0,255] come back in [0,1].
-    // Potentially lose a little bit of precision here, but will fix issues where
-    // .5 gets interpreted as half of the total, instead of half of 1
-    // If it was supposed to be 128, this was already taken care of by `inputToRgb`
-    if (r < 1) self.r = Math.round(r);
-    if (g < 1) self.g = Math.round(g);
-    if (b < 1) self.b = Math.round(b);
   }
 
   /**
@@ -854,7 +868,7 @@ class Color {
    * @returns {boolean} the query result
    */
   get isDark() {
-    return this.brightness < 128;
+    return this.brightness < 120;
   }
 
   /**
@@ -906,13 +920,13 @@ class Color {
     const {
       r, g, b, a,
     } = this;
-    const [R, G, B] = [r, g, b].map((x) => Math.round(x));
+    const [R, G, B] = [r, g, b].map((x) => roundPart(x));
 
     return {
       r: R,
       g: G,
       b: B,
-      a: Math.round(a * 100) / 100,
+      a: roundPart(a * 100) / 100,
     };
   }
 
@@ -942,7 +956,7 @@ class Color {
     const {
       r, g, b, a,
     } = this.toRgb();
-    const A = a === 1 ? '' : ` / ${Math.round(a * 100)}%`;
+    const A = a === 1 ? '' : ` / ${roundPart(a * 100)}%`;
 
     return `rgb(${r} ${g} ${b}${A})`;
   }
@@ -1037,10 +1051,10 @@ class Color {
     let {
       h, s, l, a,
     } = this.toHsl();
-    h = Math.round(h * 360);
-    s = Math.round(s * 100);
-    l = Math.round(l * 100);
-    a = Math.round(a * 100) / 100;
+    h = roundPart(h * 360);
+    s = roundPart(s * 100);
+    l = roundPart(l * 100);
+    a = roundPart(a * 100) / 100;
 
     return a === 1
       ? `hsl(${h}, ${s}%, ${l}%)`
@@ -1057,11 +1071,11 @@ class Color {
     let {
       h, s, l, a,
     } = this.toHsl();
-    h = Math.round(h * 360);
-    s = Math.round(s * 100);
-    l = Math.round(l * 100);
-    a = Math.round(a * 100);
-    const A = a < 100 ? ` / ${Math.round(a)}%` : '';
+    h = roundPart(h * 360);
+    s = roundPart(s * 100);
+    l = roundPart(l * 100);
+    a = roundPart(a * 100);
+    const A = a < 100 ? ` / ${roundPart(a)}%` : '';
 
     return `hsl(${h}deg ${s}% ${l}%${A})`;
   }
@@ -1088,11 +1102,11 @@ class Color {
     let {
       h, w, b, a,
     } = this.toHwb();
-    h = Math.round(h * 360);
-    w = Math.round(w * 100);
-    b = Math.round(b * 100);
-    a = Math.round(a * 100);
-    const A = a < 100 ? ` / ${Math.round(a)}%` : '';
+    h = roundPart(h * 360);
+    w = roundPart(w * 100);
+    b = roundPart(b * 100);
+    a = roundPart(a * 100);
+    const A = a < 100 ? ` / ${roundPart(a)}%` : '';
 
     return `hwb(${h}deg ${w}% ${b}%${A})`;
   }
@@ -1238,6 +1252,7 @@ ObjectAssign(Color, {
   numberInputToObject,
   stringInputToObject,
   inputToRGB,
+  roundPart,
   ObjectAssign,
 });
 
@@ -1867,13 +1882,6 @@ function normalizeValue(value) {
 }
 
 /**
- * Shortcut for `Object.keys()` static method.
- * @param  {Record<string, any>} obj a target object
- * @returns {string[]}
- */
-const ObjectKeys = (obj) => Object.keys(obj);
-
-/**
  * Shortcut for `String.toLowerCase()`.
  *
  * @param {string} source input string
@@ -2075,7 +2083,6 @@ function getColorForm(self) {
       max,
       step,
     });
-    // }
     colorForm.append(cInputLabel, cInput);
   });
   return colorForm;
@@ -2098,6 +2105,8 @@ const ariaValueMin = 'aria-valuemin';
  * @type {string}
  */
 const ariaValueMax = 'aria-valuemax';
+
+const tabIndex = 'tabindex';
 
 /**
  * Returns all color controls for `ColorPicker`.
@@ -2164,10 +2173,8 @@ function getColorControls(self) {
     const {
       i, c, l, min, max,
     } = template;
-    // const hidden = i === 2 && format === 'hwb' ? ' v-hidden' : '';
     const control = createElement({
       tagName: 'div',
-      // className: `color-control${hidden}`,
       className: 'color-control',
     });
     setAttribute(control, 'role', 'presentation');
@@ -2187,7 +2194,7 @@ function getColorControls(self) {
 
     setAttribute(knob, ariaLabel, l);
     setAttribute(knob, 'role', 'slider');
-    setAttribute(knob, 'tabindex', '0');
+    setAttribute(knob, tabIndex, '0');
     setAttribute(knob, ariaValueMin, `${min}`);
     setAttribute(knob, ariaValueMax, `${max}`);
     control.append(knob);
@@ -2195,6 +2202,17 @@ function getColorControls(self) {
   });
 
   return colorControls;
+}
+
+/**
+ * Helps setting CSS variables to the color-menu.
+ * @param {HTMLElement} element
+ * @param {Record<string,any>} props
+ */
+function setCSSProperties(element, props) {
+  ObjectKeys(props).forEach((prop) => {
+    element.style.setProperty(prop, props[prop]);
+  });
 }
 
 /**
@@ -2209,8 +2227,8 @@ class ColorPalette {
    * The `hue` parameter is optional, which would be set to 0.
    * @param {number[]} args represeinting hue, hueSteps, lightSteps
    * * `args.hue` the starting Hue [0, 360]
-   * * `args.hueSteps` Hue Steps Count [5, 13]
-   * * `args.lightSteps` Lightness Steps Count [8, 10]
+   * * `args.hueSteps` Hue Steps Count [5, 24]
+   * * `args.lightSteps` Lightness Steps Count [5, 12]
    */
   constructor(...args) {
     let hue = 0;
@@ -2223,24 +2241,32 @@ class ColorPalette {
     } else if (args.length === 2) {
       [hueSteps, lightSteps] = args;
     } else {
-      throw TypeError('The ColorPalette requires minimum 2 arguments');
+      throw TypeError('ColorPalette requires minimum 2 arguments');
     }
 
     /** @type {string[]} */
     const colors = [];
 
     const hueStep = 360 / hueSteps;
-    const lightStep = 100 / (lightSteps + (lightSteps % 2 ? 0 : 1)) / 100;
-    const half = Math.round((lightSteps - (lightSteps % 2 ? 1 : 0)) / 2);
+    const half = roundPart((lightSteps - (lightSteps % 2 ? 1 : 0)) / 2);
+    const estimatedStep = 100 / (lightSteps + (lightSteps % 2 ? 0 : 1)) / 100;
+
+    let lightStep = 0.25;
+    lightStep = [4, 5].includes(lightSteps) ? 0.2 : lightStep;
+    lightStep = [6, 7].includes(lightSteps) ? 0.15 : lightStep;
+    lightStep = [8, 9].includes(lightSteps) ? 0.11 : lightStep;
+    lightStep = [10, 11].includes(lightSteps) ? 0.09 : lightStep;
+    lightStep = [12, 13].includes(lightSteps) ? 0.075 : lightStep;
+    lightStep = lightSteps > 13 ? estimatedStep : lightStep;
 
     // light tints
-    for (let i = 0; i < half; i += 1) {
-      lightnessArray = [...lightnessArray, (0.5 + lightStep * (i + 1))];
+    for (let i = 1; i < half + 1; i += 1) {
+      lightnessArray = [...lightnessArray, (0.5 + lightStep * (i))];
     }
 
     // dark tints
-    for (let i = 0; i < lightSteps - half - 1; i += 1) {
-      lightnessArray = [(0.5 - lightStep * (i + 1)), ...lightnessArray];
+    for (let i = 1; i < lightSteps - half; i += 1) {
+      lightnessArray = [(0.5 - lightStep * (i)), ...lightnessArray];
     }
 
     // feed `colors` Array
@@ -2275,45 +2301,38 @@ function getColorMenu(self, colorsSource, menuClass) {
   colorsArray = colorsArray instanceof Array ? colorsArray : [];
   const colorsCount = colorsArray.length;
   const { lightSteps } = isPalette ? colorsSource : { lightSteps: null };
-  let fit = lightSteps
-    || Math.max(...[5, 6, 7, 8, 9, 10].filter((x) => colorsCount > (x * 2) && !(colorsCount % x)));
-  fit = Number.isFinite(fit) ? fit : 5;
+  const fit = lightSteps || [9, 10].find((x) => colorsCount > x * 2 && !(colorsCount % x)) || 5;
   const isMultiLine = isOptionsMenu && colorsCount > fit;
-  let rowCountHover = 1;
-  rowCountHover = isMultiLine && colorsCount < 27 ? 2 : rowCountHover;
-  rowCountHover = colorsCount >= 27 ? 3 : rowCountHover;
-  rowCountHover = colorsCount >= 36 ? 4 : rowCountHover;
-  rowCountHover = colorsCount >= 45 ? 5 : rowCountHover;
-  const rowCount = rowCountHover - (colorsCount < 27 ? 1 : 2);
-  const isScrollable = isMultiLine && colorsCount > rowCountHover * fit;
+  let rowCountHover = 2;
+  rowCountHover = isMultiLine && colorsCount >= fit * 2 ? 3 : rowCountHover;
+  rowCountHover = colorsCount >= fit * 3 ? 4 : rowCountHover;
+  rowCountHover = colorsCount >= fit * 4 ? 5 : rowCountHover;
+  const rowCount = rowCountHover - (colorsCount < fit * 3 ? 1 : 2);
+  const isScrollable = isMultiLine && colorsCount > rowCount * fit;
   let finalClass = menuClass;
   finalClass += isScrollable ? ' scrollable' : '';
   finalClass += isMultiLine ? ' multiline' : '';
   const gap = isMultiLine ? '1px' : '0.25rem';
   let optionSize = isMultiLine ? 1.75 : 2;
-  optionSize = !(colorsCount % 10) && isMultiLine ? 1.5 : optionSize;
+  optionSize = fit > 5 && isMultiLine ? 1.5 : optionSize;
   const menuHeight = `${(rowCount || 1) * optionSize}rem`;
   const menuHeightHover = `calc(${rowCountHover} * ${optionSize}rem + ${rowCountHover - 1} * ${gap})`;
-  const gridTemplateColumns = `repeat(${fit}, ${optionSize}rem)`;
-  const gridTemplateRows = `repeat(auto-fill, ${optionSize}rem)`;
 
   const menu = createElement({
     tagName: 'ul',
     className: finalClass,
   });
   setAttribute(menu, 'role', 'listbox');
-  setAttribute(menu, ariaLabel, `${menuLabel}`);
+  setAttribute(menu, ariaLabel, menuLabel);
 
-  if (isOptionsMenu) {
-    if (isScrollable) {
-      const styleText = 'this.style.height=';
-      setAttribute(menu, 'onmouseout', `${styleText}'${menuHeight}'`);
-      setAttribute(menu, 'onmouseover', `${styleText}'${menuHeightHover}'`);
-    }
-    const menuStyle = {
-      height: isScrollable ? menuHeight : '', gridTemplateColumns, gridTemplateRows, gap,
-    };
-    setElementStyle(menu, menuStyle);
+  if (isScrollable) { // @ts-ignore
+    setCSSProperties(menu, {
+      '--grid-item-size': `${optionSize}rem`,
+      '--grid-fit': fit,
+      '--grid-gap': gap,
+      '--grid-height': menuHeight,
+      '--grid-hover-height': menuHeightHover,
+    });
   }
 
   colorsArray.forEach((x) => {
@@ -2328,15 +2347,13 @@ function getColorMenu(self, colorsSource, menuClass) {
       innerText: `${label || x}`,
     });
 
-    setAttribute(option, 'tabindex', '0');
+    setAttribute(option, tabIndex, '0');
     setAttribute(option, 'data-value', `${value}`);
     setAttribute(option, 'role', 'option');
     setAttribute(option, ariaSelected, isActive ? 'true' : 'false');
 
     if (isOptionsMenu) {
-      setElementStyle(option, {
-        width: `${optionSize}rem`, height: `${optionSize}rem`, backgroundColor: x,
-      });
+      setElementStyle(option, { backgroundColor: x });
     }
 
     menu.append(option);
@@ -2358,7 +2375,7 @@ function isValidJSON(str) {
   return true;
 }
 
-var version = "0.0.1alpha2";
+var version = "0.0.1alpha3";
 
 // @ts-ignore
 
@@ -2373,8 +2390,8 @@ const colorPickerDefaults = {
   componentLabels: colorPickerLabels,
   colorLabels: colorNames,
   format: 'rgb',
-  colorPresets: undefined,
-  colorKeywords: nonColors,
+  colorPresets: false,
+  colorKeywords: false,
 };
 
 // ColorPicker Static Methods
@@ -2463,7 +2480,7 @@ function initCallback(self) {
       tagName: 'button',
       className: 'menu-toggle btn-appearance',
     });
-    setAttribute(presetsBtn, 'tabindex', '-1');
+    setAttribute(presetsBtn, tabIndex, '-1');
     setAttribute(presetsBtn, ariaExpanded, 'false');
     setAttribute(presetsBtn, ariaHasPopup, 'true');
 
@@ -2490,7 +2507,7 @@ function initCallback(self) {
   if (colorKeywords && nonColors.includes(colorValue)) {
     self.value = colorValue;
   }
-  setAttribute(input, 'tabindex', '-1');
+  setAttribute(input, tabIndex, '-1');
 }
 
 /**
@@ -2591,8 +2608,19 @@ function showDropdown(self, dropdown) {
   addClass(dropdown, 'bottom');
   reflow(dropdown);
   addClass(dropdown, 'show');
+
   if (isPicker) self.update();
-  self.show();
+
+  if (!self.isOpen) {
+    toggleEventsOnShown(self, true);
+    self.updateDropdownPosition();
+    self.isOpen = true;
+    setAttribute(self.input, tabIndex, '0');
+    if (menuToggle) {
+      setAttribute(menuToggle, tabIndex, '0');
+    }
+  }
+
   setAttribute(nextBtn, ariaExpanded, 'true');
   if (activeBtn) {
     setAttribute(activeBtn, ariaExpanded, 'false');
@@ -2762,7 +2790,7 @@ class ColorPicker {
   set value(v) { this.input.value = v; }
 
   /** Check if the colour presets include any non-colour. */
-  get includeNonColor() {
+  get hasNonColor() {
     return this.colorKeywords instanceof Array
       && this.colorKeywords.some((x) => nonColors.includes(x));
   }
@@ -2818,7 +2846,7 @@ class ColorPicker {
     const { r, g, b } = Color.hslToRgb(hue, 1, 0.5);
     const whiteGrad = 'linear-gradient(rgb(255,255,255) 0%, rgb(255,255,255) 100%)';
     const alpha = 1 - controlPositions.c3y / offsetHeight;
-    const roundA = Math.round((alpha * 100)) / 100;
+    const roundA = roundPart((alpha * 100)) / 100;
 
     if (format !== 'hsl') {
       const fill = new Color({
@@ -2836,7 +2864,7 @@ class ColorPicker {
       });
       setElementStyle(v2, { background: hueGradient });
     } else {
-      const saturation = Math.round((controlPositions.c2y / offsetHeight) * 100);
+      const saturation = roundPart((controlPositions.c2y / offsetHeight) * 100);
       const fill0 = new Color({
         r: 255, g: 0, b: 0, a: alpha,
       }).saturate(-saturation).toRgbString();
@@ -2991,12 +3019,12 @@ class ColorPicker {
 
     self.update();
 
-    if (currentActive) {
-      removeClass(currentActive, 'active');
-      removeAttribute(currentActive, ariaSelected);
-    }
-
     if (currentActive !== target) {
+      if (currentActive) {
+        removeClass(currentActive, 'active');
+        removeAttribute(currentActive, ariaSelected);
+      }
+
       addClass(target, 'active');
       setAttribute(target, ariaSelected, 'true');
 
@@ -3163,7 +3191,7 @@ class ColorPicker {
     const [v1, v2, v3, v4] = format === 'rgb'
       ? inputs.map((i) => parseFloat(i.value) / (i === i4 ? 100 : 1))
       : inputs.map((i) => parseFloat(i.value) / (i !== i1 ? 100 : 360));
-    const isNonColorValue = self.includeNonColor && nonColors.includes(currentValue);
+    const isNonColorValue = self.hasNonColor && nonColors.includes(currentValue);
     const alpha = i4 ? v4 : (1 - controlPositions.c3y / offsetHeight);
 
     if (activeElement === input || (activeElement && inputs.includes(activeElement))) {
@@ -3422,11 +3450,11 @@ class ColorPicker {
     } = componentLabels;
     const { r, g, b } = color.toRgb();
     const [knob1, knob2, knob3] = controlKnobs;
-    const hue = Math.round(hsl.h * 360);
+    const hue = roundPart(hsl.h * 360);
     const alpha = color.a;
     const saturationSource = format === 'hsl' ? hsl.s : hsv.s;
-    const saturation = Math.round(saturationSource * 100);
-    const lightness = Math.round(hsl.l * 100);
+    const saturation = roundPart(saturationSource * 100);
+    const lightness = roundPart(hsl.l * 100);
     const hsvl = hsv.v * 100;
     let colorName;
 
@@ -3473,8 +3501,8 @@ class ColorPicker {
       setAttribute(knob2, ariaValueNow, `${saturation}`);
     } else if (format === 'hwb') {
       const { hwb } = self;
-      const whiteness = Math.round(hwb.w * 100);
-      const blackness = Math.round(hwb.b * 100);
+      const whiteness = roundPart(hwb.w * 100);
+      const blackness = roundPart(hwb.b * 100);
       colorLabel = `HWB: ${hue}°, ${whiteness}%, ${blackness}%`;
       setAttribute(knob1, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
       setAttribute(knob1, ariaValueText, `${whiteness}% & ${blackness}%`);
@@ -3490,7 +3518,7 @@ class ColorPicker {
       setAttribute(knob2, ariaValueNow, `${hue}`);
     }
 
-    const alphaValue = Math.round(alpha * 100);
+    const alphaValue = roundPart(alpha * 100);
     setAttribute(knob3, ariaValueText, `${alphaValue}%`);
     setAttribute(knob3, ariaValueNow, `${alphaValue}`);
 
@@ -3513,10 +3541,14 @@ class ColorPicker {
   /** Updates the control knobs actual positions. */
   updateControls() {
     const { controlKnobs, controlPositions } = this;
+    const {
+      c1x, c1y, c2y, c3y,
+    } = controlPositions;
     const [control1, control2, control3] = controlKnobs;
-    setElementStyle(control1, { transform: `translate3d(${controlPositions.c1x - 4}px,${controlPositions.c1y - 4}px,0)` });
-    setElementStyle(control2, { transform: `translate3d(0,${controlPositions.c2y - 4}px,0)` });
-    setElementStyle(control3, { transform: `translate3d(0,${controlPositions.c3y - 4}px,0)` });
+
+    setElementStyle(control1, { transform: `translate3d(${c1x - 4}px,${c1y - 4}px,0)` });
+    setElementStyle(control2, { transform: `translate3d(0,${c2y - 4}px,0)` });
+    setElementStyle(control3, { transform: `translate3d(0,${c3y - 4}px,0)` });
   }
 
   /**
@@ -3529,16 +3561,16 @@ class ColorPicker {
       value: oldColor, format, inputs, color, hsl,
     } = self;
     const [i1, i2, i3, i4] = inputs;
-    const alpha = Math.round(color.a * 100);
-    const hue = Math.round(hsl.h * 360);
+    const alpha = roundPart(color.a * 100);
+    const hue = roundPart(hsl.h * 360);
     let newColor;
 
     if (format === 'hex') {
       newColor = self.color.toHexString(true);
       i1.value = self.hex;
     } else if (format === 'hsl') {
-      const lightness = Math.round(hsl.l * 100);
-      const saturation = Math.round(hsl.s * 100);
+      const lightness = roundPart(hsl.l * 100);
+      const saturation = roundPart(hsl.s * 100);
       newColor = self.color.toHslString();
       i1.value = `${hue}`;
       i2.value = `${saturation}`;
@@ -3546,8 +3578,8 @@ class ColorPicker {
       i4.value = `${alpha}`;
     } else if (format === 'hwb') {
       const { w, b } = self.hwb;
-      const whiteness = Math.round(w * 100);
-      const blackness = Math.round(b * 100);
+      const whiteness = roundPart(w * 100);
+      const blackness = roundPart(b * 100);
 
       newColor = self.color.toHwbString();
       i1.value = `${hue}`;
@@ -3619,7 +3651,7 @@ class ColorPicker {
     const self = this;
     const { colorPicker } = self;
 
-    if (!hasClass(colorPicker, 'show')) {
+    if (!['top', 'bottom'].some((c) => hasClass(colorPicker, c))) {
       showDropdown(self, colorPicker);
     }
   }
@@ -3633,21 +3665,6 @@ class ColorPicker {
       self.hide(true);
     } else {
       showDropdown(self, colorMenu);
-    }
-  }
-
-  /** Shows the `ColorPicker` dropdown or the presets menu. */
-  show() {
-    const self = this;
-    const { menuToggle } = self;
-    if (!self.isOpen) {
-      toggleEventsOnShown(self, true);
-      self.updateDropdownPosition();
-      self.isOpen = true;
-      setAttribute(self.input, 'tabindex', '0');
-      if (menuToggle) {
-        setAttribute(menuToggle, 'tabindex', '0');
-      }
     }
   }
 
@@ -3685,9 +3702,9 @@ class ColorPicker {
       if (!focusPrevented) {
         focus(pickerToggle);
       }
-      setAttribute(input, 'tabindex', '-1');
+      setAttribute(input, tabIndex, '-1');
       if (menuToggle) {
-        setAttribute(menuToggle, 'tabindex', '-1');
+        setAttribute(menuToggle, tabIndex, '-1');
       }
     }
   }
@@ -3701,7 +3718,10 @@ class ColorPicker {
     [...parent.children].forEach((el) => {
       if (el !== input) el.remove();
     });
+
+    removeAttribute(input, tabIndex);
     setElementStyle(input, { backgroundColor: '' });
+
     ['txt-light', 'txt-dark'].forEach((c) => removeClass(parent, c));
     Data.remove(input, colorPickerString);
   }
@@ -3709,10 +3729,16 @@ class ColorPicker {
 
 ObjectAssign(ColorPicker, {
   Color,
+  ColorPalette,
   Version,
   getInstance: getColorPickerInstance,
   init: initColorPicker,
   selector: colorPickerSelector,
+  // utils important for render
+  roundPart,
+  setElementStyle,
+  setAttribute,
+  getBoundingClientRect,
 });
 
 let CPID = 0;
@@ -3720,8 +3746,9 @@ let CPID = 0;
 /**
  * `ColorPickerElement` Web Component.
  * @example
- * <color-picker>
- *   <input type="text">
+ * <label for="UNIQUE_ID">Label</label>
+ * <color-picker data-format="hex" data-value="#075">
+ *   <input id="UNIQUE_ID" type="text" class="color-preview btn-appearance">
  * </color-picker>
  */
 class ColorPickerElement extends HTMLElement {
@@ -3802,6 +3829,8 @@ class ColorPickerElement extends HTMLElement {
 ObjectAssign(ColorPickerElement, {
   Color,
   ColorPicker,
+  ColorPalette,
+  getInstance: getColorPickerInstance,
   Version,
 });
 

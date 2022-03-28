@@ -4,6 +4,8 @@ import ariaValueMax from 'shorter-js/src/strings/ariaValueMax';
 import createElement from 'shorter-js/src/misc/createElement';
 import setAttribute from 'shorter-js/src/attr/setAttribute';
 
+import tabIndex from './tabindex';
+
 /**
  * Returns all color controls for `ColorPicker`.
  *
@@ -69,10 +71,8 @@ export default function getColorControls(self) {
     const {
       i, c, l, min, max,
     } = template;
-    // const hidden = i === 2 && format === 'hwb' ? ' v-hidden' : '';
     const control = createElement({
       tagName: 'div',
-      // className: `color-control${hidden}`,
       className: 'color-control',
     });
     setAttribute(control, 'role', 'presentation');
@@ -92,7 +92,7 @@ export default function getColorControls(self) {
 
     setAttribute(knob, ariaLabel, l);
     setAttribute(knob, 'role', 'slider');
-    setAttribute(knob, 'tabindex', '0');
+    setAttribute(knob, tabIndex, '0');
     setAttribute(knob, ariaValueMin, `${min}`);
     setAttribute(knob, ariaValueMax, `${max}`);
     control.append(knob);
