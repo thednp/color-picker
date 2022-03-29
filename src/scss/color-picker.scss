@@ -180,11 +180,9 @@ color-picker:focus,
   display: none;
   flex-wrap: wrap;
   flex-flow: column;
-  // max-height: 160px;
   margin: 0;
-  // overflow-y: auto;
   list-style: none;
-  padding-inline: 0;
+  padding-inline: 0; // Firefox
 }
 
 .color-dropdown.menu .color-defaults,
@@ -258,7 +256,6 @@ color-picker:focus,
   height: var(--grid-item-size);
   overflow: hidden;
   text-indent: 2.1rem;
-  // background: #eee;
 }
 .color-options .color-option:active,
 .color-options .color-option:focus {
@@ -309,7 +306,6 @@ color-picker:focus,
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
-  // max-width: fit-content;
   padding: .25rem 0 0;
   font: 12px sans-serif;
 }
@@ -396,8 +392,9 @@ color-picker:focus,
   user-select: none;
   background-color: #000;
   border: 1px solid #fff;
+  border-radius: 5px;
   outline: none;
-  // will-change: transform;
+  will-change: transform;
 }
 .knob:hover {
   box-shadow: 0 0 0 6px rgba(255,255,255,.5);
@@ -413,7 +410,6 @@ color-picker:focus,
   width: 7px;
   background-color: transparent;
   border: 0;
-  border-radius: 5px;
 }
 
 .txt-dark .color-pointer {

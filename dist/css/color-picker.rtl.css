@@ -1,5 +1,5 @@
 /*!
-* ColorPicker v0.0.1alpha3 (http://thednp.github.io/color-picker)
+* ColorPicker v0.0.1 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -443,7 +443,9 @@ color-picker:focus,
   user-select: none;
   background-color: #000;
   border: 1px solid #fff;
+  border-radius: 5px;
   outline: none;
+  will-change: transform;
 }
 
 .knob:hover {
@@ -461,7 +463,6 @@ color-picker:focus,
   width: 7px;
   background-color: transparent;
   border: 0;
-  border-radius: 5px;
 }
 
 .txt-dark .color-pointer {

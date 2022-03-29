@@ -1,5 +1,5 @@
 /*!
-* ColorPicker v0.0.1alpha3 (http://thednp.github.io/color-picker)
+* ColorPicker v0.0.1 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -1708,9 +1708,9 @@ function inputToRGB(input) {
   if (typeof color === 'object') {
     if (isValidCSSUnit(color.r) && isValidCSSUnit(color.g) && isValidCSSUnit(color.b)) {
       ({ r, g, b } = color);
-      [r, g, b] = [...[r, g, b]]
-        .map((n) => bound01(n, isPercentage(n) ? 100 : 255) * 255).map(roundPart);
-      rgb = { r, g, b }; // RGB values now are all in [0, 255] range
+      // RGB values now are all in [0, 255] range
+      [r, g, b] = [r, g, b].map((n) => bound01(n, isPercentage(n) ? 100 : 255) * 255);
+      rgb = { r, g, b };
       ok = true;
       format = 'rgb';
     } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
@@ -1865,13 +1865,9 @@ class Color {
     const {
       r, g, b, a,
     } = this;
-    const [R, G, B] = [r, g, b].map((x) => roundPart(x));
 
     return {
-      r: R,
-      g: G,
-      b: B,
-      a: roundPart(a * 100) / 100,
+      r, g, b, a: roundPart(a * 100) / 100,
     };
   }
 
@@ -1885,10 +1881,11 @@ class Color {
     const {
       r, g, b, a,
     } = this.toRgb();
+    const [R, G, B] = [r, g, b].map(roundPart);
 
     return a === 1
-      ? `rgb(${r}, ${g}, ${b})`
-      : `rgba(${r}, ${g}, ${b}, ${a})`;
+      ? `rgb(${R}, ${G}, ${B})`
+      : `rgba(${R}, ${G}, ${B}, ${a})`;
   }
 
   /**
@@ -1901,9 +1898,10 @@ class Color {
     const {
       r, g, b, a,
     } = this.toRgb();
+    const [R, G, B] = [r, g, b].map(roundPart);
     const A = a === 1 ? '' : ` / ${roundPart(a * 100)}%`;
 
-    return `rgb(${r} ${g} ${b}${A})`;
+    return `rgb(${R} ${G} ${B}${A})`;
   }
 
   /**
@@ -2361,7 +2359,7 @@ function isValidJSON(str) {
   return true;
 }
 
-var version = "0.0.1alpha3";
+var version = "0.0.1";
 
 // @ts-ignore
 
@@ -3132,30 +3130,41 @@ class ColorPicker {
     if (![keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight].includes(code)) return;
     e.preventDefault();
 
-    const { controlKnobs } = self;
+    const { format, controlKnobs, visuals } = self;
+    const { offsetWidth, offsetHeight } = visuals[0];
     const [c1, c2, c3] = controlKnobs;
     const { activeElement } = getDocument(c1);
     const currentKnob = controlKnobs.find((x) => x === activeElement);
+    const yRatio = offsetHeight / (format === 'hsl' ? 100 : 360);
 
     if (currentKnob) {
       let offsetX = 0;
       let offsetY = 0;
+
       if (target === c1) {
+        const xRatio = offsetWidth / (format === 'hsl' ? 360 : 100);
+
         if ([keyArrowLeft, keyArrowRight].includes(code)) {
-          self.controlPositions.c1x += code === keyArrowRight ? +1 : -1;
+          self.controlPositions.c1x += code === keyArrowRight ? xRatio : -xRatio;
         } else if ([keyArrowUp, keyArrowDown].includes(code)) {
-          self.controlPositions.c1y += code === keyArrowDown ? +1 : -1;
+          self.controlPositions.c1y += code === keyArrowDown ? yRatio : -yRatio;
         }
 
         offsetX = self.controlPositions.c1x;
         offsetY = self.controlPositions.c1y;
         self.changeControl1(offsetX, offsetY);
       } else if (target === c2) {
-        self.controlPositions.c2y += [keyArrowDown, keyArrowRight].includes(code) ? +1 : -1;
+        self.controlPositions.c2y += [keyArrowDown, keyArrowRight].includes(code)
+          ? yRatio
+          : -yRatio;
+
         offsetY = self.controlPositions.c2y;
         self.changeControl2(offsetY);
       } else if (target === c3) {
-        self.controlPositions.c3y += [keyArrowDown, keyArrowRight].includes(code) ? +1 : -1;
+        self.controlPositions.c3y += [keyArrowDown, keyArrowRight].includes(code)
+          ? yRatio
+          : -yRatio;
+
         offsetY = self.controlPositions.c3y;
         self.changeAlpha(offsetY);
       }
@@ -3527,10 +3536,12 @@ class ColorPicker {
   /** Updates the control knobs actual positions. */
   updateControls() {
     const { controlKnobs, controlPositions } = this;
-    const {
+    let {
       c1x, c1y, c2y, c3y,
     } = controlPositions;
     const [control1, control2, control3] = controlKnobs;
+    // round control positions
+    [c1x, c1y, c2y, c3y] = [c1x, c1y, c2y, c3y].map(roundPart);
 
     setElementStyle(control1, { transform: `translate3d(${c1x - 4}px,${c1y - 4}px,0)` });
     setElementStyle(control2, { transform: `translate3d(0,${c2y - 4}px,0)` });
@@ -3573,7 +3584,8 @@ class ColorPicker {
       i3.value = `${blackness}`;
       i4.value = `${alpha}`;
     } else if (format === 'rgb') {
-      const { r, g, b } = self.rgb;
+      let { r, g, b } = self.rgb;
+      [r, g, b] = [r, g, b].map(roundPart);
 
       newColor = self.color.toRgbString();
       i1.value = `${r}`;

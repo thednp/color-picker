@@ -631,9 +631,9 @@ function inputToRGB(input) {
   if (typeof color === 'object') {
     if (isValidCSSUnit(color.r) && isValidCSSUnit(color.g) && isValidCSSUnit(color.b)) {
       ({ r, g, b } = color);
-      [r, g, b] = [...[r, g, b]]
-        .map((n) => bound01(n, isPercentage(n) ? 100 : 255) * 255).map(roundPart);
-      rgb = { r, g, b }; // RGB values now are all in [0, 255] range
+      // RGB values now are all in [0, 255] range
+      [r, g, b] = [r, g, b].map((n) => bound01(n, isPercentage(n) ? 100 : 255) * 255);
+      rgb = { r, g, b };
       ok = true;
       format = 'rgb';
     } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
@@ -788,13 +788,9 @@ export default class Color {
     const {
       r, g, b, a,
     } = this;
-    const [R, G, B] = [r, g, b].map((x) => roundPart(x));
 
     return {
-      r: R,
-      g: G,
-      b: B,
-      a: roundPart(a * 100) / 100,
+      r, g, b, a: roundPart(a * 100) / 100,
     };
   }
 
@@ -808,10 +804,11 @@ export default class Color {
     const {
       r, g, b, a,
     } = this.toRgb();
+    const [R, G, B] = [r, g, b].map(roundPart);
 
     return a === 1
-      ? `rgb(${r}, ${g}, ${b})`
-      : `rgba(${r}, ${g}, ${b}, ${a})`;
+      ? `rgb(${R}, ${G}, ${B})`
+      : `rgba(${R}, ${G}, ${B}, ${a})`;
   }
 
   /**
@@ -824,9 +821,10 @@ export default class Color {
     const {
       r, g, b, a,
     } = this.toRgb();
+    const [R, G, B] = [r, g, b].map(roundPart);
     const A = a === 1 ? '' : ` / ${roundPart(a * 100)}%`;
 
-    return `rgb(${r} ${g} ${b}${A})`;
+    return `rgb(${R} ${G} ${B}${A})`;
   }
 
   /**
