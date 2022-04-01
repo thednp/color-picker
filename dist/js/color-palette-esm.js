@@ -1,11 +1,86 @@
-import getDocumentHead from 'shorter-js/src/get/getDocumentHead';
-import getElementStyle from 'shorter-js/src/get/getElementStyle';
-import setElementStyle from 'shorter-js/src/misc/setElementStyle';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import toLowerCase from 'shorter-js/src/misc/toLowerCase';
+/*!
+* ColorPalette v0.0.2alpha1 (http://thednp.github.io/color-picker)
+* Copyright 2022 © thednp
+* Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
+*/
+/**
+ * Round colour components, for all formats except HEX.
+ * @param {number} v one of the colour components
+ * @returns {number} the rounded number
+ */
+function roundPart(v) {
+  const floor = Math.floor(v);
+  return v - floor < 0.5 ? floor : Math.round(v);
+}
 
-import nonColors from './util/nonColors';
-import roundPart from './util/roundPart';
+/**
+ * Returns the `document` or the `#document` element.
+ * @see https://github.com/floating-ui/floating-ui
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {Document}
+ */
+function getDocument(node) {
+  if (node instanceof HTMLElement) return node.ownerDocument;
+  if (node instanceof Window) return node.document;
+  return window.document;
+}
+
+/**
+ * Returns the `document.head` or the `<head>` element.
+ *
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {HTMLElement | HTMLHeadElement}
+ */
+function getDocumentHead(node) {
+  return getDocument(node).head;
+}
+
+/**
+ * Shortcut for `window.getComputedStyle(element).propertyName`
+ * static method.
+ *
+ * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
+ * throws a `ReferenceError`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} property the css property
+ * @return {string} the css property value
+ */
+function getElementStyle(element, property) {
+  const computedStyle = getComputedStyle(element);
+
+  // @ts-ignore -- must use camelcase strings,
+  // or non-camelcase strings with `getPropertyValue`
+  return property in computedStyle ? computedStyle[property] : '';
+}
+
+/**
+ * Shortcut for `Object.assign()` static method.
+ * @param  {Record<string, any>} obj a target object
+ * @param  {Record<string, any>} source a source object
+ */
+const ObjectAssign = (obj, source) => Object.assign(obj, source);
+
+/**
+ * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {Partial<CSSStyleDeclaration>} styles attribute value
+ */
+// @ts-ignore
+const setElementStyle = (element, styles) => ObjectAssign(element.style, styles);
+
+/**
+ * Shortcut for `String.toLowerCase()`.
+ *
+ * @param {string} source input string
+ * @returns {string} lowercase output string
+ */
+const toLowerCase = (source) => source.toLowerCase();
+
+/**
+ * A list of explicit default non-color values.
+ */
+const nonColors = ['transparent', 'currentColor', 'inherit', 'revert', 'initial'];
 
 // Color supported formats
 const COLOR_FORMAT = ['rgb', 'hex', 'hsl', 'hsv', 'hwb'];
@@ -254,7 +329,6 @@ function rgbToHsl(R, G, B) {
       case b:
         h = (r - g) / d + 4;
         break;
-      default:
     }
     h /= 6;
   }
@@ -401,7 +475,6 @@ function rgbToHsv(R, G, B) {
       case b:
         h = (r - g) / d + 4;
         break;
-      default:
     }
     h /= 6;
   }
@@ -688,7 +761,7 @@ function inputToRGB(input) {
  * Returns a new `Color` instance.
  * @see https://github.com/bgrins/TinyColor
  */
-export default class Color {
+class Color {
   /**
    * @constructor
    * @param {CP.ColorInput} input the given colour value
@@ -1129,3 +1202,74 @@ ObjectAssign(Color, {
   getElementStyle,
   ObjectAssign,
 });
+
+/**
+ * @class
+ * Returns a color palette with a given set of parameters.
+ * @example
+ * new ColorPalette(0, 12, 10);
+ * // => { hue: 0, hueSteps: 12, lightSteps: 10, colors: array }
+ */
+class ColorPalette {
+  /**
+   * The `hue` parameter is optional, which would be set to 0.
+   * @param {number[]} args represeinting hue, hueSteps, lightSteps
+   * * `args.hue` the starting Hue [0, 360]
+   * * `args.hueSteps` Hue Steps Count [5, 24]
+   * * `args.lightSteps` Lightness Steps Count [5, 12]
+   */
+  constructor(...args) {
+    let hue = 0;
+    let hueSteps = 12;
+    let lightSteps = 10;
+    let lightnessArray = [0.5];
+
+    if (args.length === 3) {
+      [hue, hueSteps, lightSteps] = args;
+    } else if (args.length === 2) {
+      [hueSteps, lightSteps] = args;
+    } else {
+      throw TypeError('ColorPalette requires minimum 2 arguments');
+    }
+
+    /** @type {Color[]} */
+    const colors = [];
+
+    const hueStep = 360 / hueSteps;
+    const half = roundPart((lightSteps - (lightSteps % 2 ? 1 : 0)) / 2);
+    const estimatedStep = 100 / (lightSteps + (lightSteps % 2 ? 0 : 1)) / 100;
+
+    let lightStep = 0.25;
+    lightStep = [4, 5].includes(lightSteps) ? 0.2 : lightStep;
+    lightStep = [6, 7].includes(lightSteps) ? 0.15 : lightStep;
+    lightStep = [8, 9].includes(lightSteps) ? 0.11 : lightStep;
+    lightStep = [10, 11].includes(lightSteps) ? 0.09 : lightStep;
+    lightStep = [12, 13].includes(lightSteps) ? 0.075 : lightStep;
+    lightStep = lightSteps > 13 ? estimatedStep : lightStep;
+
+    // light tints
+    for (let i = 1; i < half + 1; i += 1) {
+      lightnessArray = [...lightnessArray, (0.5 + lightStep * (i))];
+    }
+
+    // dark tints
+    for (let i = 1; i < lightSteps - half; i += 1) {
+      lightnessArray = [(0.5 - lightStep * (i)), ...lightnessArray];
+    }
+
+    // feed `colors` Array
+    for (let i = 0; i < hueSteps; i += 1) {
+      const currentHue = ((hue + i * hueStep) % 360) / 360;
+      lightnessArray.forEach((l) => {
+        colors.push(new Color({ h: currentHue, s: 1, l }));
+      });
+    }
+
+    this.hue = hue;
+    this.hueSteps = hueSteps;
+    this.lightSteps = lightSteps;
+    this.colors = colors;
+  }
+}
+
+export default ColorPalette;

@@ -5,6 +5,7 @@ The feature rich **ColorPicker** component for the modern web built with TypeScr
 
 [![NPM Version](https://img.shields.io/npm/v/@thednp/color-picker.svg?style=flat-square)](https://www.npmjs.com/package/@thednp/color-picker)
 [![NPM Downloads](https://img.shields.io/npm/dm/@thednp/color-picker.svg?style=flat-square)](http://npm-stat.com/charts.html?package=@thednp/color-picker)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/@thednp/color-picker?style=flat-square)](https://bundlephobia.com/package/@thednp/color-picker@0.0.1)
 [![jsDeliver](https://data.jsdelivr.com/v1/package/npm/@thednp/color-picker/badge)](https://www.jsdelivr.com/package/npm/@thednp/color-picker)
 
 **ColorPicker** can use existing colour palettes or generate custom ones via DATA API configuration. If you want to play, check out [this codepen](https://codepen.io/thednp/pen/WNdRWPN) I've setup for you. Have fun!

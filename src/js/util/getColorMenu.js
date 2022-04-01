@@ -43,7 +43,8 @@ export default function getColorMenu(self, colorsSource, menuClass) {
   optionSize = fit > 5 && isMultiLine ? 1.5 : optionSize;
   const menuHeight = `${(rowCount || 1) * optionSize}rem`;
   const menuHeightHover = `calc(${rowCountHover} * ${optionSize}rem + ${rowCountHover - 1} * ${gap})`;
-
+  /** @type {HTMLUListElement} */
+  // @ts-ignore -- <UL> is an `HTMLElement`
   const menu = createElement({
     tagName: 'ul',
     className: finalClass,
@@ -51,7 +52,7 @@ export default function getColorMenu(self, colorsSource, menuClass) {
   setAttribute(menu, 'role', 'listbox');
   setAttribute(menu, ariaLabel, menuLabel);
 
-  if (isScrollable) { // @ts-ignore
+  if (isScrollable) {
     setCSSProperties(menu, {
       '--grid-item-size': `${optionSize}rem`,
       '--grid-fit': fit,
@@ -62,15 +63,19 @@ export default function getColorMenu(self, colorsSource, menuClass) {
   }
 
   colorsArray.forEach((x) => {
-    const [value, label] = x.trim().split(':');
-    const xRealColor = new Color(value, format).toString();
-    const isActive = xRealColor === getAttribute(input, 'value');
+    let [value, label] = typeof x === 'string' ? x.trim().split(':') : [];
+    if (x instanceof Color) {
+      value = x.toHexString();
+      label = value;
+    }
+    const color = new Color(x instanceof Color ? x : value, format);
+    const isActive = color.toString() === getAttribute(input, 'value');
     const active = isActive ? ' active' : '';
 
     const option = createElement({
       tagName: 'li',
       className: `color-option${active}`,
-      innerText: `${label || x}`,
+      innerText: `${label || value}`,
     });
 
     setAttribute(option, tabIndex, '0');
@@ -79,7 +84,7 @@ export default function getColorMenu(self, colorsSource, menuClass) {
     setAttribute(option, ariaSelected, isActive ? 'true' : 'false');
 
     if (isOptionsMenu) {
-      setElementStyle(option, { backgroundColor: x });
+      setElementStyle(option, { backgroundColor: value });
     }
 
     menu.append(option);

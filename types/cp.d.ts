@@ -5,14 +5,21 @@ declare module "color-picker/src/js/util/nonColors" {
      */
     const nonColors: string[];
 }
+declare module "color-picker/src/js/util/roundPart" {
+    /**
+     * Round colour components, for all formats except HEX.
+     * @param {number} v one of the colour components
+     * @returns {number} the rounded number
+     */
+    export default function roundPart(v: number): number;
+}
 declare module "color-picker/src/js/color" {
-    export default Color;
     /**
      * @class
      * Returns a new `Color` instance.
      * @see https://github.com/bgrins/TinyColor
      */
-    class Color {
+    export default class Color {
         /**
          * @constructor
          * @param {CP.ColorInput} input the given colour value
@@ -202,15 +209,16 @@ declare module "color-picker/src/js/color-palette" {
          * The `hue` parameter is optional, which would be set to 0.
          * @param {number[]} args represeinting hue, hueSteps, lightSteps
          * * `args.hue` the starting Hue [0, 360]
-         * * `args.hueSteps` Hue Steps Count [5, 13]
-         * * `args.lightSteps` Lightness Steps Count [8, 10]
+         * * `args.hueSteps` Hue Steps Count [5, 24]
+         * * `args.lightSteps` Lightness Steps Count [5, 12]
          */
         constructor(...args: number[]);
         hue: number;
         hueSteps: number;
         lightSteps: number;
-        colors: string[];
+        colors: Color[];
     }
+    import Color from "color-picker/src/js/color";
 }
 declare module "color-picker/src/js/util/colorPickerLabels" {
     export default colorPickerLabels;
@@ -224,6 +232,22 @@ declare module "color-picker/src/js/util/colorNames" {
      * @type {string[]}
      */
     const colorNames: string[];
+}
+declare module "color-picker/src/js/util/tabindex" {
+    export default tabIndex;
+    const tabIndex: "tabindex";
+}
+declare module "color-picker/src/js/util/isValidJSON" {
+    /**
+     * Check if a string is valid JSON string.
+     * @param {string} str the string input
+     * @returns {boolean} the query result
+     */
+    export default function isValidJSON(str: string): boolean;
+}
+declare module "color-picker/src/js/version" {
+    export default Version;
+    const Version: string;
 }
 declare module "color-picker/src/js/util/vHidden" {
     export default vHidden;
@@ -247,6 +271,14 @@ declare module "color-picker/src/js/util/getColorControls" {
      */
     export default function getColorControls(self: CP.ColorPicker): HTMLElement | Element;
 }
+declare module "color-picker/src/js/util/setCSSProperties" {
+    /**
+     * Helps setting CSS variables to the color-menu.
+     * @param {HTMLElement} element
+     * @param {Record<string,any>} props
+     */
+    export default function setCSSProperties(element: HTMLElement, props: Record<string, any>): void;
+}
 declare module "color-picker/src/js/util/getColorMenu" {
     /**
      * Returns a color-defaults with given values and class.
@@ -257,19 +289,16 @@ declare module "color-picker/src/js/util/getColorMenu" {
      */
     export default function getColorMenu(self: CP.ColorPicker, colorsSource: CP.ColorPalette | string[], menuClass: string): HTMLElement | Element;
 }
-declare module "color-picker/src/js/util/isValidJSON" {
+declare module "color-picker/src/js/util/setMarkup" {
     /**
-     * Check if a string is valid JSON string.
-     * @param {string} str the string input
-     * @returns {boolean} the query result
-     */
-    export default function isValidJSON(str: string): boolean;
-}
-declare module "color-picker/src/js/version" {
-    export default Version;
-    const Version: string;
+    * Generate HTML markup and update instance properties.
+    * @param {CP.ColorPicker} self
+    */
+    export default function setMarkup(self: CP.ColorPicker): void;
 }
 declare module "color-picker/src/js/color-picker" {
+    /** @type {CP.GetInstance<ColorPicker>} */
+    export const getColorPickerInstance: CP.GetInstance<ColorPicker>;
     /**
      * Color Picker Web Component
      * @see http://thednp.github.io/color-picker
@@ -482,8 +511,9 @@ declare module "color-picker/src/js/color-picker-element" {
     /**
      * `ColorPickerElement` Web Component.
      * @example
-     * <color-picker>
-     *   <input type="text">
+     * <label for="UNIQUE_ID">Label</label>
+     * <color-picker data-format="hex" data-value="#075">
+     *   <input id="UNIQUE_ID" type="text" class="color-preview btn-appearance">
      * </color-picker>
      */
     class ColorPickerElement extends HTMLElement {

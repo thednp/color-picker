@@ -1,5 +1,5 @@
 /*!
-* ColorPicker v0.0.1 (http://thednp.github.io/color-picker)
+* ColorPicker v0.0.2alpha1 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -136,24 +136,6 @@
   const ariaValueNow = 'aria-valuenow';
 
   /**
-   * A global namespace for aria-haspopup.
-   * @type {string}
-   */
-  const ariaHasPopup = 'aria-haspopup';
-
-  /**
-   * A global namespace for aria-hidden.
-   * @type {string}
-   */
-  const ariaHidden = 'aria-hidden';
-
-  /**
-   * A global namespace for aria-labelledby.
-   * @type {string}
-   */
-  const ariaLabelledBy = 'aria-labelledby';
-
-  /**
    * A global namespace for `ArrowDown` key.
    * @type {string} e.which = 40 equivalent
    */
@@ -278,37 +260,6 @@
    * @type {string}
    */
   const focusoutEvent = 'focusout';
-
-  // @ts-ignore
-  const { userAgentData: uaDATA } = navigator;
-
-  /**
-   * A global namespace for `userAgentData` object.
-   */
-  const userAgentData = uaDATA;
-
-  const { userAgent: userAgentString } = navigator;
-
-  /**
-   * A global namespace for `navigator.userAgent` string.
-   */
-  const userAgent = userAgentString;
-
-  const mobileBrands = /iPhone|iPad|iPod|Android/i;
-  let isMobileCheck = false;
-
-  if (userAgentData) {
-    isMobileCheck = userAgentData.brands
-      .some((/** @type {Record<String, any>} */x) => mobileBrands.test(x.brand));
-  } else {
-    isMobileCheck = mobileBrands.test(userAgent);
-  }
-
-  /**
-   * A global `boolean` for mobile detection.
-   * @type {boolean}
-   */
-  const isMobile = isMobileCheck;
 
   /**
    * Returns the `document` or the `#document` element.
@@ -531,66 +482,19 @@
   }
 
   /**
-   * Shortcut for `Object.assign()` static method.
-   * @param  {Record<string, any>} obj a target object
-   * @param  {Record<string, any>} source a source object
-   */
-  const ObjectAssign = (obj, source) => Object.assign(obj, source);
-
-  /**
-   * This is a shortie for `document.createElement` method
-   * which allows you to create a new `HTMLElement` for a given `tagName`
-   * or based on an object with specific non-readonly attributes:
-   * `id`, `className`, `textContent`, `style`, etc.
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
-   *
-   * @param {Record<string, string> | string} param `tagName` or object
-   * @return {HTMLElement | Element} a new `HTMLElement` or `Element`
-   */
-  function createElement(param) {
-    if (typeof param === 'string') {
-      return getDocument().createElement(param);
-    }
-
-    const { tagName } = param;
-    const attr = { ...param };
-    const newElement = createElement(tagName);
-    delete attr.tagName;
-    ObjectAssign(newElement, attr);
-    return newElement;
-  }
-
-  /**
-   * This is a shortie for `document.createElementNS` method
-   * which allows you to create a new `HTMLElement` for a given `tagName`
-   * or based on an object with specific non-readonly attributes:
-   * `id`, `className`, `textContent`, `style`, etc.
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
-   *
-   * @param {string} namespace `namespaceURI` to associate with the new `HTMLElement`
-   * @param {Record<string, string> | string} param `tagName` or object
-   * @return {HTMLElement | Element} a new `HTMLElement` or `Element`
-   */
-  function createElementNS(namespace, param) {
-    if (typeof param === 'string') {
-      return getDocument().createElementNS(namespace, param);
-    }
-
-    const { tagName } = param;
-    const attr = { ...param };
-    const newElement = createElementNS(namespace, tagName);
-    delete attr.tagName;
-    ObjectAssign(newElement, attr);
-    return newElement;
-  }
-
-  /**
    * Shortcut for the `Element.dispatchEvent(Event)` method.
    *
    * @param {HTMLElement | Element} element is the target
    * @param {Event} event is the `Event` object
    */
   const dispatchEvent = (element, event) => element.dispatchEvent(event);
+
+  /**
+   * Shortcut for `Object.assign()` static method.
+   * @param  {Record<string, any>} obj a target object
+   * @param  {Record<string, any>} source a source object
+   */
+  const ObjectAssign = (obj, source) => Object.assign(obj, source);
 
   /** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
   const componentData = new Map();
@@ -875,210 +779,20 @@
    */
   const nonColors = ['transparent', 'currentColor', 'inherit', 'revert', 'initial'];
 
-  /**
-   * Shortcut for `String.toUpperCase()`.
-   *
-   * @param {string} source input string
-   * @returns {string} uppercase output string
-   */
-  const toUpperCase = (source) => source.toUpperCase();
-
-  const vHidden = 'v-hidden';
-
-  /**
-   * Returns the color form for `ColorPicker`.
-   *
-   * @param {CP.ColorPicker} self the `ColorPicker` instance
-   * @returns {HTMLElement | Element} a new `<div>` element with color component `<input>`
-   */
-  function getColorForm(self) {
-    const { format, id, componentLabels } = self;
-    const colorForm = createElement({
-      tagName: 'div',
-      className: `color-form ${format}`,
-    });
-
-    let components = ['hex'];
-    if (format === 'rgb') components = ['red', 'green', 'blue', 'alpha'];
-    else if (format === 'hsl') components = ['hue', 'saturation', 'lightness', 'alpha'];
-    else if (format === 'hwb') components = ['hue', 'whiteness', 'blackness', 'alpha'];
-
-    components.forEach((c) => {
-      const [C] = format === 'hex' ? ['#'] : toUpperCase(c).split('');
-      const cID = `color_${format}_${c}_${id}`;
-      const formatLabel = componentLabels[`${c}Label`];
-      const cInputLabel = createElement({ tagName: 'label' });
-      setAttribute(cInputLabel, 'for', cID);
-      cInputLabel.append(
-        createElement({ tagName: 'span', ariaHidden: 'true', innerText: `${C}:` }),
-        createElement({ tagName: 'span', className: vHidden, innerText: formatLabel }),
-      );
-      const cInput = createElement({
-        tagName: 'input',
-        id: cID,
-        // name: cID, - prevent saving the value to a form
-        type: format === 'hex' ? 'text' : 'number',
-        value: c === 'alpha' ? '100' : '0',
-        className: `color-input ${c}`,
-      });
-      setAttribute(cInput, 'autocomplete', 'off');
-      setAttribute(cInput, 'spellcheck', 'false');
-
-      // alpha
-      let max = '100';
-      let step = '1';
-      if (c !== 'alpha') {
-        if (format === 'rgb') {
-          max = '255'; step = '1';
-        } else if (c === 'hue') {
-          max = '360'; step = '1';
-        }
-      }
-      ObjectAssign(cInput, {
-        min: '0',
-        max,
-        step,
-      });
-      colorForm.append(cInputLabel, cInput);
-    });
-    return colorForm;
-  }
-
-  /**
-   * A global namespace for aria-label.
-   * @type {string}
-   */
-  const ariaLabel = 'aria-label';
-
-  /**
-   * A global namespace for aria-valuemin.
-   * @type {string}
-   */
-  const ariaValueMin = 'aria-valuemin';
-
-  /**
-   * A global namespace for aria-valuemax.
-   * @type {string}
-   */
-  const ariaValueMax = 'aria-valuemax';
-
   const tabIndex = 'tabindex';
 
   /**
-   * Returns all color controls for `ColorPicker`.
-   *
-   * @param {CP.ColorPicker} self the `ColorPicker` instance
-   * @returns {HTMLElement | Element} color controls
+   * Check if a string is valid JSON string.
+   * @param {string} str the string input
+   * @returns {boolean} the query result
    */
-  function getColorControls(self) {
-    const { format, componentLabels } = self;
-    const {
-      hueLabel, alphaLabel, lightnessLabel, saturationLabel,
-      whitenessLabel, blacknessLabel,
-    } = componentLabels;
-
-    const max1 = format === 'hsl' ? 360 : 100;
-    const max2 = format === 'hsl' ? 100 : 360;
-    const max3 = 100;
-
-    let ctrl1Label = format === 'hsl'
-      ? `${hueLabel} & ${lightnessLabel}`
-      : `${lightnessLabel} & ${saturationLabel}`;
-
-    ctrl1Label = format === 'hwb'
-      ? `${whitenessLabel} & ${blacknessLabel}`
-      : ctrl1Label;
-
-    const ctrl2Label = format === 'hsl'
-      ? `${saturationLabel}`
-      : `${hueLabel}`;
-
-    const colorControls = createElement({
-      tagName: 'div',
-      className: `color-controls ${format}`,
-    });
-
-    const colorPointer = 'color-pointer';
-    const colorSlider = 'color-slider';
-
-    const controls = [
-      {
-        i: 1,
-        c: colorPointer,
-        l: ctrl1Label,
-        min: 0,
-        max: max1,
-      },
-      {
-        i: 2,
-        c: colorSlider,
-        l: ctrl2Label,
-        min: 0,
-        max: max2,
-      },
-      {
-        i: 3,
-        c: colorSlider,
-        l: alphaLabel,
-        min: 0,
-        max: max3,
-      },
-    ];
-
-    controls.forEach((template) => {
-      const {
-        i, c, l, min, max,
-      } = template;
-      const control = createElement({
-        tagName: 'div',
-        className: 'color-control',
-      });
-      setAttribute(control, 'role', 'presentation');
-
-      control.append(
-        createElement({
-          tagName: 'div',
-          className: `visual-control visual-control${i}`,
-        }),
-      );
-
-      const knob = createElement({
-        tagName: 'div',
-        className: `${c} knob`,
-        ariaLive: 'polite',
-      });
-
-      setAttribute(knob, ariaLabel, l);
-      setAttribute(knob, 'role', 'slider');
-      setAttribute(knob, tabIndex, '0');
-      setAttribute(knob, ariaValueMin, `${min}`);
-      setAttribute(knob, ariaValueMax, `${max}`);
-      control.append(knob);
-      colorControls.append(control);
-    });
-
-    return colorControls;
-  }
-
-  /**
-   * Helps setting CSS variables to the color-menu.
-   * @param {HTMLElement} element
-   * @param {Record<string,any>} props
-   */
-  function setCSSProperties(element, props) {
-    ObjectKeys(props).forEach((prop) => {
-      element.style.setProperty(prop, props[prop]);
-    });
-  }
-
-  /**
-   * Returns the `document.head` or the `<head>` element.
-   *
-   * @param {(Node | HTMLElement | Element | globalThis)=} node
-   * @returns {HTMLElement | HTMLHeadElement}
-   */
-  function getDocumentHead(node) {
-    return getDocument(node).head;
+  function isValidJSON(str) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
 
   /**
@@ -1091,8 +805,18 @@
     return v - floor < 0.5 ? floor : Math.round(v);
   }
 
+  /**
+   * Returns the `document.head` or the `<head>` element.
+   *
+   * @param {(Node | HTMLElement | Element | globalThis)=} node
+   * @returns {HTMLElement | HTMLHeadElement}
+   */
+  function getDocumentHead(node) {
+    return getDocument(node).head;
+  }
+
   // Color supported formats
-  const COLOR_FORMAT = ['rgb', 'hex', 'hsl', 'hsb', 'hwb'];
+  const COLOR_FORMAT = ['rgb', 'hex', 'hsl', 'hsv', 'hwb'];
 
   // Hue angles
   const ANGLES = 'deg|rad|grad|turn';
@@ -1114,10 +838,17 @@
   // Add angles to the mix
   const CSS_UNIT2 = `(?:${CSS_UNIT})|(?:${CSS_ANGLE})`;
 
+  // Start & end
+  const START_MATCH = '(?:[\\s|\\(\\s|\\s\\(\\s]+)?';
+  const END_MATCH = '(?:[\\s|\\)\\s]+)?';
+  // Components separation
+  const SEP = '(?:[,|\\s]+)';
+  const SEP2 = '(?:[,|\\/\\s]*)?';
+
   // Actual matching.
   // Parentheses and commas are optional, but not required.
   // Whitespace can take the place of commas or opening paren
-  const PERMISSIVE_MATCH = `[\\s|\\(]+(${CSS_UNIT2})[,|\\s]+(${CSS_UNIT})[,|\\s]+(${CSS_UNIT})[,|\\s|\\/\\s]*(${CSS_UNIT})?\\s*\\)?`;
+  const PERMISSIVE_MATCH = `${START_MATCH}(${CSS_UNIT2})${SEP}(${CSS_UNIT})${SEP}(${CSS_UNIT})${SEP2}(${CSS_UNIT})?${END_MATCH}`;
 
   const matchers = {
     CSS_UNIT: new RegExp(CSS_UNIT2),
@@ -1161,12 +892,22 @@
 
   /**
    * Check to see if string passed is a web safe colour.
+   * @see https://stackoverflow.com/a/16994164
    * @param {string} color a colour name, EG: *red*
    * @returns {boolean} the query result
    */
   function isColorName(color) {
-    return !['#', ...COLOR_FORMAT].some((s) => color.includes(s))
-      && !/[0-9]/.test(color);
+    if (nonColors.includes(color)
+      || ['#', ...COLOR_FORMAT].some((f) => color.includes(f))) return false;
+
+    const documentHead = getDocumentHead();
+
+    return ['rgb(255, 255, 255)', 'rgb(0, 0, 0)'].every((c) => {
+      setElementStyle(documentHead, { color });
+      const computedColor = getElementStyle(documentHead, 'color');
+      setElementStyle(documentHead, { color: '' });
+      return computedColor !== c;
+    });
   }
 
   /**
@@ -1345,6 +1086,36 @@
   }
 
   /**
+   * Converts an HSL colour value to RGB.
+   *
+   * @param {number} h Hue Angle [0, 1]
+   * @param {number} s Saturation [0, 1]
+   * @param {number} l Lightness Angle [0, 1]
+   * @returns {CP.RGB} {r,g,b} object with [0, 255] ranged values
+   */
+  function hslToRgb(h, s, l) {
+    let r = 0;
+    let g = 0;
+    let b = 0;
+
+    if (s === 0) {
+      // achromatic
+      g = l;
+      b = l;
+      r = l;
+    } else {
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hueToRgb(p, q, h + 1 / 3);
+      g = hueToRgb(p, q, h);
+      b = hueToRgb(p, q, h - 1 / 3);
+    }
+    [r, g, b] = [r, g, b].map((x) => x * 255);
+
+    return { r, g, b };
+  }
+
+  /**
   * Returns an HWB colour object from an RGB colour object.
   * @link https://www.w3.org/TR/css-color-4/#hwb-to-rgb
   * @link http://alvyray.com/Papers/CG/hwb2rgb.htm
@@ -1407,36 +1178,6 @@
   }
 
   /**
-   * Converts an HSL colour value to RGB.
-   *
-   * @param {number} h Hue Angle [0, 1]
-   * @param {number} s Saturation [0, 1]
-   * @param {number} l Lightness Angle [0, 1]
-   * @returns {CP.RGB} {r,g,b} object with [0, 255] ranged values
-   */
-  function hslToRgb(h, s, l) {
-    let r = 0;
-    let g = 0;
-    let b = 0;
-
-    if (s === 0) {
-      // achromatic
-      g = l;
-      b = l;
-      r = l;
-    } else {
-      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-      const p = 2 * l - q;
-      r = hueToRgb(p, q, h + 1 / 3);
-      g = hueToRgb(p, q, h);
-      b = hueToRgb(p, q, h - 1 / 3);
-    }
-    [r, g, b] = [r, g, b].map((x) => x * 255);
-
-    return { r, g, b };
-  }
-
-  /**
    * Converts an RGB colour value to HSV.
    *
    * @param {number} R Red component [0, 255]
@@ -1491,10 +1232,11 @@
     const q = v * (1 - f * s);
     const t = v * (1 - (1 - f) * s);
     const mod = i % 6;
-    const r = [v, q, p, p, t, v][mod];
-    const g = [t, v, v, q, p, p][mod];
-    const b = [p, p, t, v, v, q][mod];
-    return { r: r * 255, g: g * 255, b: b * 255 };
+    let r = [v, q, p, p, t, v][mod];
+    let g = [t, v, v, q, p, p][mod];
+    let b = [p, p, t, v, v, q][mod];
+    [r, g, b] = [r, g, b].map((n) => n * 255);
+    return { r, g, b };
   }
 
   /**
@@ -1518,7 +1260,7 @@
     // Return a 3 character hex if possible
     if (allow3Char && hex[0].charAt(0) === hex[0].charAt(1)
       && hex[1].charAt(0) === hex[1].charAt(1)
-        && hex[2].charAt(0) === hex[2].charAt(1)) {
+      && hex[2].charAt(0) === hex[2].charAt(1)) {
       return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0);
     }
 
@@ -1546,39 +1288,24 @@
     // Return a 4 character hex if possible
     if (allow4Char && hex[0].charAt(0) === hex[0].charAt(1)
       && hex[1].charAt(0) === hex[1].charAt(1)
-        && hex[2].charAt(0) === hex[2].charAt(1)
-          && hex[3].charAt(0) === hex[3].charAt(1)) {
+      && hex[2].charAt(0) === hex[2].charAt(1)
+      && hex[3].charAt(0) === hex[3].charAt(1)) {
       return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0) + hex[3].charAt(0);
     }
     return hex.join('');
   }
 
   /**
-   * Returns a colour object corresponding to a given number.
-   * @param {number} color input number
-   * @returns {CP.RGB} {r,g,b} object with [0, 255] ranged values
-   */
-  function numberInputToObject(color) {
-    /* eslint-disable no-bitwise */
-    return {
-      r: color >> 16,
-      g: (color & 0xff00) >> 8,
-      b: color & 0xff,
-    };
-    /* eslint-enable no-bitwise */
-  }
-
-  /**
    * Permissive string parsing. Take in a number of formats, and output an object
    * based on detected format. Returns {r,g,b} or {h,s,l} or {h,s,v}
    * @param {string} input colour value in any format
-   * @returns {Record<string, (number | string)> | false} an object matching the RegExp
+   * @returns {Record<string, (number | string | boolean)> | false} an object matching the RegExp
    */
   function stringInputToObject(input) {
-    let color = input.trim().toLowerCase();
+    let color = toLowerCase(input.trim());
     if (color.length === 0) {
       return {
-        r: 0, g: 0, b: 0, a: 0,
+        r: 0, g: 0, b: 0, a: 1,
       };
     }
     let named = false;
@@ -1586,11 +1313,9 @@
       color = getRGBFromName(color);
       named = true;
     } else if (nonColors.includes(color)) {
-      const isTransparent = color === 'transparent';
-      const rgb = isTransparent ? 0 : 255;
-      const a = isTransparent ? 0 : 1;
+      const a = color === 'transparent' ? 0 : 1;
       return {
-        r: rgb, g: rgb, b: rgb, a, format: 'rgb',
+        r: 0, g: 0, b: 0, a, format: 'rgb', ok: true,
       };
     }
 
@@ -1630,7 +1355,6 @@
         g: parseIntFromHex(m2),
         b: parseIntFromHex(m3),
         a: convertHexToDecimal(m4),
-        // format: named ? 'rgb' : 'hex8',
         format: named ? 'rgb' : 'hex',
       };
     }
@@ -1694,6 +1418,7 @@
   function inputToRGB(input) {
     let rgb = { r: 0, g: 0, b: 0 };
     let color = input;
+    /** @type {string | number} */
     let a = 1;
     let s = null;
     let v = null;
@@ -1704,7 +1429,8 @@
     let r = null;
     let g = null;
     let ok = false;
-    let format = 'hex';
+    const inputFormat = typeof color === 'object' && color.format;
+    let format = inputFormat && COLOR_FORMAT.includes(inputFormat) ? inputFormat : 'rgb';
 
     if (typeof input === 'string') {
       // @ts-ignore -- this now is converted to object
@@ -1745,14 +1471,17 @@
         format = 'hwb';
       }
       if (isValidCSSUnit(color.a)) {
-        a = color.a;
-        a = isPercentage(`${a}`) ? bound01(a, 100) : a;
+        a = color.a; // @ts-ignore -- `parseFloat` works with numbers too
+        a = isPercentage(`${a}`) || parseFloat(a) > 1 ? bound01(a, 100) : a;
       }
+    }
+    if (typeof color === 'undefined') {
+      ok = true;
     }
 
     return {
-      ok, // @ts-ignore
-      format: color.format || format,
+      ok,
+      format,
       r: Math.min(255, Math.max(rgb.r, 0)),
       g: Math.min(255, Math.max(rgb.g, 0)),
       b: Math.min(255, Math.max(rgb.b, 0)),
@@ -1781,7 +1510,8 @@
         color = inputToRGB(color);
       }
       if (typeof color === 'number') {
-        color = numberInputToObject(color);
+        const len = `${color}`.length;
+        color = `#${(len === 2 ? '0' : '00')}${color}`;
       }
       const {
         r, g, b, a, ok, format,
@@ -1791,7 +1521,7 @@
       const self = this;
 
       /** @type {CP.ColorInput} */
-      self.originalInput = color;
+      self.originalInput = input;
       /** @type {number} */
       self.r = r;
       /** @type {number} */
@@ -2181,6 +1911,7 @@
     isOnePointZero,
     isPercentage,
     isValidCSSUnit,
+    isColorName,
     pad2,
     clamp01,
     bound01,
@@ -2198,10 +1929,10 @@
     hueToRgb,
     hwbToRgb,
     parseIntFromHex,
-    numberInputToObject,
     stringInputToObject,
     inputToRGB,
     roundPart,
+    getElementStyle,
     ObjectAssign,
   });
 
@@ -2234,7 +1965,7 @@
         throw TypeError('ColorPalette requires minimum 2 arguments');
       }
 
-      /** @type {string[]} */
+      /** @type {Color[]} */
       const colors = [];
 
       const hueStep = 360 / hueSteps;
@@ -2263,7 +1994,7 @@
       for (let i = 0; i < hueSteps; i += 1) {
         const currentHue = ((hue + i * hueStep) % 360) / 360;
         lightnessArray.forEach((l) => {
-          colors.push(new Color({ h: currentHue, s: 1, l }).toHexString());
+          colors.push(new Color({ h: currentHue, s: 1, l }));
         });
       }
 
@@ -2272,6 +2003,271 @@
       this.lightSteps = lightSteps;
       this.colors = colors;
     }
+  }
+
+  var version = "0.0.2alpha1";
+
+  // @ts-ignore
+
+  const Version = version;
+
+  /**
+   * Shortcut for `String.toUpperCase()`.
+   *
+   * @param {string} source input string
+   * @returns {string} uppercase output string
+   */
+  const toUpperCase = (source) => source.toUpperCase();
+
+  /**
+   * A global namespace for aria-haspopup.
+   * @type {string}
+   */
+  const ariaHasPopup = 'aria-haspopup';
+
+  /**
+   * A global namespace for aria-hidden.
+   * @type {string}
+   */
+  const ariaHidden = 'aria-hidden';
+
+  /**
+   * A global namespace for aria-labelledby.
+   * @type {string}
+   */
+  const ariaLabelledBy = 'aria-labelledby';
+
+  /**
+   * This is a shortie for `document.createElement` method
+   * which allows you to create a new `HTMLElement` for a given `tagName`
+   * or based on an object with specific non-readonly attributes:
+   * `id`, `className`, `textContent`, `style`, etc.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
+   *
+   * @param {Record<string, string> | string} param `tagName` or object
+   * @return {HTMLElement | Element} a new `HTMLElement` or `Element`
+   */
+  function createElement(param) {
+    if (typeof param === 'string') {
+      return getDocument().createElement(param);
+    }
+
+    const { tagName } = param;
+    const attr = { ...param };
+    const newElement = createElement(tagName);
+    delete attr.tagName;
+    ObjectAssign(newElement, attr);
+    return newElement;
+  }
+
+  /**
+   * This is a shortie for `document.createElementNS` method
+   * which allows you to create a new `HTMLElement` for a given `tagName`
+   * or based on an object with specific non-readonly attributes:
+   * `id`, `className`, `textContent`, `style`, etc.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
+   *
+   * @param {string} namespace `namespaceURI` to associate with the new `HTMLElement`
+   * @param {Record<string, string> | string} param `tagName` or object
+   * @return {HTMLElement | Element} a new `HTMLElement` or `Element`
+   */
+  function createElementNS(namespace, param) {
+    if (typeof param === 'string') {
+      return getDocument().createElementNS(namespace, param);
+    }
+
+    const { tagName } = param;
+    const attr = { ...param };
+    const newElement = createElementNS(namespace, tagName);
+    delete attr.tagName;
+    ObjectAssign(newElement, attr);
+    return newElement;
+  }
+
+  const vHidden = 'v-hidden';
+
+  /**
+   * Returns the color form for `ColorPicker`.
+   *
+   * @param {CP.ColorPicker} self the `ColorPicker` instance
+   * @returns {HTMLElement | Element} a new `<div>` element with color component `<input>`
+   */
+  function getColorForm(self) {
+    const { format, id, componentLabels } = self;
+    const colorForm = createElement({
+      tagName: 'div',
+      className: `color-form ${format}`,
+    });
+
+    let components = ['hex'];
+    if (format === 'rgb') components = ['red', 'green', 'blue', 'alpha'];
+    else if (format === 'hsl') components = ['hue', 'saturation', 'lightness', 'alpha'];
+    else if (format === 'hwb') components = ['hue', 'whiteness', 'blackness', 'alpha'];
+
+    components.forEach((c) => {
+      const [C] = format === 'hex' ? ['#'] : toUpperCase(c).split('');
+      const cID = `color_${format}_${c}_${id}`;
+      const formatLabel = componentLabels[`${c}Label`];
+      const cInputLabel = createElement({ tagName: 'label' });
+      setAttribute(cInputLabel, 'for', cID);
+      cInputLabel.append(
+        createElement({ tagName: 'span', ariaHidden: 'true', innerText: `${C}:` }),
+        createElement({ tagName: 'span', className: vHidden, innerText: formatLabel }),
+      );
+      const cInput = createElement({
+        tagName: 'input',
+        id: cID,
+        // name: cID, - prevent saving the value to a form
+        type: format === 'hex' ? 'text' : 'number',
+        value: c === 'alpha' ? '100' : '0',
+        className: `color-input ${c}`,
+      });
+      setAttribute(cInput, 'autocomplete', 'off');
+      setAttribute(cInput, 'spellcheck', 'false');
+
+      // alpha
+      let max = '100';
+      let step = '1';
+      if (c !== 'alpha') {
+        if (format === 'rgb') {
+          max = '255'; step = '1';
+        } else if (c === 'hue') {
+          max = '360'; step = '1';
+        }
+      }
+      ObjectAssign(cInput, {
+        min: '0',
+        max,
+        step,
+      });
+      colorForm.append(cInputLabel, cInput);
+    });
+    return colorForm;
+  }
+
+  /**
+   * A global namespace for aria-label.
+   * @type {string}
+   */
+  const ariaLabel = 'aria-label';
+
+  /**
+   * A global namespace for aria-valuemin.
+   * @type {string}
+   */
+  const ariaValueMin = 'aria-valuemin';
+
+  /**
+   * A global namespace for aria-valuemax.
+   * @type {string}
+   */
+  const ariaValueMax = 'aria-valuemax';
+
+  /**
+   * Returns all color controls for `ColorPicker`.
+   *
+   * @param {CP.ColorPicker} self the `ColorPicker` instance
+   * @returns {HTMLElement | Element} color controls
+   */
+  function getColorControls(self) {
+    const { format, componentLabels } = self;
+    const {
+      hueLabel, alphaLabel, lightnessLabel, saturationLabel,
+      whitenessLabel, blacknessLabel,
+    } = componentLabels;
+
+    const max1 = format === 'hsl' ? 360 : 100;
+    const max2 = format === 'hsl' ? 100 : 360;
+    const max3 = 100;
+
+    let ctrl1Label = format === 'hsl'
+      ? `${hueLabel} & ${lightnessLabel}`
+      : `${lightnessLabel} & ${saturationLabel}`;
+
+    ctrl1Label = format === 'hwb'
+      ? `${whitenessLabel} & ${blacknessLabel}`
+      : ctrl1Label;
+
+    const ctrl2Label = format === 'hsl'
+      ? `${saturationLabel}`
+      : `${hueLabel}`;
+
+    const colorControls = createElement({
+      tagName: 'div',
+      className: `color-controls ${format}`,
+    });
+
+    const colorPointer = 'color-pointer';
+    const colorSlider = 'color-slider';
+
+    const controls = [
+      {
+        i: 1,
+        c: colorPointer,
+        l: ctrl1Label,
+        min: 0,
+        max: max1,
+      },
+      {
+        i: 2,
+        c: colorSlider,
+        l: ctrl2Label,
+        min: 0,
+        max: max2,
+      },
+      {
+        i: 3,
+        c: colorSlider,
+        l: alphaLabel,
+        min: 0,
+        max: max3,
+      },
+    ];
+
+    controls.forEach((template) => {
+      const {
+        i, c, l, min, max,
+      } = template;
+      const control = createElement({
+        tagName: 'div',
+        className: 'color-control',
+      });
+      setAttribute(control, 'role', 'presentation');
+
+      control.append(
+        createElement({
+          tagName: 'div',
+          className: `visual-control visual-control${i}`,
+        }),
+      );
+
+      const knob = createElement({
+        tagName: 'div',
+        className: `${c} knob`,
+        ariaLive: 'polite',
+      });
+
+      setAttribute(knob, ariaLabel, l);
+      setAttribute(knob, 'role', 'slider');
+      setAttribute(knob, tabIndex, '0');
+      setAttribute(knob, ariaValueMin, `${min}`);
+      setAttribute(knob, ariaValueMax, `${max}`);
+      control.append(knob);
+      colorControls.append(control);
+    });
+
+    return colorControls;
+  }
+
+  /**
+   * Helps setting CSS variables to the color-menu.
+   * @param {HTMLElement} element
+   * @param {Record<string,any>} props
+   */
+  function setCSSProperties(element, props) {
+    ObjectKeys(props).forEach((prop) => {
+      element.style.setProperty(prop, props[prop]);
+    });
   }
 
   /**
@@ -2307,7 +2303,8 @@
     optionSize = fit > 5 && isMultiLine ? 1.5 : optionSize;
     const menuHeight = `${(rowCount || 1) * optionSize}rem`;
     const menuHeightHover = `calc(${rowCountHover} * ${optionSize}rem + ${rowCountHover - 1} * ${gap})`;
-
+    /** @type {HTMLUListElement} */
+    // @ts-ignore -- <UL> is an `HTMLElement`
     const menu = createElement({
       tagName: 'ul',
       className: finalClass,
@@ -2315,7 +2312,7 @@
     setAttribute(menu, 'role', 'listbox');
     setAttribute(menu, ariaLabel, menuLabel);
 
-    if (isScrollable) { // @ts-ignore
+    if (isScrollable) {
       setCSSProperties(menu, {
         '--grid-item-size': `${optionSize}rem`,
         '--grid-fit': fit,
@@ -2326,15 +2323,19 @@
     }
 
     colorsArray.forEach((x) => {
-      const [value, label] = x.trim().split(':');
-      const xRealColor = new Color(value, format).toString();
-      const isActive = xRealColor === getAttribute(input, 'value');
+      let [value, label] = typeof x === 'string' ? x.trim().split(':') : [];
+      if (x instanceof Color) {
+        value = x.toHexString();
+        label = value;
+      }
+      const color = new Color(x instanceof Color ? x : value, format);
+      const isActive = color.toString() === getAttribute(input, 'value');
       const active = isActive ? ' active' : '';
 
       const option = createElement({
         tagName: 'li',
         className: `color-option${active}`,
-        innerText: `${label || x}`,
+        innerText: `${label || value}`,
       });
 
       setAttribute(option, tabIndex, '0');
@@ -2343,7 +2344,7 @@
       setAttribute(option, ariaSelected, isActive ? 'true' : 'false');
 
       if (isOptionsMenu) {
-        setElementStyle(option, { backgroundColor: x });
+        setElementStyle(option, { backgroundColor: value });
       }
 
       menu.append(option);
@@ -2352,55 +2353,10 @@
   }
 
   /**
-   * Check if a string is valid JSON string.
-   * @param {string} str the string input
-   * @returns {boolean} the query result
-   */
-  function isValidJSON(str) {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
-
-  var version = "0.0.1";
-
-  // @ts-ignore
-
-  const Version = version;
-
-  // ColorPicker GC
-  // ==============
-  const colorPickerString = 'color-picker';
-  const colorPickerSelector = `[data-function="${colorPickerString}"]`;
-  const colorPickerParentSelector = `.${colorPickerString},${colorPickerString}`;
-  const colorPickerDefaults = {
-    componentLabels: colorPickerLabels,
-    colorLabels: colorNames,
-    format: 'rgb',
-    colorPresets: false,
-    colorKeywords: false,
-  };
-
-  // ColorPicker Static Methods
-  // ==========================
-
-  /** @type {CP.GetInstance<ColorPicker>} */
-  const getColorPickerInstance = (element) => getInstance(element, colorPickerString);
-
-  /** @type {CP.InitCallback<ColorPicker>} */
-  const initColorPicker = (element) => new ColorPicker(element);
-
-  // ColorPicker Private Methods
-  // ===========================
-
-  /**
-   * Generate HTML markup and update instance properties.
-   * @param {ColorPicker} self
-   */
-  function initCallback(self) {
+  * Generate HTML markup and update instance properties.
+  * @param {CP.ColorPicker} self
+  */
+  function setMarkup(self) {
     const {
       input, parent, format, id, componentLabels, colorKeywords, colorPresets,
     } = self;
@@ -2415,9 +2371,7 @@
     self.color = new Color(color, format);
 
     // set initial controls dimensions
-    // make the controls smaller on mobile
-    const dropClass = isMobile ? ' mobile' : '';
-    const formatString = format === 'hex' ? hexLabel : format.toUpperCase();
+    const formatString = format === 'hex' ? hexLabel : toUpperCase(format);
 
     const pickerBtn = createElement({
       id: `picker-btn-${id}`,
@@ -2434,7 +2388,7 @@
 
     const pickerDropdown = createElement({
       tagName: 'div',
-      className: `color-dropdown picker${dropClass}`,
+      className: 'color-dropdown picker',
     });
     setAttribute(pickerDropdown, ariaLabelledBy, `picker-btn-${id}`);
     setAttribute(pickerDropdown, 'role', 'group');
@@ -2450,7 +2404,7 @@
     if (colorKeywords || colorPresets) {
       const presetsDropdown = createElement({
         tagName: 'div',
-        className: `color-dropdown scrollable menu${dropClass}`,
+        className: 'color-dropdown scrollable menu',
       });
 
       // color presets
@@ -2499,6 +2453,31 @@
     }
     setAttribute(input, tabIndex, '-1');
   }
+
+  // ColorPicker GC
+  // ==============
+  const colorPickerString = 'color-picker';
+  const colorPickerSelector = `[data-function="${colorPickerString}"]`;
+  const colorPickerParentSelector = `.${colorPickerString},${colorPickerString}`;
+  const colorPickerDefaults = {
+    componentLabels: colorPickerLabels,
+    colorLabels: colorNames,
+    format: 'rgb',
+    colorPresets: false,
+    colorKeywords: false,
+  };
+
+  // ColorPicker Static Methods
+  // ==========================
+
+  /** @type {CP.GetInstance<ColorPicker>} */
+  const getColorPickerInstance = (element) => getInstance(element, colorPickerString);
+
+  /** @type {CP.InitCallback<ColorPicker>} */
+  const initColorPicker = (element) => new ColorPicker(element);
+
+  // ColorPicker Private Methods
+  // ===========================
 
   /**
    * Add / remove `ColorPicker` main event listeners.
@@ -2733,7 +2712,7 @@
       self.handleKnobs = self.handleKnobs.bind(self);
 
       // generate markup
-      initCallback(self);
+      setMarkup(self);
 
       const [colorPicker, colorMenu] = getElementsByClassName('color-dropdown', parent);
       // set main elements
@@ -2929,7 +2908,7 @@
       const self = this;
       const { activeElement } = getDocument(self.input);
 
-      if ((isMobile && self.dragElement)
+      if ((e.type === touchmoveEvent && self.dragElement)
         || (activeElement && self.controlKnobs.includes(activeElement))) {
         e.stopPropagation();
         e.preventDefault();

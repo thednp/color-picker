@@ -30,7 +30,7 @@ export default class ColorPalette {
       throw TypeError('ColorPalette requires minimum 2 arguments');
     }
 
-    /** @type {string[]} */
+    /** @type {Color[]} */
     const colors = [];
 
     const hueStep = 360 / hueSteps;
@@ -59,7 +59,7 @@ export default class ColorPalette {
     for (let i = 0; i < hueSteps; i += 1) {
       const currentHue = ((hue + i * hueStep) % 360) / 360;
       lightnessArray.forEach((l) => {
-        colors.push(new Color({ h: currentHue, s: 1, l }).toHexString());
+        colors.push(new Color({ h: currentHue, s: 1, l }));
       });
     }
 

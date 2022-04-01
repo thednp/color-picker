@@ -1,3 +1,5 @@
 node_modules/
 experiments/
 docs/
+coverage/
+.vscode

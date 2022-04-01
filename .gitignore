@@ -1,3 +1,5 @@
 node_modules/
 experiments/
+.vscode/
+coverage/
 package-lock.json

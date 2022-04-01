@@ -1,11 +1,86 @@
-import getDocumentHead from 'shorter-js/src/get/getDocumentHead';
-import getElementStyle from 'shorter-js/src/get/getElementStyle';
-import setElementStyle from 'shorter-js/src/misc/setElementStyle';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import toLowerCase from 'shorter-js/src/misc/toLowerCase';
+/*!
+* Color v0.0.2alpha1 (http://thednp.github.io/color-picker)
+* Copyright 2022 © thednp
+* Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
+*/
+/**
+ * Returns the `document` or the `#document` element.
+ * @see https://github.com/floating-ui/floating-ui
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {Document}
+ */
+function getDocument(node) {
+  if (node instanceof HTMLElement) return node.ownerDocument;
+  if (node instanceof Window) return node.document;
+  return window.document;
+}
 
-import nonColors from './util/nonColors';
-import roundPart from './util/roundPart';
+/**
+ * Returns the `document.head` or the `<head>` element.
+ *
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {HTMLElement | HTMLHeadElement}
+ */
+function getDocumentHead(node) {
+  return getDocument(node).head;
+}
+
+/**
+ * Shortcut for `window.getComputedStyle(element).propertyName`
+ * static method.
+ *
+ * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
+ * throws a `ReferenceError`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} property the css property
+ * @return {string} the css property value
+ */
+function getElementStyle(element, property) {
+  const computedStyle = getComputedStyle(element);
+
+  // @ts-ignore -- must use camelcase strings,
+  // or non-camelcase strings with `getPropertyValue`
+  return property in computedStyle ? computedStyle[property] : '';
+}
+
+/**
+ * Shortcut for `Object.assign()` static method.
+ * @param  {Record<string, any>} obj a target object
+ * @param  {Record<string, any>} source a source object
+ */
+const ObjectAssign = (obj, source) => Object.assign(obj, source);
+
+/**
+ * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {Partial<CSSStyleDeclaration>} styles attribute value
+ */
+// @ts-ignore
+const setElementStyle = (element, styles) => ObjectAssign(element.style, styles);
+
+/**
+ * Shortcut for `String.toLowerCase()`.
+ *
+ * @param {string} source input string
+ * @returns {string} lowercase output string
+ */
+const toLowerCase = (source) => source.toLowerCase();
+
+/**
+ * A list of explicit default non-color values.
+ */
+const nonColors = ['transparent', 'currentColor', 'inherit', 'revert', 'initial'];
+
+/**
+ * Round colour components, for all formats except HEX.
+ * @param {number} v one of the colour components
+ * @returns {number} the rounded number
+ */
+function roundPart(v) {
+  const floor = Math.floor(v);
+  return v - floor < 0.5 ? floor : Math.round(v);
+}
 
 // Color supported formats
 const COLOR_FORMAT = ['rgb', 'hex', 'hsl', 'hsv', 'hwb'];
@@ -254,7 +329,6 @@ function rgbToHsl(R, G, B) {
       case b:
         h = (r - g) / d + 4;
         break;
-      default:
     }
     h /= 6;
   }
@@ -401,7 +475,6 @@ function rgbToHsv(R, G, B) {
       case b:
         h = (r - g) / d + 4;
         break;
-      default:
     }
     h /= 6;
   }
@@ -688,7 +761,7 @@ function inputToRGB(input) {
  * Returns a new `Color` instance.
  * @see https://github.com/bgrins/TinyColor
  */
-export default class Color {
+class Color {
   /**
    * @constructor
    * @param {CP.ColorInput} input the given colour value
@@ -1129,3 +1202,5 @@ ObjectAssign(Color, {
   getElementStyle,
   ObjectAssign,
 });
+
+export default Color;
