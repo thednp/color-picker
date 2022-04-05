@@ -1,5 +1,10 @@
-node_modules/
-experiments/
-docs/
-coverage/
-.vscode
+.git
+node_modules
+experiments
+docs
+.nyc_output
+coverage
+cypress/videos
+cypress/screenshots
+cypress/coverage
+cypress/instrumented

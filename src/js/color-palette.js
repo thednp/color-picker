@@ -1,3 +1,5 @@
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
+
 import roundPart from './util/roundPart';
 import Color from './color';
 
@@ -6,7 +8,7 @@ import Color from './color';
  * Returns a color palette with a given set of parameters.
  * @example
  * new ColorPalette(0, 12, 10);
- * // => { hue: 0, hueSteps: 12, lightSteps: 10, colors: array }
+ * // => { hue: 0, hueSteps: 12, lightSteps: 10, colors: Array<Color> }
  */
 export default class ColorPalette {
   /**
@@ -26,6 +28,9 @@ export default class ColorPalette {
       [hue, hueSteps, lightSteps] = args;
     } else if (args.length === 2) {
       [hueSteps, lightSteps] = args;
+      if ([hueSteps, lightSteps].some((n) => n < 1)) {
+        throw TypeError('ColorPalette: when 2 arguments used, both must be larger than 0.');
+      }
     } else {
       throw TypeError('ColorPalette requires minimum 2 arguments');
     }
@@ -69,3 +74,5 @@ export default class ColorPalette {
     this.colors = colors;
   }
 }
+
+ObjectAssign(ColorPalette, { Color });

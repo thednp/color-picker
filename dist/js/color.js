@@ -6,30 +6,13 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.Color = factory());
-}(this, (function () { 'use strict';
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Color = factory());
+})(this, (function () { 'use strict';
 
   /**
-   * Returns the `document` or the `#document` element.
-   * @see https://github.com/floating-ui/floating-ui
-   * @param {(Node | HTMLElement | Element | globalThis)=} node
-   * @returns {Document}
+   * A global namespace for `document.head`.
    */
-  function getDocument(node) {
-    if (node instanceof HTMLElement) return node.ownerDocument;
-    if (node instanceof Window) return node.document;
-    return window.document;
-  }
-
-  /**
-   * Returns the `document.head` or the `<head>` element.
-   *
-   * @param {(Node | HTMLElement | Element | globalThis)=} node
-   * @returns {HTMLElement | HTMLHeadElement}
-   */
-  function getDocumentHead(node) {
-    return getDocument(node).head;
-  }
+  const { head: documentHead } = document;
 
   /**
    * Shortcut for `window.getComputedStyle(element).propertyName`
@@ -63,7 +46,7 @@
    * @param  {Partial<CSSStyleDeclaration>} styles attribute value
    */
   // @ts-ignore
-  const setElementStyle = (element, styles) => ObjectAssign(element.style, styles);
+  const setElementStyle = (element, styles) => { ObjectAssign(element.style, styles); };
 
   /**
    * Shortcut for `String.toLowerCase()`.
@@ -155,15 +138,6 @@
   }
 
   /**
-   * Check to see if string passed in is an angle
-   * @param {string} n testing string
-   * @returns {boolean} the query result
-   */
-  function isAngle(n) {
-    return ANGLES.split('|').some((a) => `${n}`.includes(a));
-  }
-
-  /**
    * Check to see if string passed is a web safe colour.
    * @see https://stackoverflow.com/a/16994164
    * @param {string} color a colour name, EG: *red*
@@ -172,8 +146,6 @@
   function isColorName(color) {
     if (nonColors.includes(color)
       || ['#', ...COLOR_FORMAT].some((f) => color.includes(f))) return false;
-
-    const documentHead = getDocumentHead();
 
     return ['rgb(255, 255, 255)', 'rgb(0, 0, 0)'].every((c) => {
       setElementStyle(documentHead, { color });
@@ -201,15 +173,15 @@
    */
   function bound01(N, max) {
     let n = N;
-    if (isOnePointZero(n)) n = '100%';
+    if (isOnePointZero(N)) n = '100%';
 
-    n = max === 360 ? n : Math.min(max, Math.max(0, parseFloat(n)));
-
-    // Handle hue angles
-    if (isAngle(N)) n = N.replace(new RegExp(ANGLES), '');
+    const processPercent = isPercentage(n);
+    n = max === 360
+      ? parseFloat(n)
+      : Math.min(max, Math.max(0, parseFloat(n)));
 
     // Automatically convert percentage into number
-    if (isPercentage(n)) n = parseInt(String(n * max), 10) / 100;
+    if (processPercent) n = (n * max) / 100;
 
     // Handle floating point rounding errors
     if (Math.abs(n - max) < 0.000001) {
@@ -220,11 +192,11 @@
       // If n is a hue given in degrees,
       // wrap around out-of-range values into [0, 360] range
       // then convert into [0, 1].
-      n = (n < 0 ? (n % max) + max : n % max) / parseFloat(String(max));
+      n = (n < 0 ? (n % max) + max : n % max) / max;
     } else {
       // If n not a hue given in degrees
       // Convert into [0, 1] range if it isn't already.
-      n = (n % max) / parseFloat(String(max));
+      n = (n % max) / max;
     }
     return n;
   }
@@ -259,7 +231,6 @@
    * @returns {string}
    */
   function getRGBFromName(name) {
-    const documentHead = getDocumentHead();
     setElementStyle(documentHead, { color: name });
     const colorName = getElementStyle(documentHead, 'color');
     setElementStyle(documentHead, { color: '' });
@@ -1206,9 +1177,10 @@
     inputToRGB,
     roundPart,
     getElementStyle,
+    setElementStyle,
     ObjectAssign,
   });
 
   return Color;
 
-})));
+}));

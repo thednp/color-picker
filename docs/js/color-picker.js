@@ -6,8 +6,8 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.ColorPicker = factory());
-}(this, (function () { 'use strict';
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.ColorPicker = factory());
+})(this, (function () { 'use strict';
 
   /** @type {Record<string, any>} */
   const EventRegistry = {};
@@ -572,19 +572,12 @@
   const getInstance = (target, component) => Data.get(target, component);
 
   /**
-   * Shortcut for `Object.keys()` static method.
-   * @param  {Record<string, any>} obj a target object
-   * @returns {string[]}
-   */
-  const ObjectKeys = (obj) => Object.keys(obj);
-
-  /**
    * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
    * @param  {HTMLElement | Element} element target element
    * @param  {Partial<CSSStyleDeclaration>} styles attribute value
    */
   // @ts-ignore
-  const setElementStyle = (element, styles) => ObjectAssign(element.style, styles);
+  const setElementStyle = (element, styles) => { ObjectAssign(element.style, styles); };
 
   /**
    * Shortcut for `HTMLElement.getAttribute()` method.
@@ -626,6 +619,13 @@
     // string / function / HTMLElement / object
     return value;
   }
+
+  /**
+   * Shortcut for `Object.keys()` static method.
+   * @param  {Record<string, any>} obj a target object
+   * @returns {string[]}
+   */
+  const ObjectKeys = (obj) => Object.keys(obj);
 
   /**
    * Shortcut for `String.toLowerCase()`.
@@ -747,53 +747,15 @@
    */
   const removeAttribute = (element, attribute) => element.removeAttribute(attribute);
 
-  /** @type {Record<string, string>} */
-  const colorPickerLabels = {
-    pickerLabel: 'Colour Picker',
-    appearanceLabel: 'Colour Appearance',
-    valueLabel: 'Colour Value',
-    toggleLabel: 'Select Colour',
-    presetsLabel: 'Colour Presets',
-    defaultsLabel: 'Colour Defaults',
-    formatLabel: 'Format',
-    alphaLabel: 'Alpha',
-    hexLabel: 'Hexadecimal',
-    hueLabel: 'Hue',
-    whitenessLabel: 'Whiteness',
-    blacknessLabel: 'Blackness',
-    saturationLabel: 'Saturation',
-    lightnessLabel: 'Lightness',
-    redLabel: 'Red',
-    greenLabel: 'Green',
-    blueLabel: 'Blue',
-  };
-
   /**
-   * A list of 17 color names used for WAI-ARIA compliance.
-   * @type {string[]}
+   * A global namespace for `document.head`.
    */
-  const colorNames = ['white', 'black', 'grey', 'red', 'orange', 'brown', 'gold', 'olive', 'yellow', 'lime', 'green', 'teal', 'cyan', 'blue', 'violet', 'magenta', 'pink'];
+  const { head: documentHead } = document;
 
   /**
    * A list of explicit default non-color values.
    */
   const nonColors = ['transparent', 'currentColor', 'inherit', 'revert', 'initial'];
-
-  const tabIndex = 'tabindex';
-
-  /**
-   * Check if a string is valid JSON string.
-   * @param {string} str the string input
-   * @returns {boolean} the query result
-   */
-  function isValidJSON(str) {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
 
   /**
    * Round colour components, for all formats except HEX.
@@ -803,16 +765,6 @@
   function roundPart(v) {
     const floor = Math.floor(v);
     return v - floor < 0.5 ? floor : Math.round(v);
-  }
-
-  /**
-   * Returns the `document.head` or the `<head>` element.
-   *
-   * @param {(Node | HTMLElement | Element | globalThis)=} node
-   * @returns {HTMLElement | HTMLHeadElement}
-   */
-  function getDocumentHead(node) {
-    return getDocument(node).head;
   }
 
   // Color supported formats
@@ -882,15 +834,6 @@
   }
 
   /**
-   * Check to see if string passed in is an angle
-   * @param {string} n testing string
-   * @returns {boolean} the query result
-   */
-  function isAngle(n) {
-    return ANGLES.split('|').some((a) => `${n}`.includes(a));
-  }
-
-  /**
    * Check to see if string passed is a web safe colour.
    * @see https://stackoverflow.com/a/16994164
    * @param {string} color a colour name, EG: *red*
@@ -899,8 +842,6 @@
   function isColorName(color) {
     if (nonColors.includes(color)
       || ['#', ...COLOR_FORMAT].some((f) => color.includes(f))) return false;
-
-    const documentHead = getDocumentHead();
 
     return ['rgb(255, 255, 255)', 'rgb(0, 0, 0)'].every((c) => {
       setElementStyle(documentHead, { color });
@@ -928,15 +869,15 @@
    */
   function bound01(N, max) {
     let n = N;
-    if (isOnePointZero(n)) n = '100%';
+    if (isOnePointZero(N)) n = '100%';
 
-    n = max === 360 ? n : Math.min(max, Math.max(0, parseFloat(n)));
-
-    // Handle hue angles
-    if (isAngle(N)) n = N.replace(new RegExp(ANGLES), '');
+    const processPercent = isPercentage(n);
+    n = max === 360
+      ? parseFloat(n)
+      : Math.min(max, Math.max(0, parseFloat(n)));
 
     // Automatically convert percentage into number
-    if (isPercentage(n)) n = parseInt(String(n * max), 10) / 100;
+    if (processPercent) n = (n * max) / 100;
 
     // Handle floating point rounding errors
     if (Math.abs(n - max) < 0.000001) {
@@ -947,11 +888,11 @@
       // If n is a hue given in degrees,
       // wrap around out-of-range values into [0, 360] range
       // then convert into [0, 1].
-      n = (n < 0 ? (n % max) + max : n % max) / parseFloat(String(max));
+      n = (n < 0 ? (n % max) + max : n % max) / max;
     } else {
       // If n not a hue given in degrees
       // Convert into [0, 1] range if it isn't already.
-      n = (n % max) / parseFloat(String(max));
+      n = (n % max) / max;
     }
     return n;
   }
@@ -986,7 +927,6 @@
    * @returns {string}
    */
   function getRGBFromName(name) {
-    const documentHead = getDocumentHead();
     setElementStyle(documentHead, { color: name });
     const colorName = getElementStyle(documentHead, 'color');
     setElementStyle(documentHead, { color: '' });
@@ -1933,6 +1873,7 @@
     inputToRGB,
     roundPart,
     getElementStyle,
+    setElementStyle,
     ObjectAssign,
   });
 
@@ -1941,7 +1882,7 @@
    * Returns a color palette with a given set of parameters.
    * @example
    * new ColorPalette(0, 12, 10);
-   * // => { hue: 0, hueSteps: 12, lightSteps: 10, colors: array }
+   * // => { hue: 0, hueSteps: 12, lightSteps: 10, colors: Array<Color> }
    */
   class ColorPalette {
     /**
@@ -1961,6 +1902,9 @@
         [hue, hueSteps, lightSteps] = args;
       } else if (args.length === 2) {
         [hueSteps, lightSteps] = args;
+        if ([hueSteps, lightSteps].some((n) => n < 1)) {
+          throw TypeError('ColorPalette: when 2 arguments used, both must be larger than 0.');
+        }
       } else {
         throw TypeError('ColorPalette requires minimum 2 arguments');
       }
@@ -2005,11 +1949,50 @@
     }
   }
 
-  var version = "0.0.2alpha1";
+  ObjectAssign(ColorPalette, { Color });
 
-  // @ts-ignore
+  /** @type {Record<string, string>} */
+  const colorPickerLabels = {
+    pickerLabel: 'Colour Picker',
+    appearanceLabel: 'Colour Appearance',
+    valueLabel: 'Colour Value',
+    toggleLabel: 'Select Colour',
+    presetsLabel: 'Colour Presets',
+    defaultsLabel: 'Colour Defaults',
+    formatLabel: 'Format',
+    alphaLabel: 'Alpha',
+    hexLabel: 'Hexadecimal',
+    hueLabel: 'Hue',
+    whitenessLabel: 'Whiteness',
+    blacknessLabel: 'Blackness',
+    saturationLabel: 'Saturation',
+    lightnessLabel: 'Lightness',
+    redLabel: 'Red',
+    greenLabel: 'Green',
+    blueLabel: 'Blue',
+  };
 
-  const Version = version;
+  /**
+   * A list of 17 color names used for WAI-ARIA compliance.
+   * @type {string[]}
+   */
+  const colorNames = ['white', 'black', 'grey', 'red', 'orange', 'brown', 'gold', 'olive', 'yellow', 'lime', 'green', 'teal', 'cyan', 'blue', 'violet', 'magenta', 'pink'];
+
+  const tabIndex = 'tabindex';
+
+  /**
+   * Check if a string is valid JSON string.
+   * @param {string} str the string input
+   * @returns {boolean} the query result
+   */
+  function isValidJSON(str) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
 
   /**
    * Shortcut for `String.toUpperCase()`.
@@ -2453,6 +2436,12 @@
     }
     setAttribute(input, tabIndex, '-1');
   }
+
+  var version = "0.0.2alpha1";
+
+  // @ts-ignore
+
+  const Version = version;
 
   // ColorPicker GC
   // ==============
@@ -3726,4 +3715,4 @@
 
   return ColorPicker;
 
-})));
+}));

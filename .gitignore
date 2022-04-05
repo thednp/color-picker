@@ -1,5 +1,9 @@
 node_modules/
-experiments/
-.vscode/
-coverage/
+experiments
+.nyc_output
+coverage
+cypress/videos
+cypress/screenshots
+cypress/coverage
+cypress/instrumented
 package-lock.json

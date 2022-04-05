@@ -54,16 +54,16 @@ import removeAttribute from 'shorter-js/src/attr/removeAttribute';
 
 // ColorPicker Util
 // ================
+import Color from './color';
+import ColorPalette from './color-palette';
 import colorPickerLabels from './util/colorPickerLabels';
 import colorNames from './util/colorNames';
 import nonColors from './util/nonColors';
 import tabIndex from './util/tabindex';
 import isValidJSON from './util/isValidJSON';
 import roundPart from './util/roundPart';
-import Color from './color';
-import ColorPalette from './color-palette';
-import Version from './version';
 import setMarkup from './util/setMarkup';
+import Version from './util/version';
 
 // ColorPicker GC
 // ==============

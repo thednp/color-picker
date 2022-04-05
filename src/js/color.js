@@ -1,4 +1,4 @@
-import getDocumentHead from 'shorter-js/src/get/getDocumentHead';
+import documentHead from 'shorter-js/src/blocks/documentHead';
 import getElementStyle from 'shorter-js/src/get/getElementStyle';
 import setElementStyle from 'shorter-js/src/misc/setElementStyle';
 import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
@@ -74,15 +74,6 @@ function isPercentage(n) {
 }
 
 /**
- * Check to see if string passed in is an angle
- * @param {string} n testing string
- * @returns {boolean} the query result
- */
-function isAngle(n) {
-  return ANGLES.split('|').some((a) => `${n}`.includes(a));
-}
-
-/**
  * Check to see if string passed is a web safe colour.
  * @see https://stackoverflow.com/a/16994164
  * @param {string} color a colour name, EG: *red*
@@ -91,8 +82,6 @@ function isAngle(n) {
 function isColorName(color) {
   if (nonColors.includes(color)
     || ['#', ...COLOR_FORMAT].some((f) => color.includes(f))) return false;
-
-  const documentHead = getDocumentHead();
 
   return ['rgb(255, 255, 255)', 'rgb(0, 0, 0)'].every((c) => {
     setElementStyle(documentHead, { color });
@@ -120,15 +109,15 @@ function isValidCSSUnit(color) {
  */
 function bound01(N, max) {
   let n = N;
-  if (isOnePointZero(n)) n = '100%';
+  if (isOnePointZero(N)) n = '100%';
 
-  n = max === 360 ? n : Math.min(max, Math.max(0, parseFloat(n)));
-
-  // Handle hue angles
-  if (isAngle(N)) n = N.replace(new RegExp(ANGLES), '');
+  const processPercent = isPercentage(n);
+  n = max === 360
+    ? parseFloat(n)
+    : Math.min(max, Math.max(0, parseFloat(n)));
 
   // Automatically convert percentage into number
-  if (isPercentage(n)) n = parseInt(String(n * max), 10) / 100;
+  if (processPercent) n = (n * max) / 100;
 
   // Handle floating point rounding errors
   if (Math.abs(n - max) < 0.000001) {
@@ -139,11 +128,11 @@ function bound01(N, max) {
     // If n is a hue given in degrees,
     // wrap around out-of-range values into [0, 360] range
     // then convert into [0, 1].
-    n = (n < 0 ? (n % max) + max : n % max) / parseFloat(String(max));
+    n = (n < 0 ? (n % max) + max : n % max) / max;
   } else {
     // If n not a hue given in degrees
     // Convert into [0, 1] range if it isn't already.
-    n = (n % max) / parseFloat(String(max));
+    n = (n % max) / max;
   }
   return n;
 }
@@ -178,7 +167,6 @@ function clamp01(v) {
  * @returns {string}
  */
 function getRGBFromName(name) {
-  const documentHead = getDocumentHead();
   setElementStyle(documentHead, { color: name });
   const colorName = getElementStyle(documentHead, 'color');
   setElementStyle(documentHead, { color: '' });
@@ -1127,5 +1115,6 @@ ObjectAssign(Color, {
   inputToRGB,
   roundPart,
   getElementStyle,
+  setElementStyle,
   ObjectAssign,
 });

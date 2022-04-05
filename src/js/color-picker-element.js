@@ -7,7 +7,7 @@ import getAttribute from 'shorter-js/src/attr/getAttribute';
 import Color from './color';
 import ColorPicker, { getColorPickerInstance } from './color-picker';
 import ColorPalette from './color-palette';
-import Version from './version';
+import Version from './util/version';
 
 let CPID = 0;
 
