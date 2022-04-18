@@ -6,4 +6,3 @@ cypress/videos
 cypress/screenshots
 cypress/coverage
 cypress/instrumented
-package-lock.json
