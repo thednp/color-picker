@@ -1,7 +1,8 @@
-# ColorPicker Web Component
+# ColorPicker Web Component ![check-code-coverage](https://img.shields.io/badge/code--coverage-100%25-brightgreen)
 The feature rich **ColorPicker** component for the modern web built with TypeScript definitions, WAI-ARIA compliant and lots of goodies. In addition, it features its own version of [TinyColor](https://github.com/bgrins/TinyColor) called simply `Color`.
 
 [![image](./docs/img/color-picker.png)](http://thednp.github.io/color-picker)
+
 
 [![NPM Version](https://img.shields.io/npm/v/@thednp/color-picker.svg?style=flat-square)](https://www.npmjs.com/package/@thednp/color-picker)
 [![NPM Downloads](https://img.shields.io/npm/dm/@thednp/color-picker.svg?style=flat-square)](http://npm-stat.com/charts.html?package=@thednp/color-picker)

@@ -27,7 +27,6 @@ import keyupEvent from 'shorter-js/src/strings/keyupEvent';
 import resizeEvent from 'shorter-js/src/strings/resizeEvent';
 import focusoutEvent from 'shorter-js/src/strings/focusoutEvent';
 
-// import isMobile from 'shorter-js/src/boolean/isMobile';
 import getDocument from 'shorter-js/src/get/getDocument';
 import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
 import getWindow from 'shorter-js/src/get/getWindow';
@@ -82,7 +81,7 @@ const colorPickerDefaults = {
 // ==========================
 
 /** @type {CP.GetInstance<ColorPicker>} */
-export const getColorPickerInstance = (element) => getInstance(element, colorPickerString);
+const getColorPickerInstance = (element) => getInstance(element, colorPickerString);
 
 /** @type {CP.InitCallback<ColorPicker>} */
 const initColorPicker = (element) => new ColorPicker(element);
@@ -101,8 +100,6 @@ function toggleEvents(self, action) {
 
   fn(input, focusinEvent, self.showPicker);
   fn(pickerToggle, mouseclickEvent, self.togglePicker);
-
-  fn(input, keydownEvent, self.keyToggle);
 
   if (menuToggle) {
     fn(menuToggle, mouseclickEvent, self.toggleMenu);
@@ -141,8 +138,7 @@ function toggleEventsOnShown(self, action) {
   fn(doc, pointerEvents.move, self.pointerMove);
   fn(doc, pointerEvents.up, self.pointerUp);
   fn(parent, focusoutEvent, self.handleFocusOut);
-  // @ts-ignore -- this is `Window`
-  fn(win, keyupEvent, self.handleDismiss);
+  fn(doc, keyupEvent, self.handleDismiss);
 }
 
 /**
@@ -226,7 +222,7 @@ export default class ColorPicker {
     const input = querySelector(target);
 
     // invalidate
-    if (!input) throw new TypeError(`ColorPicker target ${target} cannot be found.`);
+    if (!input) throw new TypeError(`ColorPicker target "${target}" cannot be found.`);
     self.input = input;
 
     const parent = closest(input, colorPickerParentSelector);
@@ -273,15 +269,14 @@ export default class ColorPicker {
     });
 
     // update and expose component labels
-    const tempLabels = ObjectAssign({}, colorPickerLabels);
-    const jsonLabels = componentLabels && isValidJSON(componentLabels)
-      ? JSON.parse(componentLabels) : componentLabels || {};
+    const tempComponentLabels = componentLabels && isValidJSON(componentLabels)
+      ? JSON.parse(componentLabels) : componentLabels;
 
     /** @type {Record<string, string>} */
-    self.componentLabels = ObjectAssign(tempLabels, jsonLabels);
+    self.componentLabels = ObjectAssign(colorPickerLabels, tempComponentLabels);
 
     /** @type {Color} */
-    self.color = new Color('white', format);
+    self.color = new Color(input.value || '#fff', format);
 
     /** @type {CP.ColorFormats} */
     self.format = format;
@@ -290,7 +285,7 @@ export default class ColorPicker {
     if (colorKeywords instanceof Array) {
       self.colorKeywords = colorKeywords;
     } else if (typeof colorKeywords === 'string' && colorKeywords.length) {
-      self.colorKeywords = colorKeywords.split(',');
+      self.colorKeywords = colorKeywords.split(',').map((x) => x.trim());
     }
 
     // set colour presets
@@ -319,7 +314,6 @@ export default class ColorPicker {
     self.handleFocusOut = self.handleFocusOut.bind(self);
     self.changeHandler = self.changeHandler.bind(self);
     self.handleDismiss = self.handleDismiss.bind(self);
-    self.keyToggle = self.keyToggle.bind(self);
     self.handleKnobs = self.handleKnobs.bind(self);
 
     // generate markup
@@ -411,76 +405,83 @@ export default class ColorPicker {
     return inputValue !== '' && new Color(inputValue).isValid;
   }
 
+  /** Returns the colour appearance, usually the closest colour name for the current value. */
+  get appearance() {
+    const {
+      colorLabels, hsl, hsv, format,
+    } = this;
+
+    const hue = roundPart(hsl.h * 360);
+    const saturationSource = format === 'hsl' ? hsl.s : hsv.s;
+    const saturation = roundPart(saturationSource * 100);
+    const lightness = roundPart(hsl.l * 100);
+    const hsvl = hsv.v * 100;
+
+    let colorName;
+
+    // determine color appearance
+    if (lightness === 100 && saturation === 0) {
+      colorName = colorLabels.white;
+    } else if (lightness === 0) {
+      colorName = colorLabels.black;
+    } else if (saturation === 0) {
+      colorName = colorLabels.grey;
+    } else if (hue < 15 || hue >= 345) {
+      colorName = colorLabels.red;
+    } else if (hue >= 15 && hue < 45) {
+      colorName = hsvl > 80 && saturation > 80 ? colorLabels.orange : colorLabels.brown;
+    } else if (hue >= 45 && hue < 75) {
+      const isGold = hue > 46 && hue < 54 && hsvl < 80 && saturation > 90;
+      const isOlive = hue >= 54 && hue < 75 && hsvl < 80;
+      colorName = isGold ? colorLabels.gold : colorLabels.yellow;
+      colorName = isOlive ? colorLabels.olive : colorName;
+    } else if (hue >= 75 && hue < 155) {
+      colorName = hsvl < 68 ? colorLabels.green : colorLabels.lime;
+    } else if (hue >= 155 && hue < 175) {
+      colorName = colorLabels.teal;
+    } else if (hue >= 175 && hue < 195) {
+      colorName = colorLabels.cyan;
+    } else if (hue >= 195 && hue < 255) {
+      colorName = colorLabels.blue;
+    } else if (hue >= 255 && hue < 270) {
+      colorName = colorLabels.violet;
+    } else if (hue >= 270 && hue < 295) {
+      colorName = colorLabels.magenta;
+    } else if (hue >= 295 && hue < 345) {
+      colorName = colorLabels.pink;
+    }
+    return colorName;
+  }
+
   /** Updates `ColorPicker` visuals. */
   updateVisuals() {
     const self = this;
     const {
-      format, controlPositions, visuals,
+      controlPositions, visuals,
     } = self;
     const [v1, v2, v3] = visuals;
-    const { offsetWidth, offsetHeight } = v1;
-    const hue = format === 'hsl'
-      ? controlPositions.c1x / offsetWidth
-      : controlPositions.c2y / offsetHeight;
-    // @ts-ignore - `hslToRgb` is assigned to `Color` as static method
-    const { r, g, b } = Color.hslToRgb(hue, 1, 0.5);
+    const { offsetHeight } = v1;
+    const hue = controlPositions.c2y / offsetHeight;
+    const { r, g, b } = new Color({ h: hue, s: 1, l: 0.5 }).toRgb();
     const whiteGrad = 'linear-gradient(rgb(255,255,255) 0%, rgb(255,255,255) 100%)';
     const alpha = 1 - controlPositions.c3y / offsetHeight;
     const roundA = roundPart((alpha * 100)) / 100;
 
-    if (format !== 'hsl') {
-      const fill = new Color({
-        h: hue, s: 1, l: 0.5, a: alpha,
-      }).toRgbString();
-      const hueGradient = `linear-gradient(
-        rgb(255,0,0) 0%, rgb(255,255,0) 16.67%,
-        rgb(0,255,0) 33.33%, rgb(0,255,255) 50%,
-        rgb(0,0,255) 66.67%, rgb(255,0,255) 83.33%,
-        rgb(255,0,0) 100%)`;
-      setElementStyle(v1, {
-        background: `linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,${roundA}) 100%),
-        linear-gradient(to right, rgba(255,255,255,${roundA}) 0%, ${fill} 100%),
-        ${whiteGrad}`,
-      });
-      setElementStyle(v2, { background: hueGradient });
-    } else {
-      const saturation = roundPart((controlPositions.c2y / offsetHeight) * 100);
-      const fill0 = new Color({
-        r: 255, g: 0, b: 0, a: alpha,
-      }).saturate(-saturation).toRgbString();
-      const fill1 = new Color({
-        r: 255, g: 255, b: 0, a: alpha,
-      }).saturate(-saturation).toRgbString();
-      const fill2 = new Color({
-        r: 0, g: 255, b: 0, a: alpha,
-      }).saturate(-saturation).toRgbString();
-      const fill3 = new Color({
-        r: 0, g: 255, b: 255, a: alpha,
-      }).saturate(-saturation).toRgbString();
-      const fill4 = new Color({
-        r: 0, g: 0, b: 255, a: alpha,
-      }).saturate(-saturation).toRgbString();
-      const fill5 = new Color({
-        r: 255, g: 0, b: 255, a: alpha,
-      }).saturate(-saturation).toRgbString();
-      const fill6 = new Color({
-        r: 255, g: 0, b: 0, a: alpha,
-      }).saturate(-saturation).toRgbString();
-      const fillGradient = `linear-gradient(to right,
-        ${fill0} 0%, ${fill1} 16.67%, ${fill2} 33.33%, ${fill3} 50%,
-        ${fill4} 66.67%, ${fill5} 83.33%, ${fill6} 100%)`;
-      const lightGrad = `linear-gradient(rgba(255,255,255,${roundA}) 0%, rgba(255,255,255,0) 50%),
-        linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,${roundA}) 100%)`;
+    const fill = new Color({
+      h: hue, s: 1, l: 0.5, a: alpha,
+    }).toRgbString();
+    const hueGradient = `linear-gradient(
+      rgb(255,0,0) 0%, rgb(255,255,0) 16.67%,
+      rgb(0,255,0) 33.33%, rgb(0,255,255) 50%,
+      rgb(0,0,255) 66.67%, rgb(255,0,255) 83.33%,
+      rgb(255,0,0) 100%)`;
+    setElementStyle(v1, {
+      background: `linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,${roundA}) 100%),
+      linear-gradient(to right, rgba(255,255,255,${roundA}) 0%, ${fill} 100%),
+      ${whiteGrad}`,
+    });
+    setElementStyle(v2, { background: hueGradient });
 
-      setElementStyle(v1, { background: `${lightGrad},${fillGradient},${whiteGrad}` });
-      const {
-        r: gr, g: gg, b: gb,
-      } = new Color({ r, g, b }).greyscale().toRgb();
-
-      setElementStyle(v2, {
-        background: `linear-gradient(rgb(${r},${g},${b}) 0%, rgb(${gr},${gg},${gb}) 100%)`,
-      });
-    }
     setElementStyle(v3, {
       background: `linear-gradient(rgba(${r},${g},${b},1) 0%,rgba(${r},${g},${b},0) 100%)`,
     });
@@ -630,13 +631,13 @@ export default class ColorPicker {
     const [v1, v2, v3] = visuals;
     const [c1, c2, c3] = controlKnobs;
     /** @type {HTMLElement} */
-    const visual = hasClass(target, 'visual-control')
-      ? target : querySelector('.visual-control', target.parentElement);
+    const visual = controlKnobs.includes(target) ? target.previousElementSibling : target;
     const visualRect = getBoundingClientRect(visual);
+    const html = getDocumentElement(v1);
     const X = type === 'touchstart' ? touches[0].pageX : pageX;
     const Y = type === 'touchstart' ? touches[0].pageY : pageY;
-    const offsetX = X - window.pageXOffset - visualRect.left;
-    const offsetY = Y - window.pageYOffset - visualRect.top;
+    const offsetX = X - html.scrollLeft - visualRect.left;
+    const offsetY = Y - html.scrollTop - visualRect.top;
 
     if (target === v1 || target === c1) {
       self.dragElement = visual;
@@ -696,10 +697,11 @@ export default class ColorPicker {
     if (!dragElement) return;
 
     const controlRect = getBoundingClientRect(dragElement);
-    const X = type === 'touchmove' ? touches[0].pageX : pageX;
-    const Y = type === 'touchmove' ? touches[0].pageY : pageY;
-    const offsetX = X - window.pageXOffset - controlRect.left;
-    const offsetY = Y - window.pageYOffset - controlRect.top;
+    const win = getDocumentElement(v1);
+    const X = type === touchmoveEvent ? touches[0].pageX : pageX;
+    const Y = type === touchmoveEvent ? touches[0].pageY : pageY;
+    const offsetX = X - win.scrollLeft - controlRect.left;
+    const offsetY = Y - win.scrollTop - controlRect.top;
 
     if (dragElement === v1) {
       self.changeControl1(offsetX, offsetY);
@@ -726,19 +728,19 @@ export default class ColorPicker {
     if (![keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight].includes(code)) return;
     e.preventDefault();
 
-    const { format, controlKnobs, visuals } = self;
+    const { controlKnobs, visuals } = self;
     const { offsetWidth, offsetHeight } = visuals[0];
     const [c1, c2, c3] = controlKnobs;
     const { activeElement } = getDocument(c1);
     const currentKnob = controlKnobs.find((x) => x === activeElement);
-    const yRatio = offsetHeight / (format === 'hsl' ? 100 : 360);
+    const yRatio = offsetHeight / 360;
 
     if (currentKnob) {
       let offsetX = 0;
       let offsetY = 0;
 
       if (target === c1) {
-        const xRatio = offsetWidth / (format === 'hsl' ? 360 : 100);
+        const xRatio = offsetWidth / 100;
 
         if ([keyArrowLeft, keyArrowRight].includes(code)) {
           self.controlPositions.c1x += code === keyArrowRight ? xRatio : -xRatio;
@@ -788,7 +790,7 @@ export default class ColorPicker {
     if (activeElement === input || (activeElement && inputs.includes(activeElement))) {
       if (activeElement === input) {
         if (isNonColorValue) {
-          colorSource = 'white';
+          colorSource = currentValue === 'transparent' ? 'rgba(0,0,0,0)' : 'rgb(0,0,0)';
         } else {
           colorSource = currentValue;
         }
@@ -839,9 +841,7 @@ export default class ColorPicker {
   changeControl1(X, Y) {
     const self = this;
     let [offsetX, offsetY] = [0, 0];
-    const {
-      format, controlPositions, visuals,
-    } = self;
+    const { controlPositions, visuals } = self;
     const { offsetHeight, offsetWidth } = visuals[0];
 
     if (X > offsetWidth) offsetX = offsetWidth;
@@ -850,29 +850,19 @@ export default class ColorPicker {
     if (Y > offsetHeight) offsetY = offsetHeight;
     else if (Y >= 0) offsetY = Y;
 
-    const hue = format === 'hsl'
-      ? offsetX / offsetWidth
-      : controlPositions.c2y / offsetHeight;
+    const hue = controlPositions.c2y / offsetHeight;
 
-    const saturation = format === 'hsl'
-      ? 1 - controlPositions.c2y / offsetHeight
-      : offsetX / offsetWidth;
+    const saturation = offsetX / offsetWidth;
 
     const lightness = 1 - offsetY / offsetHeight;
     const alpha = 1 - controlPositions.c3y / offsetHeight;
 
-    const colorObject = format === 'hsl'
-      ? {
-        h: hue, s: saturation, l: lightness, a: alpha,
-      }
-      : {
-        h: hue, s: saturation, v: lightness, a: alpha,
-      };
-
     // new color
     const {
       r, g, b, a,
-    } = new Color(colorObject);
+    } = new Color({
+      h: hue, s: saturation, v: lightness, a: alpha,
+    });
 
     ObjectAssign(self.color, {
       r, g, b, a,
@@ -899,7 +889,7 @@ export default class ColorPicker {
   changeControl2(Y) {
     const self = this;
     const {
-      format, controlPositions, visuals,
+      controlPositions, visuals,
     } = self;
     const { offsetHeight, offsetWidth } = visuals[0];
 
@@ -908,26 +898,17 @@ export default class ColorPicker {
     if (Y > offsetHeight) offsetY = offsetHeight;
     else if (Y >= 0) offsetY = Y;
 
-    const hue = format === 'hsl'
-      ? controlPositions.c1x / offsetWidth
-      : offsetY / offsetHeight;
-    const saturation = format === 'hsl'
-      ? 1 - offsetY / offsetHeight
-      : controlPositions.c1x / offsetWidth;
+    const hue = offsetY / offsetHeight;
+    const saturation = controlPositions.c1x / offsetWidth;
     const lightness = 1 - controlPositions.c1y / offsetHeight;
     const alpha = 1 - controlPositions.c3y / offsetHeight;
-    const colorObject = format === 'hsl'
-      ? {
-        h: hue, s: saturation, l: lightness, a: alpha,
-      }
-      : {
-        h: hue, s: saturation, v: lightness, a: alpha,
-      };
 
     // new color
     const {
       r, g, b, a,
-    } = new Color(colorObject);
+    } = new Color({
+      h: hue, s: saturation, v: lightness, a: alpha,
+    });
 
     ObjectAssign(self.color, {
       r, g, b, a,
@@ -1014,18 +995,18 @@ export default class ColorPicker {
   setControlPositions() {
     const self = this;
     const {
-      format, visuals, color, hsl, hsv,
+      visuals, color, hsv,
     } = self;
     const { offsetHeight, offsetWidth } = visuals[0];
     const alpha = color.a;
-    const hue = hsl.h;
+    const hue = hsv.h;
 
-    const saturation = format !== 'hsl' ? hsv.s : hsl.s;
-    const lightness = format !== 'hsl' ? hsv.v : hsl.l;
+    const saturation = hsv.s;
+    const lightness = hsv.v;
 
-    self.controlPositions.c1x = format !== 'hsl' ? saturation * offsetWidth : hue * offsetWidth;
+    self.controlPositions.c1x = saturation * offsetWidth;
     self.controlPositions.c1y = (1 - lightness) * offsetHeight;
-    self.controlPositions.c2y = format !== 'hsl' ? hue * offsetHeight : (1 - saturation) * offsetHeight;
+    self.controlPositions.c2y = hue * offsetHeight;
     self.controlPositions.c3y = (1 - alpha) * offsetHeight;
   }
 
@@ -1033,78 +1014,40 @@ export default class ColorPicker {
   updateAppearance() {
     const self = this;
     const {
-      componentLabels, colorLabels, color, parent,
-      hsl, hsv, hex, format, controlKnobs,
+      componentLabels, color, parent,
+      hsv, hex, format, controlKnobs,
     } = self;
     const {
       appearanceLabel, hexLabel, valueLabel,
     } = componentLabels;
-    const { r, g, b } = color.toRgb();
+    let { r, g, b } = color.toRgb();
     const [knob1, knob2, knob3] = controlKnobs;
-    const hue = roundPart(hsl.h * 360);
+    const hue = roundPart(hsv.h * 360);
     const alpha = color.a;
-    const saturationSource = format === 'hsl' ? hsl.s : hsv.s;
-    const saturation = roundPart(saturationSource * 100);
-    const lightness = roundPart(hsl.l * 100);
-    const hsvl = hsv.v * 100;
-    let colorName;
-
-    // determine color appearance
-    if (lightness === 100 && saturation === 0) {
-      colorName = colorLabels.white;
-    } else if (lightness === 0) {
-      colorName = colorLabels.black;
-    } else if (saturation === 0) {
-      colorName = colorLabels.grey;
-    } else if (hue < 15 || hue >= 345) {
-      colorName = colorLabels.red;
-    } else if (hue >= 15 && hue < 45) {
-      colorName = hsvl > 80 && saturation > 80 ? colorLabels.orange : colorLabels.brown;
-    } else if (hue >= 45 && hue < 75) {
-      const isGold = hue > 46 && hue < 54 && hsvl < 80 && saturation > 90;
-      const isOlive = hue >= 54 && hue < 75 && hsvl < 80;
-      colorName = isGold ? colorLabels.gold : colorLabels.yellow;
-      colorName = isOlive ? colorLabels.olive : colorName;
-    } else if (hue >= 75 && hue < 155) {
-      colorName = hsvl < 68 ? colorLabels.green : colorLabels.lime;
-    } else if (hue >= 155 && hue < 175) {
-      colorName = colorLabels.teal;
-    } else if (hue >= 175 && hue < 195) {
-      colorName = colorLabels.cyan;
-    } else if (hue >= 195 && hue < 255) {
-      colorName = colorLabels.blue;
-    } else if (hue >= 255 && hue < 270) {
-      colorName = colorLabels.violet;
-    } else if (hue >= 270 && hue < 295) {
-      colorName = colorLabels.magenta;
-    } else if (hue >= 295 && hue < 345) {
-      colorName = colorLabels.pink;
-    }
+    const saturation = roundPart(hsv.s * 100);
+    const lightness = roundPart(hsv.v * 100);
+    const colorName = self.appearance;
 
     let colorLabel = `${hexLabel} ${hex.split('').join(' ')}`;
 
-    if (format === 'hsl') {
-      colorLabel = `HSL: ${hue}°, ${saturation}%, ${lightness}%`;
-      setAttribute(knob1, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
-      setAttribute(knob1, ariaValueText, `${hue}° & ${lightness}%`);
-      setAttribute(knob1, ariaValueNow, `${hue}`);
-      setAttribute(knob2, ariaValueText, `${saturation}%`);
-      setAttribute(knob2, ariaValueNow, `${saturation}`);
-    } else if (format === 'hwb') {
+    if (format === 'hwb') {
       const { hwb } = self;
       const whiteness = roundPart(hwb.w * 100);
       const blackness = roundPart(hwb.b * 100);
       colorLabel = `HWB: ${hue}°, ${whiteness}%, ${blackness}%`;
-      setAttribute(knob1, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
       setAttribute(knob1, ariaValueText, `${whiteness}% & ${blackness}%`);
       setAttribute(knob1, ariaValueNow, `${whiteness}`);
+      setAttribute(knob2, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
       setAttribute(knob2, ariaValueText, `${hue}%`);
       setAttribute(knob2, ariaValueNow, `${hue}`);
     } else {
+      [r, g, b] = [r, g, b].map(roundPart);
+      colorLabel = format === 'hsl' ? `HSL: ${hue}°, ${saturation}%, ${lightness}%` : colorLabel;
       colorLabel = format === 'rgb' ? `RGB: ${r}, ${g}, ${b}` : colorLabel;
-      setAttribute(knob2, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
+
       setAttribute(knob1, ariaValueText, `${lightness}% & ${saturation}%`);
       setAttribute(knob1, ariaValueNow, `${lightness}`);
+      setAttribute(knob2, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
       setAttribute(knob2, ariaValueText, `${hue}°`);
       setAttribute(knob2, ariaValueNow, `${hue}`);
     }
@@ -1200,36 +1143,12 @@ export default class ColorPicker {
   }
 
   /**
-   * The `Space` & `Enter` keys specific event listener.
-   * Toggle visibility of the `ColorPicker` / the presets menu, showing one will hide the other.
-   * @param {KeyboardEvent} e
-   * @this {ColorPicker}
-   */
-  keyToggle(e) {
-    const self = this;
-    const { menuToggle } = self;
-    const { activeElement } = getDocument(menuToggle);
-    const { code } = e;
-
-    if ([keyEnter, keySpace].includes(code)) {
-      if ((menuToggle && activeElement === menuToggle) || !activeElement) {
-        e.preventDefault();
-        if (!activeElement) {
-          self.togglePicker(e);
-        } else {
-          self.toggleMenu();
-        }
-      }
-    }
-  }
-
-  /**
    * Toggle the `ColorPicker` dropdown visibility.
-   * @param {Event} e
+   * @param {Event=} e
    * @this {ColorPicker}
    */
   togglePicker(e) {
-    e.preventDefault();
+    if (e) e.preventDefault();
     const self = this;
     const { colorPicker } = self;
 
@@ -1250,8 +1169,13 @@ export default class ColorPicker {
     }
   }
 
-  /** Toggles the visibility of the `ColorPicker` presets menu. */
-  toggleMenu() {
+  /**
+   * Toggles the visibility of the `ColorPicker` presets menu.
+   * @param {Event=} e
+   * @this {ColorPicker}
+   */
+  toggleMenu(e) {
+    if (e) e.preventDefault();
     const self = this;
     const { colorMenu } = self;
 
@@ -1277,6 +1201,10 @@ export default class ColorPicker {
       const relatedBtn = openPicker ? pickerToggle : menuToggle;
       const animationDuration = openDropdown && getElementTransitionDuration(openDropdown);
 
+      // if (!self.isValid) {
+      self.value = self.color.toString(true);
+      // }
+
       if (openDropdown) {
         removeClass(openDropdown, 'show');
         setAttribute(relatedBtn, ariaExpanded, 'false');
@@ -1290,9 +1218,6 @@ export default class ColorPicker {
         }, animationDuration);
       }
 
-      if (!self.isValid) {
-        self.value = self.color.toString();
-      }
       if (!focusPrevented) {
         focus(pickerToggle);
       }

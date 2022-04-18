@@ -1,5 +1,5 @@
 /*!
-* ColorPickerElement v0.0.2alpha1 (http://thednp.github.io/color-picker)
+* ColorPickerElement v0.0.2alpha2 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -218,6 +218,8 @@
     if (nonColors.includes(color)
       || ['#', ...COLOR_FORMAT].some((f) => color.includes(f))) return false;
 
+    if (['black', 'white'].includes(color)) return true;
+
     return ['rgb(255, 255, 255)', 'rgb(0, 0, 0)'].every((c) => {
       setElementStyle(documentHead, { color });
       const computedColor = getElementStyle(documentHead, 'color');
@@ -244,6 +246,11 @@
    */
   function bound01(N, max) {
     let n = N;
+
+    if (typeof N === 'number'
+      && Math.min(N, 0) === 0 // round values to 6 decimals Math.round(N * (10 ** 6)) / 10 ** 6
+      && Math.max(N, 1) === 1) return N;
+
     if (isOnePointZero(N)) n = '100%';
 
     const processPercent = isPercentage(n);
@@ -347,15 +354,12 @@
   /**
    * Converts an RGB colour value to HSL.
    *
-   * @param {number} R Red component [0, 255]
-   * @param {number} G Green component [0, 255]
-   * @param {number} B Blue component [0, 255]
+   * @param {number} r Red component [0, 1]
+   * @param {number} g Green component [0, 1]
+   * @param {number} b Blue component [0, 1]
    * @returns {CP.HSL} {h,s,l} object with [0, 1] ranged values
    */
-  function rgbToHsl(R, G, B) {
-    const r = R / 255;
-    const g = G / 255;
-    const b = B / 255;
+  function rgbToHsl(r, g, b) {
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
     let h = 0;
@@ -367,17 +371,10 @@
     } else {
       const d = max - min;
       s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      switch (max) {
-        case r:
-          h = (g - b) / d + (g < b ? 6 : 0);
-          break;
-        case g:
-          h = (b - r) / d + 2;
-          break;
-        case b:
-          h = (r - g) / d + 4;
-          break;
-      }
+      if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+      if (max === g) h = (b - r) / d + 2;
+      if (max === b) h = (r - g) / d + 4;
+
       h /= 6;
     }
     return { h, s, l };
@@ -406,7 +403,7 @@
    * @param {number} h Hue Angle [0, 1]
    * @param {number} s Saturation [0, 1]
    * @param {number} l Lightness Angle [0, 1]
-   * @returns {CP.RGB} {r,g,b} object with [0, 255] ranged values
+   * @returns {CP.RGB} {r,g,b} object with [0, 1] ranged values
    */
   function hslToRgb(h, s, l) {
     let r = 0;
@@ -425,7 +422,6 @@
       g = hueToRgb(p, q, h);
       b = hueToRgb(p, q, h - 1 / 3);
     }
-    [r, g, b] = [r, g, b].map((x) => x * 255);
 
     return { r, g, b };
   }
@@ -435,16 +431,12 @@
   * @link https://www.w3.org/TR/css-color-4/#hwb-to-rgb
   * @link http://alvyray.com/Papers/CG/hwb2rgb.htm
   *
-  * @param {number} R Red component [0, 255]
-  * @param {number} G Green [0, 255]
-  * @param {number} B Blue [0, 255]
+  * @param {number} r Red component [0, 1]
+  * @param {number} g Green [0, 1]
+  * @param {number} b Blue [0, 1]
   * @return {CP.HWB} {h,w,b} object with [0, 1] ranged values
   */
-  function rgbToHwb(R, G, B) {
-    const r = R / 255;
-    const g = G / 255;
-    const b = B / 255;
-
+  function rgbToHwb(r, g, b) {
     let f = 0;
     let i = 0;
     const whiteness = Math.min(r, g, b);
@@ -474,20 +466,18 @@
   * @param {number} H Hue Angle [0, 1]
   * @param {number} W Whiteness [0, 1]
   * @param {number} B Blackness [0, 1]
-  * @return {CP.RGB} {r,g,b} object with [0, 255] ranged values
+  * @return {CP.RGB} {r,g,b} object with [0, 1] ranged values
   *
   * @link https://www.w3.org/TR/css-color-4/#hwb-to-rgb
   * @link http://alvyray.com/Papers/CG/hwb2rgb.htm
   */
   function hwbToRgb(H, W, B) {
     if (W + B >= 1) {
-      const gray = (W / (W + B)) * 255;
+      const gray = W / (W + B);
       return { r: gray, g: gray, b: gray };
     }
     let { r, g, b } = hslToRgb(H, 1, 0.5);
-    [r, g, b] = [r, g, b]
-      .map((v) => (v / 255) * (1 - W - B) + W)
-      .map((v) => v * 255);
+    [r, g, b] = [r, g, b].map((v) => v * (1 - W - B) + W);
 
     return { r, g, b };
   }
@@ -495,15 +485,12 @@
   /**
    * Converts an RGB colour value to HSV.
    *
-   * @param {number} R Red component [0, 255]
-   * @param {number} G Green [0, 255]
-   * @param {number} B Blue [0, 255]
+   * @param {number} r Red component [0, 1]
+   * @param {number} g Green [0, 1]
+   * @param {number} b Blue [0, 1]
    * @returns {CP.HSV} {h,s,v} object with [0, 1] ranged values
    */
-  function rgbToHsv(R, G, B) {
-    const r = R / 255;
-    const g = G / 255;
-    const b = B / 255;
+  function rgbToHsv(r, g, b) {
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
     let h = 0;
@@ -513,17 +500,10 @@
     if (max === min) {
       h = 0; // achromatic
     } else {
-      switch (max) {
-        case r:
-          h = (g - b) / d + (g < b ? 6 : 0);
-          break;
-        case g:
-          h = (b - r) / d + 2;
-          break;
-        case b:
-          h = (r - g) / d + 4;
-          break;
-      }
+      if (r === max) h = (g - b) / d + (g < b ? 6 : 0);
+      if (g === max) h = (b - r) / d + 2;
+      if (b === max) h = (r - g) / d + 4;
+
       h /= 6;
     }
     return { h, s, v };
@@ -547,10 +527,9 @@
     const q = v * (1 - f * s);
     const t = v * (1 - (1 - f) * s);
     const mod = i % 6;
-    let r = [v, q, p, p, t, v][mod];
-    let g = [t, v, v, q, p, p][mod];
-    let b = [p, p, t, v, v, q][mod];
-    [r, g, b] = [r, g, b].map((n) => n * 255);
+    const r = [v, q, p, p, t, v][mod];
+    const g = [t, v, v, q, p, p][mod];
+    const b = [p, p, t, v, v, q][mod];
     return { r, g, b };
   }
 
@@ -618,15 +597,15 @@
    */
   function stringInputToObject(input) {
     let color = toLowerCase(input.trim());
+
     if (color.length === 0) {
       return {
         r: 0, g: 0, b: 0, a: 1,
       };
     }
-    let named = false;
+
     if (isColorName(color)) {
       color = getRGBFromName(color);
-      named = true;
     } else if (nonColors.includes(color)) {
       const a = color === 'transparent' ? 0 : 1;
       return {
@@ -645,24 +624,28 @@
         r: m1, g: m2, b: m3, a: m4 !== undefined ? m4 : 1, format: 'rgb',
       };
     }
+
     [, m1, m2, m3, m4] = matchers.hsl.exec(color) || [];
     if (m1 && m2 && m3/* && m4 */) {
       return {
         h: m1, s: m2, l: m3, a: m4 !== undefined ? m4 : 1, format: 'hsl',
       };
     }
+
     [, m1, m2, m3, m4] = matchers.hsv.exec(color) || [];
     if (m1 && m2 && m3/* && m4 */) {
       return {
         h: m1, s: m2, v: m3, a: m4 !== undefined ? m4 : 1, format: 'hsv',
       };
     }
+
     [, m1, m2, m3, m4] = matchers.hwb.exec(color) || [];
     if (m1 && m2 && m3) {
       return {
         h: m1, w: m2, b: m3, a: m4 !== undefined ? m4 : 1, format: 'hwb',
       };
     }
+
     [, m1, m2, m3, m4] = matchers.hex8.exec(color) || [];
     if (m1 && m2 && m3 && m4) {
       return {
@@ -670,18 +653,20 @@
         g: parseIntFromHex(m2),
         b: parseIntFromHex(m3),
         a: convertHexToDecimal(m4),
-        format: named ? 'rgb' : 'hex',
+        format: 'hex',
       };
     }
+
     [, m1, m2, m3] = matchers.hex6.exec(color) || [];
     if (m1 && m2 && m3) {
       return {
         r: parseIntFromHex(m1),
         g: parseIntFromHex(m2),
         b: parseIntFromHex(m3),
-        format: named ? 'rgb' : 'hex',
+        format: 'hex',
       };
     }
+
     [, m1, m2, m3, m4] = matchers.hex4.exec(color) || [];
     if (m1 && m2 && m3 && m4) {
       return {
@@ -689,19 +674,20 @@
         g: parseIntFromHex(m2 + m2),
         b: parseIntFromHex(m3 + m3),
         a: convertHexToDecimal(m4 + m4),
-        // format: named ? 'rgb' : 'hex8',
-        format: named ? 'rgb' : 'hex',
+        format: 'hex',
       };
     }
+
     [, m1, m2, m3] = matchers.hex3.exec(color) || [];
     if (m1 && m2 && m3) {
       return {
         r: parseIntFromHex(m1 + m1),
         g: parseIntFromHex(m2 + m2),
         b: parseIntFromHex(m3 + m3),
-        format: named ? 'rgb' : 'hex',
+        format: 'hex',
       };
     }
+
     return false;
   }
 
@@ -732,6 +718,7 @@
    */
   function inputToRGB(input) {
     let rgb = { r: 0, g: 0, b: 0 };
+    /** @type {*} */
     let color = input;
     /** @type {string | number} */
     let a = 1;
@@ -748,39 +735,41 @@
     let format = inputFormat && COLOR_FORMAT.includes(inputFormat) ? inputFormat : 'rgb';
 
     if (typeof input === 'string') {
-      // @ts-ignore -- this now is converted to object
       color = stringInputToObject(input);
       if (color) ok = true;
     }
     if (typeof color === 'object') {
       if (isValidCSSUnit(color.r) && isValidCSSUnit(color.g) && isValidCSSUnit(color.b)) {
         ({ r, g, b } = color);
-        // RGB values now are all in [0, 255] range
-        [r, g, b] = [r, g, b].map((n) => bound01(n, isPercentage(n) ? 100 : 255) * 255);
+        // RGB values now are all in [0, 1] range
+        [r, g, b] = [r, g, b].map((n) => bound01(n, isPercentage(n) ? 100 : 255));
         rgb = { r, g, b };
         ok = true;
-        format = 'rgb';
-      } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
+        format = color.format || 'rgb';
+      }
+      if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
         ({ h, s, v } = color);
-        h = typeof h === 'number' ? h : bound01(h, 360); // hue can be `5deg` or a [0, 1] value
-        s = typeof s === 'number' ? s : bound01(s, 100); // saturation can be `5%` or a [0, 1] value
-        v = typeof v === 'number' ? v : bound01(v, 100); // brightness can be `5%` or a [0, 1] value
+        h = bound01(h, 360); // hue can be `5deg` or a [0, 1] value
+        s = bound01(s, 100); // saturation can be `5%` or a [0, 1] value
+        v = bound01(v, 100); // brightness can be `5%` or a [0, 1] value
         rgb = hsvToRgb(h, s, v);
         ok = true;
         format = 'hsv';
-      } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
+      }
+      if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
         ({ h, s, l } = color);
-        h = typeof h === 'number' ? h : bound01(h, 360); // hue can be `5deg` or a [0, 1] value
-        s = typeof s === 'number' ? s : bound01(s, 100); // saturation can be `5%` or a [0, 1] value
-        l = typeof l === 'number' ? l : bound01(l, 100); // lightness can be `5%` or a [0, 1] value
+        h = bound01(h, 360); // hue can be `5deg` or a [0, 1] value
+        s = bound01(s, 100); // saturation can be `5%` or a [0, 1] value
+        l = bound01(l, 100); // lightness can be `5%` or a [0, 1] value
         rgb = hslToRgb(h, s, l);
         ok = true;
         format = 'hsl';
-      } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.w) && isValidCSSUnit(color.b)) {
+      }
+      if (isValidCSSUnit(color.h) && isValidCSSUnit(color.w) && isValidCSSUnit(color.b)) {
         ({ h, w, b } = color);
-        h = typeof h === 'number' ? h : bound01(h, 360); // hue can be `5deg` or a [0, 1] value
-        w = typeof w === 'number' ? w : bound01(w, 100); // whiteness can be `5%` or a [0, 1] value
-        b = typeof b === 'number' ? b : bound01(b, 100); // blackness can be `5%` or a [0, 1] value
+        h = bound01(h, 360); // hue can be `5deg` or a [0, 1] value
+        w = bound01(w, 100); // whiteness can be `5%` or a [0, 1] value
+        b = bound01(b, 100); // blackness can be `5%` or a [0, 1] value
         rgb = hwbToRgb(h, w, b);
         ok = true;
         format = 'hwb';
@@ -797,9 +786,12 @@
     return {
       ok,
       format,
-      r: Math.min(255, Math.max(rgb.r, 0)),
-      g: Math.min(255, Math.max(rgb.g, 0)),
-      b: Math.min(255, Math.max(rgb.b, 0)),
+      // r: Math.min(255, Math.max(rgb.r, 0)),
+      // g: Math.min(255, Math.max(rgb.g, 0)),
+      // b: Math.min(255, Math.max(rgb.b, 0)),
+      r: rgb.r,
+      g: rgb.g,
+      b: rgb.b,
       a: boundAlpha(a),
     };
   }
@@ -818,16 +810,13 @@
     constructor(input, config) {
       let color = input;
       const configFormat = config && COLOR_FORMAT.includes(config)
-        ? config : 'rgb';
+        ? config : '';
 
-      // If input is already a `Color`, return itself
+      // If input is already a `Color`, clone its values
       if (color instanceof Color) {
         color = inputToRGB(color);
       }
-      if (typeof color === 'number') {
-        const len = `${color}`.length;
-        color = `#${(len === 2 ? '0' : '00')}${color}`;
-      }
+
       const {
         r, g, b, a, ok, format,
       } = inputToRGB(color);
@@ -877,24 +866,21 @@
       let R = 0;
       let G = 0;
       let B = 0;
-      const rp = r / 255;
-      const rg = g / 255;
-      const rb = b / 255;
 
-      if (rp <= 0.03928) {
-        R = rp / 12.92;
+      if (r <= 0.03928) {
+        R = r / 12.92;
       } else {
-        R = ((rp + 0.055) / 1.055) ** 2.4;
+        R = ((r + 0.055) / 1.055) ** 2.4;
       }
-      if (rg <= 0.03928) {
-        G = rg / 12.92;
+      if (g <= 0.03928) {
+        G = g / 12.92;
       } else {
-        G = ((rg + 0.055) / 1.055) ** 2.4;
+        G = ((g + 0.055) / 1.055) ** 2.4;
       }
-      if (rb <= 0.03928) {
-        B = rb / 12.92;
+      if (b <= 0.03928) {
+        B = b / 12.92;
       } else {
-        B = ((rb + 0.055) / 1.055) ** 2.4;
+        B = ((b + 0.055) / 1.055) ** 2.4;
       }
       return 0.2126 * R + 0.7152 * G + 0.0722 * B;
     }
@@ -904,7 +890,7 @@
      * @returns {number} a number in the [0, 255] range
      */
     get brightness() {
-      const { r, g, b } = this;
+      const { r, g, b } = this.toRgb();
       return (r * 299 + g * 587 + b * 114) / 1000;
     }
 
@@ -913,12 +899,14 @@
      * @returns {CP.RGBA} an {r,g,b,a} object with [0, 255] ranged values
      */
     toRgb() {
-      const {
+      let {
         r, g, b, a,
       } = this;
 
+      [r, g, b] = [r, g, b].map((n) => roundPart(n * 255 * 100) / 100);
+      a = roundPart(a * 100) / 100;
       return {
-        r, g, b, a: roundPart(a * 100) / 100,
+        r, g, b, a,
       };
     }
 
@@ -1012,7 +1000,7 @@
     toHsv() {
       const {
         r, g, b, a,
-      } = this.toRgb();
+      } = this;
       const { h, s, v } = rgbToHsv(r, g, b);
 
       return {
@@ -1027,7 +1015,7 @@
     toHsl() {
       const {
         r, g, b, a,
-      } = this.toRgb();
+      } = this;
       const { h, s, l } = rgbToHsl(r, g, b);
 
       return {
@@ -1112,6 +1100,7 @@
      */
     setAlpha(alpha) {
       const self = this;
+      if (typeof alpha !== 'number') return self;
       self.a = boundAlpha(alpha);
       return self;
     }
@@ -1940,26 +1929,23 @@
       } else if (args.length === 2) {
         [hueSteps, lightSteps] = args;
         if ([hueSteps, lightSteps].some((n) => n < 1)) {
-          throw TypeError('ColorPalette: when 2 arguments used, both must be larger than 0.');
+          throw TypeError('ColorPalette: both arguments must be higher than 0.');
         }
-      } else {
-        throw TypeError('ColorPalette requires minimum 2 arguments');
       }
 
-      /** @type {Color[]} */
+      /** @type {*} */
       const colors = [];
-
       const hueStep = 360 / hueSteps;
       const half = roundPart((lightSteps - (lightSteps % 2 ? 1 : 0)) / 2);
-      const estimatedStep = 100 / (lightSteps + (lightSteps % 2 ? 0 : 1)) / 100;
+      const steps1To13 = [0.25, 0.2, 0.15, 0.11, 0.09, 0.075];
+      const lightSets = [[1, 2, 3], [4, 5], [6, 7], [8, 9], [10, 11], [12, 13]];
+      const closestSet = lightSets.find((set) => set.includes(lightSteps));
 
-      let lightStep = 0.25;
-      lightStep = [4, 5].includes(lightSteps) ? 0.2 : lightStep;
-      lightStep = [6, 7].includes(lightSteps) ? 0.15 : lightStep;
-      lightStep = [8, 9].includes(lightSteps) ? 0.11 : lightStep;
-      lightStep = [10, 11].includes(lightSteps) ? 0.09 : lightStep;
-      lightStep = [12, 13].includes(lightSteps) ? 0.075 : lightStep;
-      lightStep = lightSteps > 13 ? estimatedStep : lightStep;
+      // find a lightStep that won't go beyond black and white
+      // something within the [10-90] range of lightness
+      const lightStep = closestSet
+        ? steps1To13[lightSets.indexOf(closestSet)]
+        : (100 / (lightSteps + (lightSteps % 2 ? 0 : 1)) / 100);
 
       // light tints
       for (let i = 1; i < half + 1; i += 1) {
@@ -2451,7 +2437,7 @@
     setAttribute(input, tabIndex, '-1');
   }
 
-  var version = "0.0.2alpha1";
+  var version = "0.0.2alpha2";
 
   // @ts-ignore
 
@@ -2494,8 +2480,6 @@
     fn(input, focusinEvent, self.showPicker);
     fn(pickerToggle, mouseclickEvent, self.togglePicker);
 
-    fn(input, keydownEvent, self.keyToggle);
-
     if (menuToggle) {
       fn(menuToggle, mouseclickEvent, self.toggleMenu);
     }
@@ -2533,8 +2517,7 @@
     fn(doc, pointerEvents.move, self.pointerMove);
     fn(doc, pointerEvents.up, self.pointerUp);
     fn(parent, focusoutEvent, self.handleFocusOut);
-    // @ts-ignore -- this is `Window`
-    fn(win, keyupEvent, self.handleDismiss);
+    fn(doc, keyupEvent, self.handleDismiss);
   }
 
   /**
@@ -2618,7 +2601,7 @@
       const input = querySelector(target);
 
       // invalidate
-      if (!input) throw new TypeError(`ColorPicker target ${target} cannot be found.`);
+      if (!input) throw new TypeError(`ColorPicker target "${target}" cannot be found.`);
       self.input = input;
 
       const parent = closest(input, colorPickerParentSelector);
@@ -2665,15 +2648,14 @@
       });
 
       // update and expose component labels
-      const tempLabels = ObjectAssign({}, colorPickerLabels);
-      const jsonLabels = componentLabels && isValidJSON(componentLabels)
-        ? JSON.parse(componentLabels) : componentLabels || {};
+      const tempComponentLabels = componentLabels && isValidJSON(componentLabels)
+        ? JSON.parse(componentLabels) : componentLabels;
 
       /** @type {Record<string, string>} */
-      self.componentLabels = ObjectAssign(tempLabels, jsonLabels);
+      self.componentLabels = ObjectAssign(colorPickerLabels, tempComponentLabels);
 
       /** @type {Color} */
-      self.color = new Color('white', format);
+      self.color = new Color(input.value || '#fff', format);
 
       /** @type {CP.ColorFormats} */
       self.format = format;
@@ -2682,7 +2664,7 @@
       if (colorKeywords instanceof Array) {
         self.colorKeywords = colorKeywords;
       } else if (typeof colorKeywords === 'string' && colorKeywords.length) {
-        self.colorKeywords = colorKeywords.split(',');
+        self.colorKeywords = colorKeywords.split(',').map((x) => x.trim());
       }
 
       // set colour presets
@@ -2711,7 +2693,6 @@
       self.handleFocusOut = self.handleFocusOut.bind(self);
       self.changeHandler = self.changeHandler.bind(self);
       self.handleDismiss = self.handleDismiss.bind(self);
-      self.keyToggle = self.keyToggle.bind(self);
       self.handleKnobs = self.handleKnobs.bind(self);
 
       // generate markup
@@ -2803,76 +2784,83 @@
       return inputValue !== '' && new Color(inputValue).isValid;
     }
 
+    /** Returns the colour appearance, usually the closest colour name for the current value. */
+    get appearance() {
+      const {
+        colorLabels, hsl, hsv, format,
+      } = this;
+
+      const hue = roundPart(hsl.h * 360);
+      const saturationSource = format === 'hsl' ? hsl.s : hsv.s;
+      const saturation = roundPart(saturationSource * 100);
+      const lightness = roundPart(hsl.l * 100);
+      const hsvl = hsv.v * 100;
+
+      let colorName;
+
+      // determine color appearance
+      if (lightness === 100 && saturation === 0) {
+        colorName = colorLabels.white;
+      } else if (lightness === 0) {
+        colorName = colorLabels.black;
+      } else if (saturation === 0) {
+        colorName = colorLabels.grey;
+      } else if (hue < 15 || hue >= 345) {
+        colorName = colorLabels.red;
+      } else if (hue >= 15 && hue < 45) {
+        colorName = hsvl > 80 && saturation > 80 ? colorLabels.orange : colorLabels.brown;
+      } else if (hue >= 45 && hue < 75) {
+        const isGold = hue > 46 && hue < 54 && hsvl < 80 && saturation > 90;
+        const isOlive = hue >= 54 && hue < 75 && hsvl < 80;
+        colorName = isGold ? colorLabels.gold : colorLabels.yellow;
+        colorName = isOlive ? colorLabels.olive : colorName;
+      } else if (hue >= 75 && hue < 155) {
+        colorName = hsvl < 68 ? colorLabels.green : colorLabels.lime;
+      } else if (hue >= 155 && hue < 175) {
+        colorName = colorLabels.teal;
+      } else if (hue >= 175 && hue < 195) {
+        colorName = colorLabels.cyan;
+      } else if (hue >= 195 && hue < 255) {
+        colorName = colorLabels.blue;
+      } else if (hue >= 255 && hue < 270) {
+        colorName = colorLabels.violet;
+      } else if (hue >= 270 && hue < 295) {
+        colorName = colorLabels.magenta;
+      } else if (hue >= 295 && hue < 345) {
+        colorName = colorLabels.pink;
+      }
+      return colorName;
+    }
+
     /** Updates `ColorPicker` visuals. */
     updateVisuals() {
       const self = this;
       const {
-        format, controlPositions, visuals,
+        controlPositions, visuals,
       } = self;
       const [v1, v2, v3] = visuals;
-      const { offsetWidth, offsetHeight } = v1;
-      const hue = format === 'hsl'
-        ? controlPositions.c1x / offsetWidth
-        : controlPositions.c2y / offsetHeight;
-      // @ts-ignore - `hslToRgb` is assigned to `Color` as static method
-      const { r, g, b } = Color.hslToRgb(hue, 1, 0.5);
+      const { offsetHeight } = v1;
+      const hue = controlPositions.c2y / offsetHeight;
+      const { r, g, b } = new Color({ h: hue, s: 1, l: 0.5 }).toRgb();
       const whiteGrad = 'linear-gradient(rgb(255,255,255) 0%, rgb(255,255,255) 100%)';
       const alpha = 1 - controlPositions.c3y / offsetHeight;
       const roundA = roundPart((alpha * 100)) / 100;
 
-      if (format !== 'hsl') {
-        const fill = new Color({
-          h: hue, s: 1, l: 0.5, a: alpha,
-        }).toRgbString();
-        const hueGradient = `linear-gradient(
-        rgb(255,0,0) 0%, rgb(255,255,0) 16.67%,
-        rgb(0,255,0) 33.33%, rgb(0,255,255) 50%,
-        rgb(0,0,255) 66.67%, rgb(255,0,255) 83.33%,
-        rgb(255,0,0) 100%)`;
-        setElementStyle(v1, {
-          background: `linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,${roundA}) 100%),
-        linear-gradient(to right, rgba(255,255,255,${roundA}) 0%, ${fill} 100%),
-        ${whiteGrad}`,
-        });
-        setElementStyle(v2, { background: hueGradient });
-      } else {
-        const saturation = roundPart((controlPositions.c2y / offsetHeight) * 100);
-        const fill0 = new Color({
-          r: 255, g: 0, b: 0, a: alpha,
-        }).saturate(-saturation).toRgbString();
-        const fill1 = new Color({
-          r: 255, g: 255, b: 0, a: alpha,
-        }).saturate(-saturation).toRgbString();
-        const fill2 = new Color({
-          r: 0, g: 255, b: 0, a: alpha,
-        }).saturate(-saturation).toRgbString();
-        const fill3 = new Color({
-          r: 0, g: 255, b: 255, a: alpha,
-        }).saturate(-saturation).toRgbString();
-        const fill4 = new Color({
-          r: 0, g: 0, b: 255, a: alpha,
-        }).saturate(-saturation).toRgbString();
-        const fill5 = new Color({
-          r: 255, g: 0, b: 255, a: alpha,
-        }).saturate(-saturation).toRgbString();
-        const fill6 = new Color({
-          r: 255, g: 0, b: 0, a: alpha,
-        }).saturate(-saturation).toRgbString();
-        const fillGradient = `linear-gradient(to right,
-        ${fill0} 0%, ${fill1} 16.67%, ${fill2} 33.33%, ${fill3} 50%,
-        ${fill4} 66.67%, ${fill5} 83.33%, ${fill6} 100%)`;
-        const lightGrad = `linear-gradient(rgba(255,255,255,${roundA}) 0%, rgba(255,255,255,0) 50%),
-        linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,${roundA}) 100%)`;
+      const fill = new Color({
+        h: hue, s: 1, l: 0.5, a: alpha,
+      }).toRgbString();
+      const hueGradient = `linear-gradient(
+      rgb(255,0,0) 0%, rgb(255,255,0) 16.67%,
+      rgb(0,255,0) 33.33%, rgb(0,255,255) 50%,
+      rgb(0,0,255) 66.67%, rgb(255,0,255) 83.33%,
+      rgb(255,0,0) 100%)`;
+      setElementStyle(v1, {
+        background: `linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,${roundA}) 100%),
+      linear-gradient(to right, rgba(255,255,255,${roundA}) 0%, ${fill} 100%),
+      ${whiteGrad}`,
+      });
+      setElementStyle(v2, { background: hueGradient });
 
-        setElementStyle(v1, { background: `${lightGrad},${fillGradient},${whiteGrad}` });
-        const {
-          r: gr, g: gg, b: gb,
-        } = new Color({ r, g, b }).greyscale().toRgb();
-
-        setElementStyle(v2, {
-          background: `linear-gradient(rgb(${r},${g},${b}) 0%, rgb(${gr},${gg},${gb}) 100%)`,
-        });
-      }
       setElementStyle(v3, {
         background: `linear-gradient(rgba(${r},${g},${b},1) 0%,rgba(${r},${g},${b},0) 100%)`,
       });
@@ -3022,13 +3010,13 @@
       const [v1, v2, v3] = visuals;
       const [c1, c2, c3] = controlKnobs;
       /** @type {HTMLElement} */
-      const visual = hasClass(target, 'visual-control')
-        ? target : querySelector('.visual-control', target.parentElement);
+      const visual = controlKnobs.includes(target) ? target.previousElementSibling : target;
       const visualRect = getBoundingClientRect(visual);
+      const html = getDocumentElement(v1);
       const X = type === 'touchstart' ? touches[0].pageX : pageX;
       const Y = type === 'touchstart' ? touches[0].pageY : pageY;
-      const offsetX = X - window.pageXOffset - visualRect.left;
-      const offsetY = Y - window.pageYOffset - visualRect.top;
+      const offsetX = X - html.scrollLeft - visualRect.left;
+      const offsetY = Y - html.scrollTop - visualRect.top;
 
       if (target === v1 || target === c1) {
         self.dragElement = visual;
@@ -3088,10 +3076,11 @@
       if (!dragElement) return;
 
       const controlRect = getBoundingClientRect(dragElement);
-      const X = type === 'touchmove' ? touches[0].pageX : pageX;
-      const Y = type === 'touchmove' ? touches[0].pageY : pageY;
-      const offsetX = X - window.pageXOffset - controlRect.left;
-      const offsetY = Y - window.pageYOffset - controlRect.top;
+      const win = getDocumentElement(v1);
+      const X = type === touchmoveEvent ? touches[0].pageX : pageX;
+      const Y = type === touchmoveEvent ? touches[0].pageY : pageY;
+      const offsetX = X - win.scrollLeft - controlRect.left;
+      const offsetY = Y - win.scrollTop - controlRect.top;
 
       if (dragElement === v1) {
         self.changeControl1(offsetX, offsetY);
@@ -3118,19 +3107,19 @@
       if (![keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight].includes(code)) return;
       e.preventDefault();
 
-      const { format, controlKnobs, visuals } = self;
+      const { controlKnobs, visuals } = self;
       const { offsetWidth, offsetHeight } = visuals[0];
       const [c1, c2, c3] = controlKnobs;
       const { activeElement } = getDocument(c1);
       const currentKnob = controlKnobs.find((x) => x === activeElement);
-      const yRatio = offsetHeight / (format === 'hsl' ? 100 : 360);
+      const yRatio = offsetHeight / 360;
 
       if (currentKnob) {
         let offsetX = 0;
         let offsetY = 0;
 
         if (target === c1) {
-          const xRatio = offsetWidth / (format === 'hsl' ? 360 : 100);
+          const xRatio = offsetWidth / 100;
 
           if ([keyArrowLeft, keyArrowRight].includes(code)) {
             self.controlPositions.c1x += code === keyArrowRight ? xRatio : -xRatio;
@@ -3180,7 +3169,7 @@
       if (activeElement === input || (activeElement && inputs.includes(activeElement))) {
         if (activeElement === input) {
           if (isNonColorValue) {
-            colorSource = 'white';
+            colorSource = currentValue === 'transparent' ? 'rgba(0,0,0,0)' : 'rgb(0,0,0)';
           } else {
             colorSource = currentValue;
           }
@@ -3231,9 +3220,7 @@
     changeControl1(X, Y) {
       const self = this;
       let [offsetX, offsetY] = [0, 0];
-      const {
-        format, controlPositions, visuals,
-      } = self;
+      const { controlPositions, visuals } = self;
       const { offsetHeight, offsetWidth } = visuals[0];
 
       if (X > offsetWidth) offsetX = offsetWidth;
@@ -3242,29 +3229,19 @@
       if (Y > offsetHeight) offsetY = offsetHeight;
       else if (Y >= 0) offsetY = Y;
 
-      const hue = format === 'hsl'
-        ? offsetX / offsetWidth
-        : controlPositions.c2y / offsetHeight;
+      const hue = controlPositions.c2y / offsetHeight;
 
-      const saturation = format === 'hsl'
-        ? 1 - controlPositions.c2y / offsetHeight
-        : offsetX / offsetWidth;
+      const saturation = offsetX / offsetWidth;
 
       const lightness = 1 - offsetY / offsetHeight;
       const alpha = 1 - controlPositions.c3y / offsetHeight;
 
-      const colorObject = format === 'hsl'
-        ? {
-          h: hue, s: saturation, l: lightness, a: alpha,
-        }
-        : {
-          h: hue, s: saturation, v: lightness, a: alpha,
-        };
-
       // new color
       const {
         r, g, b, a,
-      } = new Color(colorObject);
+      } = new Color({
+        h: hue, s: saturation, v: lightness, a: alpha,
+      });
 
       ObjectAssign(self.color, {
         r, g, b, a,
@@ -3291,7 +3268,7 @@
     changeControl2(Y) {
       const self = this;
       const {
-        format, controlPositions, visuals,
+        controlPositions, visuals,
       } = self;
       const { offsetHeight, offsetWidth } = visuals[0];
 
@@ -3300,26 +3277,17 @@
       if (Y > offsetHeight) offsetY = offsetHeight;
       else if (Y >= 0) offsetY = Y;
 
-      const hue = format === 'hsl'
-        ? controlPositions.c1x / offsetWidth
-        : offsetY / offsetHeight;
-      const saturation = format === 'hsl'
-        ? 1 - offsetY / offsetHeight
-        : controlPositions.c1x / offsetWidth;
+      const hue = offsetY / offsetHeight;
+      const saturation = controlPositions.c1x / offsetWidth;
       const lightness = 1 - controlPositions.c1y / offsetHeight;
       const alpha = 1 - controlPositions.c3y / offsetHeight;
-      const colorObject = format === 'hsl'
-        ? {
-          h: hue, s: saturation, l: lightness, a: alpha,
-        }
-        : {
-          h: hue, s: saturation, v: lightness, a: alpha,
-        };
 
       // new color
       const {
         r, g, b, a,
-      } = new Color(colorObject);
+      } = new Color({
+        h: hue, s: saturation, v: lightness, a: alpha,
+      });
 
       ObjectAssign(self.color, {
         r, g, b, a,
@@ -3406,18 +3374,18 @@
     setControlPositions() {
       const self = this;
       const {
-        format, visuals, color, hsl, hsv,
+        visuals, color, hsv,
       } = self;
       const { offsetHeight, offsetWidth } = visuals[0];
       const alpha = color.a;
-      const hue = hsl.h;
+      const hue = hsv.h;
 
-      const saturation = format !== 'hsl' ? hsv.s : hsl.s;
-      const lightness = format !== 'hsl' ? hsv.v : hsl.l;
+      const saturation = hsv.s;
+      const lightness = hsv.v;
 
-      self.controlPositions.c1x = format !== 'hsl' ? saturation * offsetWidth : hue * offsetWidth;
+      self.controlPositions.c1x = saturation * offsetWidth;
       self.controlPositions.c1y = (1 - lightness) * offsetHeight;
-      self.controlPositions.c2y = format !== 'hsl' ? hue * offsetHeight : (1 - saturation) * offsetHeight;
+      self.controlPositions.c2y = hue * offsetHeight;
       self.controlPositions.c3y = (1 - alpha) * offsetHeight;
     }
 
@@ -3425,78 +3393,40 @@
     updateAppearance() {
       const self = this;
       const {
-        componentLabels, colorLabels, color, parent,
-        hsl, hsv, hex, format, controlKnobs,
+        componentLabels, color, parent,
+        hsv, hex, format, controlKnobs,
       } = self;
       const {
         appearanceLabel, hexLabel, valueLabel,
       } = componentLabels;
-      const { r, g, b } = color.toRgb();
+      let { r, g, b } = color.toRgb();
       const [knob1, knob2, knob3] = controlKnobs;
-      const hue = roundPart(hsl.h * 360);
+      const hue = roundPart(hsv.h * 360);
       const alpha = color.a;
-      const saturationSource = format === 'hsl' ? hsl.s : hsv.s;
-      const saturation = roundPart(saturationSource * 100);
-      const lightness = roundPart(hsl.l * 100);
-      const hsvl = hsv.v * 100;
-      let colorName;
-
-      // determine color appearance
-      if (lightness === 100 && saturation === 0) {
-        colorName = colorLabels.white;
-      } else if (lightness === 0) {
-        colorName = colorLabels.black;
-      } else if (saturation === 0) {
-        colorName = colorLabels.grey;
-      } else if (hue < 15 || hue >= 345) {
-        colorName = colorLabels.red;
-      } else if (hue >= 15 && hue < 45) {
-        colorName = hsvl > 80 && saturation > 80 ? colorLabels.orange : colorLabels.brown;
-      } else if (hue >= 45 && hue < 75) {
-        const isGold = hue > 46 && hue < 54 && hsvl < 80 && saturation > 90;
-        const isOlive = hue >= 54 && hue < 75 && hsvl < 80;
-        colorName = isGold ? colorLabels.gold : colorLabels.yellow;
-        colorName = isOlive ? colorLabels.olive : colorName;
-      } else if (hue >= 75 && hue < 155) {
-        colorName = hsvl < 68 ? colorLabels.green : colorLabels.lime;
-      } else if (hue >= 155 && hue < 175) {
-        colorName = colorLabels.teal;
-      } else if (hue >= 175 && hue < 195) {
-        colorName = colorLabels.cyan;
-      } else if (hue >= 195 && hue < 255) {
-        colorName = colorLabels.blue;
-      } else if (hue >= 255 && hue < 270) {
-        colorName = colorLabels.violet;
-      } else if (hue >= 270 && hue < 295) {
-        colorName = colorLabels.magenta;
-      } else if (hue >= 295 && hue < 345) {
-        colorName = colorLabels.pink;
-      }
+      const saturation = roundPart(hsv.s * 100);
+      const lightness = roundPart(hsv.v * 100);
+      const colorName = self.appearance;
 
       let colorLabel = `${hexLabel} ${hex.split('').join(' ')}`;
 
-      if (format === 'hsl') {
-        colorLabel = `HSL: ${hue}°, ${saturation}%, ${lightness}%`;
-        setAttribute(knob1, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
-        setAttribute(knob1, ariaValueText, `${hue}° & ${lightness}%`);
-        setAttribute(knob1, ariaValueNow, `${hue}`);
-        setAttribute(knob2, ariaValueText, `${saturation}%`);
-        setAttribute(knob2, ariaValueNow, `${saturation}`);
-      } else if (format === 'hwb') {
+      if (format === 'hwb') {
         const { hwb } = self;
         const whiteness = roundPart(hwb.w * 100);
         const blackness = roundPart(hwb.b * 100);
         colorLabel = `HWB: ${hue}°, ${whiteness}%, ${blackness}%`;
-        setAttribute(knob1, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
         setAttribute(knob1, ariaValueText, `${whiteness}% & ${blackness}%`);
         setAttribute(knob1, ariaValueNow, `${whiteness}`);
+        setAttribute(knob2, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
         setAttribute(knob2, ariaValueText, `${hue}%`);
         setAttribute(knob2, ariaValueNow, `${hue}`);
       } else {
+        [r, g, b] = [r, g, b].map(roundPart);
+        colorLabel = format === 'hsl' ? `HSL: ${hue}°, ${saturation}%, ${lightness}%` : colorLabel;
         colorLabel = format === 'rgb' ? `RGB: ${r}, ${g}, ${b}` : colorLabel;
-        setAttribute(knob2, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
+
         setAttribute(knob1, ariaValueText, `${lightness}% & ${saturation}%`);
         setAttribute(knob1, ariaValueNow, `${lightness}`);
+        setAttribute(knob2, ariaDescription, `${valueLabel}: ${colorLabel}. ${appearanceLabel}: ${colorName}.`);
         setAttribute(knob2, ariaValueText, `${hue}°`);
         setAttribute(knob2, ariaValueNow, `${hue}`);
       }
@@ -3592,36 +3522,12 @@
     }
 
     /**
-     * The `Space` & `Enter` keys specific event listener.
-     * Toggle visibility of the `ColorPicker` / the presets menu, showing one will hide the other.
-     * @param {KeyboardEvent} e
-     * @this {ColorPicker}
-     */
-    keyToggle(e) {
-      const self = this;
-      const { menuToggle } = self;
-      const { activeElement } = getDocument(menuToggle);
-      const { code } = e;
-
-      if ([keyEnter, keySpace].includes(code)) {
-        if ((menuToggle && activeElement === menuToggle) || !activeElement) {
-          e.preventDefault();
-          if (!activeElement) {
-            self.togglePicker(e);
-          } else {
-            self.toggleMenu();
-          }
-        }
-      }
-    }
-
-    /**
      * Toggle the `ColorPicker` dropdown visibility.
-     * @param {Event} e
+     * @param {Event=} e
      * @this {ColorPicker}
      */
     togglePicker(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
       const self = this;
       const { colorPicker } = self;
 
@@ -3642,8 +3548,13 @@
       }
     }
 
-    /** Toggles the visibility of the `ColorPicker` presets menu. */
-    toggleMenu() {
+    /**
+     * Toggles the visibility of the `ColorPicker` presets menu.
+     * @param {Event=} e
+     * @this {ColorPicker}
+     */
+    toggleMenu(e) {
+      if (e) e.preventDefault();
       const self = this;
       const { colorMenu } = self;
 
@@ -3669,6 +3580,10 @@
         const relatedBtn = openPicker ? pickerToggle : menuToggle;
         const animationDuration = openDropdown && getElementTransitionDuration(openDropdown);
 
+        // if (!self.isValid) {
+        self.value = self.color.toString(true);
+        // }
+
         if (openDropdown) {
           removeClass(openDropdown, 'show');
           setAttribute(relatedBtn, ariaExpanded, 'false');
@@ -3682,9 +3597,6 @@
           }, animationDuration);
         }
 
-        if (!self.isValid) {
-          self.value = self.color.toString();
-        }
         if (!focusPrevented) {
           focus(pickerToggle);
         }
@@ -3733,90 +3645,82 @@
    * `ColorPickerElement` Web Component.
    * @example
    * <label for="UNIQUE_ID">Label</label>
-   * <color-picker data-format="hex" data-value="#075">
-   *   <input id="UNIQUE_ID" type="text" class="color-preview btn-appearance">
+   * <color-picker>
+   *   <input id="UNIQUE_ID" value="red" format="hex" class="color-preview btn-appearance">
    * </color-picker>
+   * // or
+   * <label for="UNIQUE_ID">Label</label>
+   * <color-picker data-id="UNIQUE_ID" data-value="red" data-format="hex"></color-picker>
    */
   class ColorPickerElement extends HTMLElement {
     constructor() {
       super();
-      /** @type {boolean} */
-      this.isDisconnected = true;
       this.attachShadow({ mode: 'open' });
     }
 
     /**
      * Returns the current color value.
-     * @returns {string?}
+     * @returns {string | undefined}
      */
-    get value() { return this.input ? this.input.value : null; }
+    get value() { return this.input && this.input.value; }
 
     connectedCallback() {
-      if (this.colorPicker) {
-        if (this.isDisconnected) {
-          this.isDisconnected = false;
-        }
-        return;
+      if (this.input) return;
+
+      let [input] = getElementsByTagName('input', this);
+      const value = (input && getAttribute(input, 'value')) || getAttribute(this, 'data-value') || '#fff';
+      const format = (input && getAttribute(input, 'format')) || getAttribute(this, 'data-format') || 'rgb';
+      let id = (input && getAttribute(input, 'id')) || getAttribute(this, 'data-id');
+
+      if (!id) {
+        id = `color-picker-${format}-${CPID}`;
+        CPID += 1;
       }
 
-      const inputs = getElementsByTagName('input', this);
-
-      if (!inputs.length) {
-        const label = getAttribute(this, 'data-label');
-        const value = getAttribute(this, 'data-value') || '#069';
-        const format = getAttribute(this, 'data-format') || 'rgb';
-        const newInput = createElement({
+      if (!input) {
+        input = createElement({
           tagName: 'input',
           type: 'text',
           className: 'color-preview btn-appearance',
         });
-        let id = getAttribute(this, 'data-id');
-        if (!id) {
-          id = `color-picker-${format}-${CPID}`;
-          CPID += 1;
-        }
 
-        const labelElement = createElement({ tagName: 'label', innerText: label || 'Color Picker' });
-        this.before(labelElement);
-        setAttribute(labelElement, 'for', id);
-        setAttribute(newInput, 'id', id);
-        setAttribute(newInput, 'name', id);
-        setAttribute(newInput, 'autocomplete', 'off');
-        setAttribute(newInput, 'spellcheck', 'false');
-        setAttribute(newInput, 'value', value);
-        this.append(newInput);
+        setAttribute(input, 'id', id);
+        setAttribute(input, 'name', id);
+        setAttribute(input, 'autocomplete', 'off');
+        setAttribute(input, 'spellcheck', 'false');
+        setAttribute(input, 'value', value);
+        this.append(input);
       }
+      /** @type {HTMLInputElement} */
+      // @ts-ignore - `HTMLInputElement` is `HTMLElement`
+      this.input = input;
 
-      const [input] = inputs;
+      // @ts-ignore - `HTMLInputElement` is `HTMLElement`
+      this.colorPicker = new ColorPicker(input);
 
-      if (input) {
-        /** @type {HTMLInputElement} */
-        // @ts-ignore - `HTMLInputElement` is `HTMLElement`
-        this.input = input;
-
-        // @ts-ignore - `HTMLInputElement` is `HTMLElement`
-        this.colorPicker = new ColorPicker(input);
-        this.color = this.colorPicker.color;
-
-        if (this.shadowRoot) {
-          this.shadowRoot.append(createElement('slot'));
-        }
-
-        this.isDisconnected = false;
-      }
+      // @ts-ignore - `shadowRoot` is defined in the constructor
+      this.shadowRoot.append(createElement('slot'));
     }
 
+    /** @this {ColorPickerElement} */
     disconnectedCallback() {
-      if (this.colorPicker) this.colorPicker.dispose();
-      this.isDisconnected = true;
+      const { input, colorPicker, shadowRoot } = this;
+      if (colorPicker) colorPicker.dispose();
+      if (input) input.remove();
+      if (shadowRoot) shadowRoot.innerHTML = '';
+
+      ObjectAssign(this, {
+        colorPicker: undefined,
+        input: undefined,
+      });
     }
   }
 
   ObjectAssign(ColorPickerElement, {
     Color,
     ColorPicker,
-    ColorPalette,
-    getInstance: getColorPickerInstance,
+    ColorPalette, // @ts-ignore
+    getInstance: ColorPicker.getInstance,
     Version,
   });
 

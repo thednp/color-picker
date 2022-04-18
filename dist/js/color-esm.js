@@ -1,5 +1,5 @@
 /*!
-* Color v0.0.2alpha1 (http://thednp.github.io/color-picker)
+* Color v0.0.2alpha2 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -141,6 +141,8 @@ function isColorName(color) {
   if (nonColors.includes(color)
     || ['#', ...COLOR_FORMAT].some((f) => color.includes(f))) return false;
 
+  if (['black', 'white'].includes(color)) return true;
+
   return ['rgb(255, 255, 255)', 'rgb(0, 0, 0)'].every((c) => {
     setElementStyle(documentHead, { color });
     const computedColor = getElementStyle(documentHead, 'color');
@@ -167,6 +169,11 @@ function isValidCSSUnit(color) {
  */
 function bound01(N, max) {
   let n = N;
+
+  if (typeof N === 'number'
+    && Math.min(N, 0) === 0 // round values to 6 decimals Math.round(N * (10 ** 6)) / 10 ** 6
+    && Math.max(N, 1) === 1) return N;
+
   if (isOnePointZero(N)) n = '100%';
 
   const processPercent = isPercentage(n);
@@ -270,15 +277,12 @@ function pad2(c) {
 /**
  * Converts an RGB colour value to HSL.
  *
- * @param {number} R Red component [0, 255]
- * @param {number} G Green component [0, 255]
- * @param {number} B Blue component [0, 255]
+ * @param {number} r Red component [0, 1]
+ * @param {number} g Green component [0, 1]
+ * @param {number} b Blue component [0, 1]
  * @returns {CP.HSL} {h,s,l} object with [0, 1] ranged values
  */
-function rgbToHsl(R, G, B) {
-  const r = R / 255;
-  const g = G / 255;
-  const b = B / 255;
+function rgbToHsl(r, g, b) {
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   let h = 0;
@@ -290,17 +294,10 @@ function rgbToHsl(R, G, B) {
   } else {
     const d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r:
-        h = (g - b) / d + (g < b ? 6 : 0);
-        break;
-      case g:
-        h = (b - r) / d + 2;
-        break;
-      case b:
-        h = (r - g) / d + 4;
-        break;
-    }
+    if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+    if (max === g) h = (b - r) / d + 2;
+    if (max === b) h = (r - g) / d + 4;
+
     h /= 6;
   }
   return { h, s, l };
@@ -329,7 +326,7 @@ function hueToRgb(p, q, t) {
  * @param {number} h Hue Angle [0, 1]
  * @param {number} s Saturation [0, 1]
  * @param {number} l Lightness Angle [0, 1]
- * @returns {CP.RGB} {r,g,b} object with [0, 255] ranged values
+ * @returns {CP.RGB} {r,g,b} object with [0, 1] ranged values
  */
 function hslToRgb(h, s, l) {
   let r = 0;
@@ -348,7 +345,6 @@ function hslToRgb(h, s, l) {
     g = hueToRgb(p, q, h);
     b = hueToRgb(p, q, h - 1 / 3);
   }
-  [r, g, b] = [r, g, b].map((x) => x * 255);
 
   return { r, g, b };
 }
@@ -358,16 +354,12 @@ function hslToRgb(h, s, l) {
 * @link https://www.w3.org/TR/css-color-4/#hwb-to-rgb
 * @link http://alvyray.com/Papers/CG/hwb2rgb.htm
 *
-* @param {number} R Red component [0, 255]
-* @param {number} G Green [0, 255]
-* @param {number} B Blue [0, 255]
+* @param {number} r Red component [0, 1]
+* @param {number} g Green [0, 1]
+* @param {number} b Blue [0, 1]
 * @return {CP.HWB} {h,w,b} object with [0, 1] ranged values
 */
-function rgbToHwb(R, G, B) {
-  const r = R / 255;
-  const g = G / 255;
-  const b = B / 255;
-
+function rgbToHwb(r, g, b) {
   let f = 0;
   let i = 0;
   const whiteness = Math.min(r, g, b);
@@ -397,20 +389,18 @@ function rgbToHwb(R, G, B) {
 * @param {number} H Hue Angle [0, 1]
 * @param {number} W Whiteness [0, 1]
 * @param {number} B Blackness [0, 1]
-* @return {CP.RGB} {r,g,b} object with [0, 255] ranged values
+* @return {CP.RGB} {r,g,b} object with [0, 1] ranged values
 *
 * @link https://www.w3.org/TR/css-color-4/#hwb-to-rgb
 * @link http://alvyray.com/Papers/CG/hwb2rgb.htm
 */
 function hwbToRgb(H, W, B) {
   if (W + B >= 1) {
-    const gray = (W / (W + B)) * 255;
+    const gray = W / (W + B);
     return { r: gray, g: gray, b: gray };
   }
   let { r, g, b } = hslToRgb(H, 1, 0.5);
-  [r, g, b] = [r, g, b]
-    .map((v) => (v / 255) * (1 - W - B) + W)
-    .map((v) => v * 255);
+  [r, g, b] = [r, g, b].map((v) => v * (1 - W - B) + W);
 
   return { r, g, b };
 }
@@ -418,15 +408,12 @@ function hwbToRgb(H, W, B) {
 /**
  * Converts an RGB colour value to HSV.
  *
- * @param {number} R Red component [0, 255]
- * @param {number} G Green [0, 255]
- * @param {number} B Blue [0, 255]
+ * @param {number} r Red component [0, 1]
+ * @param {number} g Green [0, 1]
+ * @param {number} b Blue [0, 1]
  * @returns {CP.HSV} {h,s,v} object with [0, 1] ranged values
  */
-function rgbToHsv(R, G, B) {
-  const r = R / 255;
-  const g = G / 255;
-  const b = B / 255;
+function rgbToHsv(r, g, b) {
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   let h = 0;
@@ -436,17 +423,10 @@ function rgbToHsv(R, G, B) {
   if (max === min) {
     h = 0; // achromatic
   } else {
-    switch (max) {
-      case r:
-        h = (g - b) / d + (g < b ? 6 : 0);
-        break;
-      case g:
-        h = (b - r) / d + 2;
-        break;
-      case b:
-        h = (r - g) / d + 4;
-        break;
-    }
+    if (r === max) h = (g - b) / d + (g < b ? 6 : 0);
+    if (g === max) h = (b - r) / d + 2;
+    if (b === max) h = (r - g) / d + 4;
+
     h /= 6;
   }
   return { h, s, v };
@@ -470,10 +450,9 @@ function hsvToRgb(H, S, V) {
   const q = v * (1 - f * s);
   const t = v * (1 - (1 - f) * s);
   const mod = i % 6;
-  let r = [v, q, p, p, t, v][mod];
-  let g = [t, v, v, q, p, p][mod];
-  let b = [p, p, t, v, v, q][mod];
-  [r, g, b] = [r, g, b].map((n) => n * 255);
+  const r = [v, q, p, p, t, v][mod];
+  const g = [t, v, v, q, p, p][mod];
+  const b = [p, p, t, v, v, q][mod];
   return { r, g, b };
 }
 
@@ -541,15 +520,15 @@ function rgbaToHex(r, g, b, a, allow4Char) {
  */
 function stringInputToObject(input) {
   let color = toLowerCase(input.trim());
+
   if (color.length === 0) {
     return {
       r: 0, g: 0, b: 0, a: 1,
     };
   }
-  let named = false;
+
   if (isColorName(color)) {
     color = getRGBFromName(color);
-    named = true;
   } else if (nonColors.includes(color)) {
     const a = color === 'transparent' ? 0 : 1;
     return {
@@ -568,24 +547,28 @@ function stringInputToObject(input) {
       r: m1, g: m2, b: m3, a: m4 !== undefined ? m4 : 1, format: 'rgb',
     };
   }
+
   [, m1, m2, m3, m4] = matchers.hsl.exec(color) || [];
   if (m1 && m2 && m3/* && m4 */) {
     return {
       h: m1, s: m2, l: m3, a: m4 !== undefined ? m4 : 1, format: 'hsl',
     };
   }
+
   [, m1, m2, m3, m4] = matchers.hsv.exec(color) || [];
   if (m1 && m2 && m3/* && m4 */) {
     return {
       h: m1, s: m2, v: m3, a: m4 !== undefined ? m4 : 1, format: 'hsv',
     };
   }
+
   [, m1, m2, m3, m4] = matchers.hwb.exec(color) || [];
   if (m1 && m2 && m3) {
     return {
       h: m1, w: m2, b: m3, a: m4 !== undefined ? m4 : 1, format: 'hwb',
     };
   }
+
   [, m1, m2, m3, m4] = matchers.hex8.exec(color) || [];
   if (m1 && m2 && m3 && m4) {
     return {
@@ -593,18 +576,20 @@ function stringInputToObject(input) {
       g: parseIntFromHex(m2),
       b: parseIntFromHex(m3),
       a: convertHexToDecimal(m4),
-      format: named ? 'rgb' : 'hex',
+      format: 'hex',
     };
   }
+
   [, m1, m2, m3] = matchers.hex6.exec(color) || [];
   if (m1 && m2 && m3) {
     return {
       r: parseIntFromHex(m1),
       g: parseIntFromHex(m2),
       b: parseIntFromHex(m3),
-      format: named ? 'rgb' : 'hex',
+      format: 'hex',
     };
   }
+
   [, m1, m2, m3, m4] = matchers.hex4.exec(color) || [];
   if (m1 && m2 && m3 && m4) {
     return {
@@ -612,19 +597,20 @@ function stringInputToObject(input) {
       g: parseIntFromHex(m2 + m2),
       b: parseIntFromHex(m3 + m3),
       a: convertHexToDecimal(m4 + m4),
-      // format: named ? 'rgb' : 'hex8',
-      format: named ? 'rgb' : 'hex',
+      format: 'hex',
     };
   }
+
   [, m1, m2, m3] = matchers.hex3.exec(color) || [];
   if (m1 && m2 && m3) {
     return {
       r: parseIntFromHex(m1 + m1),
       g: parseIntFromHex(m2 + m2),
       b: parseIntFromHex(m3 + m3),
-      format: named ? 'rgb' : 'hex',
+      format: 'hex',
     };
   }
+
   return false;
 }
 
@@ -655,6 +641,7 @@ function stringInputToObject(input) {
  */
 function inputToRGB(input) {
   let rgb = { r: 0, g: 0, b: 0 };
+  /** @type {*} */
   let color = input;
   /** @type {string | number} */
   let a = 1;
@@ -671,39 +658,41 @@ function inputToRGB(input) {
   let format = inputFormat && COLOR_FORMAT.includes(inputFormat) ? inputFormat : 'rgb';
 
   if (typeof input === 'string') {
-    // @ts-ignore -- this now is converted to object
     color = stringInputToObject(input);
     if (color) ok = true;
   }
   if (typeof color === 'object') {
     if (isValidCSSUnit(color.r) && isValidCSSUnit(color.g) && isValidCSSUnit(color.b)) {
       ({ r, g, b } = color);
-      // RGB values now are all in [0, 255] range
-      [r, g, b] = [r, g, b].map((n) => bound01(n, isPercentage(n) ? 100 : 255) * 255);
+      // RGB values now are all in [0, 1] range
+      [r, g, b] = [r, g, b].map((n) => bound01(n, isPercentage(n) ? 100 : 255));
       rgb = { r, g, b };
       ok = true;
-      format = 'rgb';
-    } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
+      format = color.format || 'rgb';
+    }
+    if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
       ({ h, s, v } = color);
-      h = typeof h === 'number' ? h : bound01(h, 360); // hue can be `5deg` or a [0, 1] value
-      s = typeof s === 'number' ? s : bound01(s, 100); // saturation can be `5%` or a [0, 1] value
-      v = typeof v === 'number' ? v : bound01(v, 100); // brightness can be `5%` or a [0, 1] value
+      h = bound01(h, 360); // hue can be `5deg` or a [0, 1] value
+      s = bound01(s, 100); // saturation can be `5%` or a [0, 1] value
+      v = bound01(v, 100); // brightness can be `5%` or a [0, 1] value
       rgb = hsvToRgb(h, s, v);
       ok = true;
       format = 'hsv';
-    } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
+    }
+    if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
       ({ h, s, l } = color);
-      h = typeof h === 'number' ? h : bound01(h, 360); // hue can be `5deg` or a [0, 1] value
-      s = typeof s === 'number' ? s : bound01(s, 100); // saturation can be `5%` or a [0, 1] value
-      l = typeof l === 'number' ? l : bound01(l, 100); // lightness can be `5%` or a [0, 1] value
+      h = bound01(h, 360); // hue can be `5deg` or a [0, 1] value
+      s = bound01(s, 100); // saturation can be `5%` or a [0, 1] value
+      l = bound01(l, 100); // lightness can be `5%` or a [0, 1] value
       rgb = hslToRgb(h, s, l);
       ok = true;
       format = 'hsl';
-    } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.w) && isValidCSSUnit(color.b)) {
+    }
+    if (isValidCSSUnit(color.h) && isValidCSSUnit(color.w) && isValidCSSUnit(color.b)) {
       ({ h, w, b } = color);
-      h = typeof h === 'number' ? h : bound01(h, 360); // hue can be `5deg` or a [0, 1] value
-      w = typeof w === 'number' ? w : bound01(w, 100); // whiteness can be `5%` or a [0, 1] value
-      b = typeof b === 'number' ? b : bound01(b, 100); // blackness can be `5%` or a [0, 1] value
+      h = bound01(h, 360); // hue can be `5deg` or a [0, 1] value
+      w = bound01(w, 100); // whiteness can be `5%` or a [0, 1] value
+      b = bound01(b, 100); // blackness can be `5%` or a [0, 1] value
       rgb = hwbToRgb(h, w, b);
       ok = true;
       format = 'hwb';
@@ -720,9 +709,12 @@ function inputToRGB(input) {
   return {
     ok,
     format,
-    r: Math.min(255, Math.max(rgb.r, 0)),
-    g: Math.min(255, Math.max(rgb.g, 0)),
-    b: Math.min(255, Math.max(rgb.b, 0)),
+    // r: Math.min(255, Math.max(rgb.r, 0)),
+    // g: Math.min(255, Math.max(rgb.g, 0)),
+    // b: Math.min(255, Math.max(rgb.b, 0)),
+    r: rgb.r,
+    g: rgb.g,
+    b: rgb.b,
     a: boundAlpha(a),
   };
 }
@@ -741,16 +733,13 @@ class Color {
   constructor(input, config) {
     let color = input;
     const configFormat = config && COLOR_FORMAT.includes(config)
-      ? config : 'rgb';
+      ? config : '';
 
-    // If input is already a `Color`, return itself
+    // If input is already a `Color`, clone its values
     if (color instanceof Color) {
       color = inputToRGB(color);
     }
-    if (typeof color === 'number') {
-      const len = `${color}`.length;
-      color = `#${(len === 2 ? '0' : '00')}${color}`;
-    }
+
     const {
       r, g, b, a, ok, format,
     } = inputToRGB(color);
@@ -800,24 +789,21 @@ class Color {
     let R = 0;
     let G = 0;
     let B = 0;
-    const rp = r / 255;
-    const rg = g / 255;
-    const rb = b / 255;
 
-    if (rp <= 0.03928) {
-      R = rp / 12.92;
+    if (r <= 0.03928) {
+      R = r / 12.92;
     } else {
-      R = ((rp + 0.055) / 1.055) ** 2.4;
+      R = ((r + 0.055) / 1.055) ** 2.4;
     }
-    if (rg <= 0.03928) {
-      G = rg / 12.92;
+    if (g <= 0.03928) {
+      G = g / 12.92;
     } else {
-      G = ((rg + 0.055) / 1.055) ** 2.4;
+      G = ((g + 0.055) / 1.055) ** 2.4;
     }
-    if (rb <= 0.03928) {
-      B = rb / 12.92;
+    if (b <= 0.03928) {
+      B = b / 12.92;
     } else {
-      B = ((rb + 0.055) / 1.055) ** 2.4;
+      B = ((b + 0.055) / 1.055) ** 2.4;
     }
     return 0.2126 * R + 0.7152 * G + 0.0722 * B;
   }
@@ -827,7 +813,7 @@ class Color {
    * @returns {number} a number in the [0, 255] range
    */
   get brightness() {
-    const { r, g, b } = this;
+    const { r, g, b } = this.toRgb();
     return (r * 299 + g * 587 + b * 114) / 1000;
   }
 
@@ -836,12 +822,14 @@ class Color {
    * @returns {CP.RGBA} an {r,g,b,a} object with [0, 255] ranged values
    */
   toRgb() {
-    const {
+    let {
       r, g, b, a,
     } = this;
 
+    [r, g, b] = [r, g, b].map((n) => roundPart(n * 255 * 100) / 100);
+    a = roundPart(a * 100) / 100;
     return {
-      r, g, b, a: roundPart(a * 100) / 100,
+      r, g, b, a,
     };
   }
 
@@ -935,7 +923,7 @@ class Color {
   toHsv() {
     const {
       r, g, b, a,
-    } = this.toRgb();
+    } = this;
     const { h, s, v } = rgbToHsv(r, g, b);
 
     return {
@@ -950,7 +938,7 @@ class Color {
   toHsl() {
     const {
       r, g, b, a,
-    } = this.toRgb();
+    } = this;
     const { h, s, l } = rgbToHsl(r, g, b);
 
     return {
@@ -1035,6 +1023,7 @@ class Color {
    */
   setAlpha(alpha) {
     const self = this;
+    if (typeof alpha !== 'number') return self;
     self.a = boundAlpha(alpha);
     return self;
   }

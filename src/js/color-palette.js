@@ -29,26 +29,23 @@ export default class ColorPalette {
     } else if (args.length === 2) {
       [hueSteps, lightSteps] = args;
       if ([hueSteps, lightSteps].some((n) => n < 1)) {
-        throw TypeError('ColorPalette: when 2 arguments used, both must be larger than 0.');
+        throw TypeError('ColorPalette: both arguments must be higher than 0.');
       }
-    } else {
-      throw TypeError('ColorPalette requires minimum 2 arguments');
     }
 
-    /** @type {Color[]} */
+    /** @type {*} */
     const colors = [];
-
     const hueStep = 360 / hueSteps;
     const half = roundPart((lightSteps - (lightSteps % 2 ? 1 : 0)) / 2);
-    const estimatedStep = 100 / (lightSteps + (lightSteps % 2 ? 0 : 1)) / 100;
+    const steps1To13 = [0.25, 0.2, 0.15, 0.11, 0.09, 0.075];
+    const lightSets = [[1, 2, 3], [4, 5], [6, 7], [8, 9], [10, 11], [12, 13]];
+    const closestSet = lightSets.find((set) => set.includes(lightSteps));
 
-    let lightStep = 0.25;
-    lightStep = [4, 5].includes(lightSteps) ? 0.2 : lightStep;
-    lightStep = [6, 7].includes(lightSteps) ? 0.15 : lightStep;
-    lightStep = [8, 9].includes(lightSteps) ? 0.11 : lightStep;
-    lightStep = [10, 11].includes(lightSteps) ? 0.09 : lightStep;
-    lightStep = [12, 13].includes(lightSteps) ? 0.075 : lightStep;
-    lightStep = lightSteps > 13 ? estimatedStep : lightStep;
+    // find a lightStep that won't go beyond black and white
+    // something within the [10-90] range of lightness
+    const lightStep = closestSet
+      ? steps1To13[lightSets.indexOf(closestSet)]
+      : (100 / (lightSteps + (lightSteps % 2 ? 0 : 1)) / 100);
 
     // light tints
     for (let i = 1; i < half + 1; i += 1) {

@@ -1,8 +1,9 @@
 .git
+.github
+.nyc_output
 node_modules
 experiments
 docs
-.nyc_output
 coverage
 cypress/videos
 cypress/screenshots

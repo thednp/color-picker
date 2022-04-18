@@ -202,7 +202,7 @@ declare module "color-picker/src/js/color-palette" {
      * Returns a color palette with a given set of parameters.
      * @example
      * new ColorPalette(0, 12, 10);
-     * // => { hue: 0, hueSteps: 12, lightSteps: 10, colors: array }
+     * // => { hue: 0, hueSteps: 12, lightSteps: 10, colors: Array<Color> }
      */
     export default class ColorPalette {
         /**
@@ -216,9 +216,8 @@ declare module "color-picker/src/js/color-palette" {
         hue: number;
         hueSteps: number;
         lightSteps: number;
-        colors: Color[];
+        colors: any;
     }
-    import Color from "color-picker/src/js/color";
 }
 declare module "color-picker/src/js/util/colorPickerLabels" {
     export default colorPickerLabels;
@@ -244,10 +243,6 @@ declare module "color-picker/src/js/util/isValidJSON" {
      * @returns {boolean} the query result
      */
     export default function isValidJSON(str: string): boolean;
-}
-declare module "color-picker/src/js/version" {
-    export default Version;
-    const Version: string;
 }
 declare module "color-picker/src/js/util/vHidden" {
     export default vHidden;
@@ -296,9 +291,11 @@ declare module "color-picker/src/js/util/setMarkup" {
     */
     export default function setMarkup(self: CP.ColorPicker): void;
 }
+declare module "color-picker/src/js/util/version" {
+    export default Version;
+    const Version: string;
+}
 declare module "color-picker/src/js/color-picker" {
-    /** @type {CP.GetInstance<ColorPicker>} */
-    export const getColorPickerInstance: CP.GetInstance<ColorPicker>;
     /**
      * Color Picker Web Component
      * @see http://thednp.github.io/color-picker
@@ -338,13 +335,23 @@ declare module "color-picker/src/js/color-picker" {
         /** Shows the `ColorPicker` dropdown. */
         showPicker(): void;
         /**
-         * Toggle the `ColorPicker` dropdown visibility.
-         * @param {Event} e
+         * The `Space` & `Enter` keys specific event listener.
+         * Toggle visibility of the `ColorPicker` / the presets menu, showing one will hide the other.
+         * @param {KeyboardEvent} e
          * @this {ColorPicker}
          */
-        togglePicker(this: ColorPicker, e: Event): void;
-        /** Toggles the visibility of the `ColorPicker` presets menu. */
-        toggleMenu(): void;
+        /**
+         * Toggle the `ColorPicker` dropdown visibility.
+         * @param {Event=} e
+         * @this {ColorPicker}
+         */
+        togglePicker(this: ColorPicker, e?: Event | undefined): void;
+        /**
+         * Toggles the visibility of the `ColorPicker` presets menu.
+         * @param {Event=} e
+         * @this {ColorPicker}
+         */
+        toggleMenu(this: ColorPicker, e?: Event | undefined): void;
         /**
          * The `ColorPicker` click event listener for the colour menu presets / defaults.
          * @param {Partial<Event>} e
@@ -401,13 +408,6 @@ declare module "color-picker/src/js/color-picker" {
          */
         handleDismiss(this: ColorPicker, { code }: KeyboardEvent): void;
         /**
-         * The `Space` & `Enter` keys specific event listener.
-         * Toggle visibility of the `ColorPicker` / the presets menu, showing one will hide the other.
-         * @param {KeyboardEvent} e
-         * @this {ColorPicker}
-         */
-        keyToggle(this: ColorPicker, e: KeyboardEvent): void;
-        /**
          * The `ColorPicker` *keydown* event listener for control knobs.
          * @param {KeyboardEvent} e
          */
@@ -456,6 +456,8 @@ declare module "color-picker/src/js/color-picker" {
         get isDark(): boolean;
         /** Checks if the current input value is a valid colour. */
         get isValid(): boolean;
+        /** Returns the colour appearance, usually the closest colour name for the current value. */
+        get appearance(): string | undefined;
         /** Updates `ColorPicker` visuals. */
         updateVisuals(): void;
         /**
@@ -512,27 +514,27 @@ declare module "color-picker/src/js/color-picker-element" {
      * `ColorPickerElement` Web Component.
      * @example
      * <label for="UNIQUE_ID">Label</label>
-     * <color-picker data-format="hex" data-value="#075">
-     *   <input id="UNIQUE_ID" type="text" class="color-preview btn-appearance">
+     * <color-picker>
+     *   <input id="UNIQUE_ID" value="red" format="hex" class="color-preview btn-appearance">
      * </color-picker>
+     * // or
+     * <label for="UNIQUE_ID">Label</label>
+     * <color-picker data-id="UNIQUE_ID" data-value="red" data-format="hex"></color-picker>
      */
     class ColorPickerElement extends HTMLElement {
-        /** @type {boolean} */
-        isDisconnected: boolean;
         /**
          * Returns the current color value.
-         * @returns {string?}
+         * @returns {string | undefined}
          */
-        get value(): string | null;
+        get value(): string | undefined;
         connectedCallback(): void;
         /** @type {HTMLInputElement} */
         input: HTMLInputElement | undefined;
         colorPicker: ColorPicker | undefined;
-        color: Color | undefined;
-        disconnectedCallback(): void;
+        /** @this {ColorPickerElement} */
+        disconnectedCallback(this: ColorPickerElement): void;
     }
     import ColorPicker from "color-picker/src/js/color-picker";
-    import Color from "color-picker/src/js/color";
 }
 declare module "color-picker/types/source/source" {
     export { default as Color } from "color-picker/src/js/color";

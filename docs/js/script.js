@@ -51,7 +51,8 @@ CPs.forEach((input, i) => {
       const {h, s, l, a} = cp.hsl;
       [picker1, picker2, picker3].forEach((p, i) => {
         const pickerInstance = ColorPicker.getInstance(p);
-        pickerInstance.color = new ColorPicker.Color({ h, s, l, a }).spin((i + 1) * 90);
+        const { r, g, b, a: al } = new ColorPicker.Color({ h, s, l, a }).spin((i + 1) * 90);
+        Object.assign(pickerInstance.color, { r, g, b, a: al });
 
         pickerInstance.update();
       })
@@ -139,8 +140,8 @@ addCP.addEventListener('click', function(e){
   if (format !== 'rgb'){
     cp.setAttribute('data-format', format);
   }
+  cp.setAttribute('data-id', `color-picker-${CPID}`);
   cp.setAttribute('data-value', `rgb(${randomRed} ${randomGreen} ${randomBlue} / 0.8)`);
-  cp.setAttribute('data-label', `Color Picker Element ${format.toUpperCase()} Format - ${CPID}`);
   cp.setAttribute('data-color-presets', presets);
   cp.setAttribute('data-color-keywords', 'false');
   
@@ -175,8 +176,12 @@ addCP.addEventListener('click', function(e){
   const colTitle = document.createElement('p');
   colTitle.innerHTML = `<b>Color Picker Element Attributes</b>`;
 
-  col1.append(cp);
-  col2.append(colTitle,ul);
+  const label = document.createElement('label');
+  label.innerText = `Color Picker Element ${format.toUpperCase()} Format - ${CPID}`;
+  label.setAttribute('for', `color-picker-${CPID}`);
+
+  col1.append(label, cp);
+  col2.append(colTitle, ul);
 
   CPID += 1;
   

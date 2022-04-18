@@ -83,7 +83,7 @@ export interface ColorPickerOptions {
   colorKeywords?: string[];
 }
 
-export type ColorInput = string | number | RGB | RGBA | HSL | HSLA | HSV | HSVA | HWB | ColorObject;
+export type ColorInput = string | RGB | RGBA | HSL | HSLA | HSV | HSVA | HWB | ColorObject;
 export type ColorFormats = string | 'rgb' | 'hex' | 'hex3' | 'hex4' | 'hex6' | 'hex8' | 'hsl' | 'hsv' | 'hwb';
 
 export type GetInstance<T> = (element: string | HTMLInputElement) => T | null;

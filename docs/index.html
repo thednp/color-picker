@@ -69,18 +69,22 @@
         <li><code>colorKeywords</code> option is set via JavaScript;</li>
       </ul>
     </div>
-    <div class="col">
-      <label for="picker3">Accent Color</label>
+    <div class="col" lang="fr-FR">
+      <label for="picker3">Couleur accentuée</label>
       <div class="color-picker">
-        <input type="text" class="color-preview btn-appearance" name="picker3" id="picker3" value="hsl(86deg 78% 27% / 90%)" data-format="hsl" autocomplete="off" spellcheck="false"  placeholder="Set color HSL format">
+        <input
+        type="text" name="picker3" id="picker3" class="color-preview btn-appearance" autocomplete="off" spellcheck="false" placeholder="Définir la couleur au format HSL"
+        data-color-labels="blanc,noir,gris,rouge,orange,brun,or,olive,jaune,citron,vert,sarcelle,cyan,bleu,violet,magenta,rose"
+        data-component-labels='{"pickerLabel":"Couleur Sélection","appearanceLabel":"Apparence de la couleur","valueLabel":"Valeur de couleur","toggleLabel":"Sélectionner la couleur","presetsLabel":"Préréglages de couleur","defaultsLabel":"Couleur par défaut","formatLabel":"Format","alphaLabel":"Alpha","hexLabel":"Hexadécimal","hueLabel":"Nuance","whitenessLabel":"Blancheur","blacknessLabel":"Noirceur","saturationLabel":"Saturation","lightnessLabel":"Légèreté","redLabel":"Rouge","greenLabel":"Vert","blueLabel":"Bleu"}'
+        value="hsl(86deg 78% 27% / 90%)" data-format="hsl">
       </div>
       <ul class="mb-5">
         <li>manually initialized via JavaScript;</li>
-        <li><code>componentLabels</code> option is default;</li>
-        <li><code>colorLabels</code> option is default;</li>
+        <li><code>componentLabels</code> option is set via DATA API;</li>
+        <li><code>colorLabels</code> option is set via DATA API;</li>
         <li><code>data-format="hsl"</code> attribute is used;</li>
-        <li><code>colorPresets</code> option is set to <a href="https://material.io/archive/guidelines/style/color.html" target="_blank" title="Material Design Colors">Material Colors</a>;</li>
-        <li><code>colorKeywords</code> option is set via JavaScript;</li>
+        <li><code>colorPresets</code> option is set to <a href="https://material.io/archive/guidelines/style/color.html" target="_blank" title="Material Design Colors">Material Colors</a> via JavaScript API;</li>
+        <li><code>colorKeywords</code> option is set via JavaScript API;</li>
       </ul>
     </div>
   </div>
@@ -122,7 +126,7 @@
     </div>
     <div class="col">
       <label for="picker6">Title Color</label>
-      <color-picker data-format="hsl" 
+      <color-picker data-format="hwb" 
         data-color-presets='{"hue": 270, "hueSteps": 24, "lightSteps": 10}'
         data-color-keywords="orange,hwb(12deg 0% 11%):default,magenta,blue">
         <input type="text" class="color-preview btn-appearance" name="picker6" id="picker6" value="hwb(12deg 0% 11%)" autocomplete="off" spellcheck="false" placeholder="Selectează culoarea în format RGB">
