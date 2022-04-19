@@ -9,11 +9,6 @@ on:
       - README.md
       - package.json
       - .github/workflows/badges.yml
-  schedule:
-    # update badges every night
-    # because we have a few badges that are linked
-    # to the external repositories
-    - cron: '0 3 * * *'
 
 jobs:
   badges:
