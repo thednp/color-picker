@@ -1,5 +1,5 @@
 /*!
-* ColorPickerElement v0.0.2alpha4 (http://thednp.github.io/color-picker)
+* ColorPickerElement v0.0.2alpha5 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -2437,7 +2437,7 @@
     setAttribute(input, tabIndex, '-1');
   }
 
-  var version = "0.0.2alpha4";
+  var version = "0.0.2alpha5";
 
   // @ts-ignore
 

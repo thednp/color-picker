@@ -11,7 +11,7 @@ import getCEMarkup from '../fixtures/getCEMarkup';
 describe('ColorPickerElement Class Test', () => {
 
   beforeEach(() => {
-    cy.visit('docs/test.html')
+    cy.visit('cypress/test.html')
       .get('body').then((body) => {
         cy.wrap(body.get()[0]).as('body');
       })

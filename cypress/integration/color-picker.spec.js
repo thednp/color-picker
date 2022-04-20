@@ -22,7 +22,7 @@ const colorPresets = '#330000,#990000,#ff0000,#ff6666,#ffcccc,#003333,#009999,#0
 describe('ColorPicker Class Test', () => {
 
   beforeEach(() => {
-    cy.visit('docs/test.html')
+    cy.visit('cypress/test.html')
       .get('body').then((body) => {
         cy.wrap(body[0]).as('body');
         cy.wrap(body[0].ownerDocument).as('doc');
