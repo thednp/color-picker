@@ -16,6 +16,7 @@ module.exports = (on, config) => {
       // in the spec with the string "development"
       'process.env.NODE_ENV': '"development"'
     },
+    plugins: [require('./esbuild-istanbul')()]
   }
   
   // pass ESBuild options to be applied to each spec file

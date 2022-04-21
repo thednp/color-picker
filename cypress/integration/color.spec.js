@@ -1,7 +1,6 @@
 /// <reference types="cypress" />
 
-// import Color from '../../src/js/color';
-import Color from '../instrumented/color';
+import Color from '../../src/js/color';
 
 describe('Color Class Tests', () => {
   

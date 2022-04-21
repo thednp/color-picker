@@ -1,10 +1,7 @@
 /// <reference types="cypress" />
 
-// import Color from '../../src/js/color';
-// import ColorPalette from '../../src/js/color-palette';
-
-import Color from '../instrumented/color';
-import ColorPalette from '../instrumented/color-palette';
+import Color from '../../src/js/color';
+import ColorPalette from '../../src/js/color-palette';
 
 describe('ColorPalette Class Test', () => {
  

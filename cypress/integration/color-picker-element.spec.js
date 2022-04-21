@@ -1,10 +1,7 @@
 /// <reference types="cypress" />
 
-// import ColorPicker from '../../src/js/color-picker';
-// import ColorPickerElement from '../../src/js/color-picker-element';
-
-import ColorPicker from '../instrumented/color-picker';
-import ColorPickerElement from '../instrumented/color-picker-element';
+import ColorPicker from '../../src/js/color-picker';
+import ColorPickerElement from '../../src/js/color-picker-element';
 
 import getCEMarkup from '../fixtures/getCEMarkup';
 

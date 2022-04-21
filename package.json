@@ -1,6 +1,6 @@
 {
   "name": "@thednp/color-picker",
-  "version": "0.0.2alpha5",
+  "version": "0.0.2alpha6",
   "description": "Modern Color Picker Web Component",
   "main": "dist/js/color-picker.min.js",
   "module": "dist/js/color-picker.esm.js",
@@ -18,9 +18,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "instrument": "npx nyc instrument --compact=false src/js cypress/instrumented",
-    "test": "npm run instrument && npx cypress run",
-    "cypress": "npm run instrument && npx cypress open",
+    "test": "npx cypress run",
+    "cypress": "npx cypress open",
     "coverage:report": "npx nyc report --exclude=src/js/util --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
     "coverage:badge": "npx --check-coverage update-badge",
     "fix:js": "eslint src/ --config .eslintrc --fix",
@@ -64,10 +63,9 @@
   "keywords": [
     "color-picker",
     "colorpicker",
-    "javascript colorpicker",
-    "javascript colorpalette",
-    "color palette",
-    "native javascript"
+    "color",
+    "palette",
+    "javascript"
   ],
   "author": "thednp",
   "license": "MIT",

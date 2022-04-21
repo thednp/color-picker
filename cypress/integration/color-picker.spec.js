@@ -1,14 +1,9 @@
 /// <reference types="cypress" />
 
-// import Color from '../../src/js/color';
-// import ColorPalette from '../../src/js/color-palette';
-// import ColorPicker from '../../src/js/color-picker';
-// import roundPart from '../../src/js/util/roundPart';
-
-import Color from '../instrumented/color';
-import ColorPicker from '../instrumented/color-picker';
-import ColorPalette from '../instrumented/color-palette';
-import roundPart from '../instrumented/util/roundPart';
+import Color from '../../src/js/color';
+import ColorPalette from '../../src/js/color-palette';
+import ColorPicker from '../../src/js/color-picker';
+import roundPart from '../../src/js/util/roundPart';
 
 import getRandomInt from '../fixtures/getRandomInt';
 import FORMAT from '../fixtures/format';
