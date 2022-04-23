@@ -10,6 +10,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -17,3 +18,8 @@ jobs:
       - uses: bahmutov/npm-install@v1
       - run: npm run build
       - run: npm run test
+
+      - name: Upload coverage report to coveralls.io
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
