@@ -17,6 +17,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - uses: bahmutov/npm-install@v1
       - run: npm run build
+      - run: npm run pretest
       - run: npm run test
 
       - name: Upload coverage report to coveralls.io

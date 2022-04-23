@@ -18,6 +18,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
+    "pretest": "rimraf coverage && .nyc_output/out.json",
     "test": "npx cypress run",
     "cypress": "npx cypress open",
     "coverage:report": "npx nyc report --exclude=src/js/util --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
