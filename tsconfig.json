@@ -9,14 +9,12 @@
     "allowJs": true,
     "checkJs": true,
     "rootDir": "../",
-    // "rootDir": "src/js/",
     "outDir": "types",
-    "outFile": "types/cp.d.ts", // comment after generate
+    // "outFile": "types/cp.d.ts", // comment after generate
   },
-  // "include": ["types/source/types"],
   "files": [
     "types/index.d.ts",
-    "types/source/types.d.ts",
-    "types/source/source.ts",
+    "types/cp.d.ts",
+    "types/source/types.d.ts", // comment before generate
   ]
 }

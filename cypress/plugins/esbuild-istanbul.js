@@ -44,7 +44,7 @@ const instrument = (source, path, inputSourceMap) =>
 const esbuildPluginIstanbul = () => ({
   name: 'istanbul',
   setup(build) {
-    build.onLoad({filter: /\\src\\js\\/ },
+    build.onLoad({filter: /\\color-picker\\src\\js\\/ },
       async ({ path }) => {
         const contents = String(readFileSync(path));
 

@@ -1,5 +1,5 @@
 /*!
-* ColorPicker v0.0.2alpha1 (http://thednp.github.io/color-picker)
+* ColorPicker v0.0.2 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -105,7 +105,7 @@ color-picker:focus,
 }
 
 .txt-dark .color-preview:focus {
-  box-shadow: 0 0 0 1px white inset, 0 0 0 3px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 0 1px rgb(255, 255, 255) inset, 0 0 0 3px rgba(0, 0, 0, 0.15);
 }
 
 .txt-dark .color-preview::placeholder {
