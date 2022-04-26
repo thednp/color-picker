@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start-server": "http-server -p 3003 --silent",
-    "test": "nyc start-server-and-test start-server http://localhost:3003 cy:run",
+    "test": "nyc --silent start-server-and-test start-server http://localhost:3003 cy:run",
     "cy:run": "npx cypress run",
     "cy:open": "npx cypress open",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
