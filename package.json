@@ -17,24 +17,11 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "nyc": {
-    "include": [
-      "src/js"
-    ],
-    "report-dir": "coverage",
-    "reporter": [
-      "text",
-      "lcov"
-    ],
-    "sourceMap": false,
-    "instrument": true,
-    "check-coverage": true
-  },
   "scripts": {
     "start-server1": "http-server -p 3003 --silent",
     "test1": "npx nyc --include src/js --reportFile .nyc_output/out.json start-server-and-test start-server http://localhost:3003 cy:run",
     "test2": "npx nyc --include src/js --instrument true start-server-and-test start-server http://localhost:3003 cy:run",
-    "test": "NODE_ENV=test cypress run",
+    "test": "cypress run",
     "cypress": "npx cypress open",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
     "coverage:copy": "ncp coverage/lcov-report docs/lcov",
@@ -106,6 +93,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-vue": "^7.7.0",
+    "istanbul-lib-coverage": "^3.2.0",
     "istanbul-lib-instrument": "^5.2.0",
     "ncp": "^2.0.0",
     "npm-run-all": "^4.1.5",
