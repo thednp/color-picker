@@ -16,13 +16,13 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - uses: bahmutov/npm-install@v1
+      - uses: actions/upload-artifact@v2
+        with:
+          name: e2e-nyc-output
+          path: '.nyc_output'
+        if: ${{ always() }}
       - run: npm run bundle
       - run: npm run test
-        - uses: actions/upload-artifact@v2
-          with:
-            name: e2e-nyc-output
-            path: '.nyc_output'
-          if: ${{ always() }}
 
       # - uses: actions/upload-artifact@v2
       #   with:
