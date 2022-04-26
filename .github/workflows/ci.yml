@@ -16,6 +16,6 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - uses: bahmutov/npm-install@v1
-      - run: npm run build
+      - run: npm run bundle
       - run: npm run test
 

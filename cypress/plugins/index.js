@@ -11,19 +11,12 @@ module.exports = (on, config) => {
 
   // https://esbuild.github.io/api/
   const esBuildOptions = {
-    define: {
-      // replaces every instance of "process.env.NODE_ENV" string
-      // in the spec with the string "development"
-      'process.env.NODE_ENV': '"development"'
-    },
+    // define: {
+    //   // replaces every instance of "process.env.NODE_ENV" string
+    //   // in the spec with the string "development"
+    //   'process.env.NODE_ENV': '"development"'
+    // },
     plugins: [require('./esbuild-istanbul')()]
-  }
-
-  /* istanbul ignore next */
-  if (global.__coverage__) {
-    // add method "GET /__coverage__" and response with JSON
-    // onRequest = (response) => response.sendJSON({ coverage: global.__coverage__ })
-    require('@cypress/code-coverage/middleware/express')(require('express')())
   }
   
   // pass ESBuild options to be applied to each spec file
