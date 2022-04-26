@@ -4,7 +4,7 @@
 const createBundler = require('@bahmutov/cypress-esbuild-preprocessor');
 
 const { join } = require('path');
-const { existsSync, mkdirSync } = require('fs');
+const { existsSync, mkdirSync, writeFileSync } = require('fs');
 const debug = require('debug')('code-coverage')
 
 const createTemp = () => {
