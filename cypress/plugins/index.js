@@ -3,6 +3,24 @@
 
 const createBundler = require('@bahmutov/cypress-esbuild-preprocessor');
 
+const { join } = require('path');
+const { existsSync, mkdirSync } = require('fs');
+
+const createTemp = () => {
+  const tempDir = '.nyc_output';
+  const nycFilename = join(tempDir, 'out.json');
+  
+  if (!existsSync(tempDir)) {
+    mkdirSync(tempDir, { recursive: true })
+    debug('created folder %s for output coverage', tempDir)
+  }
+  
+  
+  if (!existsSync(nycFilename)) {
+    writeFileSync(nycFilename, JSON.stringify({}, null, 2))
+  }
+}
+
 /**
  * @type {Cypress.PluginConfig}
 */
@@ -20,6 +38,10 @@ module.exports = (on, config) => {
     
   // pass ESBuild options to be applied to each spec file
   on('file:preprocessor', createBundler(esBuildOptions));
+  on('before:run', () => {
+    // cy.task('createTemp')
+    createTemp()
+  })
     
   require('@cypress/code-coverage/task')(on, config);
 
