@@ -18,14 +18,19 @@ jobs:
       - uses: bahmutov/npm-install@v1
       - run: npm run bundle
       - run: npm run test
+        - uses: actions/upload-artifact@v2
+          with:
+            name: e2e-nyc-output
+            path: '.nyc_output'
+          if: ${{ always() }}
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: logs
-          path: logs
-        if: ${{ always() }}
-      - uses: actions/upload-artifact@v2
-        with:
-          name: cypress
-          path: cypress
-        if: ${{ always() }}
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: logs
+      #     path: logs
+      #   if: ${{ always() }}
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: cypress
+      #     path: cypress
+      #   if: ${{ always() }}
