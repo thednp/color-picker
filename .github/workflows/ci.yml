@@ -15,14 +15,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-      - uses: bahmutov/npm-install@v1
-      - run: npm run bundle
-      - run: npm run test
         uses: actions/upload-artifact@v2
         with:
           name: e2e-nyc-output
           path: '.nyc_output'
           path: 'coverage'
+      - uses: bahmutov/npm-install@v1
+      - run: npm run bundle
+      - run: npm run test
 
       # - uses: actions/upload-artifact@v2
       #   with:
