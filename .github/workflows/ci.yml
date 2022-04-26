@@ -19,6 +19,9 @@ jobs:
         with:
           name: e2e-nyc-output
           path: '.nyc_output'
+      - uses: actions/upload-artifact@v2
+        with:
+          name: e2e-nyc-coverage
           path: 'coverage'
       - uses: bahmutov/npm-install@v1
       - run: npm run bundle
