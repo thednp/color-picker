@@ -18,5 +18,4 @@
 import './commands'
 
 // Alternatively you can use CommonJS syntax:
-// require('@cypress/code-coverage/support')
 import '@cypress/code-coverage/support'

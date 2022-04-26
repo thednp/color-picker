@@ -19,28 +19,6 @@ const instrumenter = createInstrumenter({
 
 // let coverageMap = RawSourceMap;
 
-/**
- * @param {string} source
- * @param {string} path
- * @param {RawSourceMap} [inputSourceMap]
- * @return {Promise<string>}
- */
-const instrument = (source, path, inputSourceMap) => {
-  // new Promise((resolve, reject) => {
-    return instrumenter.instrumentSync(
-      source,
-      path,
-      // (error, code) => {
-      //   if (error == null) {
-      //     resolve(code);
-      //   } else {
-      //     reject(error);
-      //   }
-      // },
-      inputSourceMap
-    );
-  }
-  // );
 
 /**
  * @return {import('esbuild').Plugin}
@@ -52,9 +30,11 @@ const esbuildPluginIstanbul = () => ({
       async ({ path }) => {
         // const contents = String(readFileSync(path));
         // const contents = readFileSync(path, 'utf8');
+        // const instrumented = await instrument(contents, path);
         const contents = String(readFileSync(path, 'utf8'));
+        // const contents = (readFileSync(path, 'utf8'));
 
-        const instrumented = await instrument(contents, path);
+        const instrumented = instrumenter.instrumentSync(contents, path);
 
         return { contents: instrumented };
       }

@@ -1,4 +1,8 @@
 {
   "video": false,
-  "screenshot": false 
+  "screenshot": false,
+  "includeShadowDom": true,
+  "env": {
+    "sourceFolder": "src/js"
+  }
 }
