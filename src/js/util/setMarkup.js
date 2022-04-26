@@ -77,14 +77,12 @@ export default function setMarkup(self) {
     // color presets
     if ((colorPresets instanceof Array && colorPresets.length)
       || (colorPresets instanceof ColorPalette && colorPresets.colors)) {
-      const presetsMenu = getColorMenu(self, colorPresets, 'color-options');
-      presetsDropdown.append(presetsMenu);
+      presetsDropdown.append(getColorMenu(self, colorPresets, 'color-options'));
     }
 
     // explicit defaults [reset, initial, inherit, transparent, currentColor]
     if (colorKeywords && colorKeywords.length) {
-      const keywordsMenu = getColorMenu(self, colorKeywords, 'color-defaults');
-      presetsDropdown.append(keywordsMenu);
+      presetsDropdown.append(getColorMenu(self, colorKeywords, 'color-defaults'));
     }
 
     const presetsBtn = createElement({

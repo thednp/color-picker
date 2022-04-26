@@ -1,4 +1,9 @@
 {
   "video": false,
-  "screenshot": false
+  "screenshot": false,
+  "env": {
+    "codeCoverage": {
+      "url": "./__coverage__"
+    }
+  }  
 }

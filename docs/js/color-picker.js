@@ -1,5 +1,5 @@
 /*!
-* ColorPicker v0.0.2 (http://thednp.github.io/color-picker)
+* ColorPicker v0.0.3 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -2379,14 +2379,12 @@
       // color presets
       if ((colorPresets instanceof Array && colorPresets.length)
         || (colorPresets instanceof ColorPalette && colorPresets.colors)) {
-        const presetsMenu = getColorMenu(self, colorPresets, 'color-options');
-        presetsDropdown.append(presetsMenu);
+        presetsDropdown.append(getColorMenu(self, colorPresets, 'color-options'));
       }
 
       // explicit defaults [reset, initial, inherit, transparent, currentColor]
       if (colorKeywords && colorKeywords.length) {
-        const keywordsMenu = getColorMenu(self, colorKeywords, 'color-defaults');
-        presetsDropdown.append(keywordsMenu);
+        presetsDropdown.append(getColorMenu(self, colorKeywords, 'color-defaults'));
       }
 
       const presetsBtn = createElement({
@@ -2423,7 +2421,7 @@
     setAttribute(input, tabIndex, '-1');
   }
 
-  var version = "0.0.2";
+  var version = "0.0.3";
 
   // @ts-ignore
 
@@ -2638,7 +2636,7 @@
         ? JSON.parse(componentLabels) : componentLabels;
 
       /** @type {Record<string, string>} */
-      self.componentLabels = ObjectAssign(colorPickerLabels, tempComponentLabels);
+      self.componentLabels = ObjectAssign({ ...colorPickerLabels }, tempComponentLabels);
 
       /** @type {Color} */
       self.color = new Color(input.value || '#fff', format);
@@ -3566,9 +3564,7 @@
         const relatedBtn = openPicker ? pickerToggle : menuToggle;
         const animationDuration = openDropdown && getElementTransitionDuration(openDropdown);
 
-        // if (!self.isValid) {
         self.value = self.color.toString(true);
-        // }
 
         if (openDropdown) {
           removeClass(openDropdown, 'show');
@@ -3587,7 +3583,7 @@
           focus(pickerToggle);
         }
         setAttribute(input, tabIndex, '-1');
-        if (menuToggle) {
+        if (relatedBtn === menuToggle) {
           setAttribute(menuToggle, tabIndex, '-1');
         }
       }

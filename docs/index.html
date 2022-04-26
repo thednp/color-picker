@@ -69,19 +69,16 @@
         <li><code>colorKeywords</code> option is set via JavaScript;</li>
       </ul>
     </div>
-    <div class="col" lang="fr-FR">
-      <label for="picker3">Couleur accentuée</label>
+    <div class="col">
+      <label for="picker3">Accent Colour</label>
       <div class="color-picker">
-        <input
-        type="text" name="picker3" id="picker3" class="color-preview btn-appearance" autocomplete="off" spellcheck="false" placeholder="Définir la couleur au format HSL"
-        data-color-labels="blanc,noir,gris,rouge,orange,brun,or,olive,jaune,citron,vert,sarcelle,cyan,bleu,violet,magenta,rose"
-        data-component-labels='{"pickerLabel":"Couleur Sélection","appearanceLabel":"Apparence de la couleur","valueLabel":"Valeur de couleur","toggleLabel":"Sélectionner la couleur","presetsLabel":"Préréglages de couleur","defaultsLabel":"Couleur par défaut","formatLabel":"Format","alphaLabel":"Alpha","hexLabel":"Hexadécimal","hueLabel":"Nuance","whitenessLabel":"Blancheur","blacknessLabel":"Noirceur","saturationLabel":"Saturation","lightnessLabel":"Légèreté","redLabel":"Rouge","greenLabel":"Vert","blueLabel":"Bleu"}'
-        value="hsl(86deg 78% 27% / 90%)" data-format="hsl">
+        <input type="text" name="picker3" id="picker3" class="color-preview btn-appearance" autocomplete="off" spellcheck="false"
+          placeholder="Définir la couleur au format HSL" value="hsl(86deg 78% 27% / 90%)" data-format="hsl">
       </div>
       <ul class="mb-5">
         <li>manually initialized via JavaScript;</li>
-        <li><code>componentLabels</code> option is set via DATA API;</li>
-        <li><code>colorLabels</code> option is set via DATA API;</li>
+        <li><code>componentLabels</code> option is default;</li>
+        <li><code>colorLabels</code> option is default;</li>
         <li><code>data-format="hsl"</code> attribute is used;</li>
         <li><code>colorPresets</code> option is set to <a href="https://material.io/archive/guidelines/style/color.html" target="_blank" title="Material Design Colors">Material Colors</a> via JavaScript API;</li>
         <li><code>colorKeywords</code> option is set via JavaScript API;</li>
@@ -93,10 +90,9 @@
   <div class="row">
     <div class="col">
       <label for="picker4">Background Color</label>
-      <color-picker
+      <color-picker data-id="picker4" data-value="rgba(207,226,255,0.33)" data-placeholder="Set color RGB format"
         data-color-keywords="#cfe2ff54:reset,transparent"
         data-color-presets="#cfe2ff,#e0cffc,#f8d7da,#fff3cd,#cff4fc">
-        <input type="text" class="color-preview btn-appearance" name="picker4" id="picker4" value="rgba(207,226,255,0.33)" autocomplete="off" spellcheck="false" placeholder="Set color RGB format">
       </color-picker>
       <ul class="mb-5">
         <li>this is a <code>CustomElement</code> instance;</li>
@@ -110,10 +106,9 @@
     </div>
     <div class="col">
       <label for="picker5">Paragraph Color</label>
-      <color-picker data-format="hex"
+      <color-picker data-format="hex" data-id="picker5" data-value="#FF8900" data-placeholder="Set colour HEXADECIMAL format"
         data-color-keywords="green:green,blue:default,red:red"
         data-color-presets="#0a58ca,#0d6efd,#3d8bfd,#8540f5,#6610f2,#6f42c1,#59359a,#ab296a,#d63384,#de5c9d,#e35d6a,#dc3545,#b02a37,#ca6510,#fd7e14,#ffc107,#ffcd39,#479f76,#198754,#146c43,#1aa179,#20c997,#4dd4ac,#3dd5f3,#0dcaf0">
-        <input type="text" class="color-preview btn-appearance" name="picker5" id="picker5" value="#FF8900" autocomplete="off" spellcheck="false" placeholder="Set color HEXADECIMAL format">
       </color-picker>
       <ul class="mb-5">
         <li>this is a <code>CustomElement</code> instance;</li>
@@ -124,17 +119,18 @@
         <li><code>colorKeywords</code> option is set via DATA API;</li>
       </ul>
     </div>
-    <div class="col">
-      <label for="picker6">Title Color</label>
-      <color-picker data-format="hwb" 
+    <div class="col" lang="fr-FR">
+      <label for="picker6">Couleur du titre</label>
+      <color-picker data-format="hwb" data-id="picker6" data-value="hwb(12deg 0% 11%)" data-placeholder="Définir la couleur au format HWB"
+        data-color-labels="blanc,noir,gris,rouge,orange,brun,or,olive,jaune,citron,vert,sarcelle,cyan,bleu,violet,magenta,rose"
+        data-component-labels='{"pickerLabel":"Couleur Sélection","appearanceLabel":"Apparence de la couleur","valueLabel":"Valeur de couleur","toggleLabel":"Sélectionner la couleur","presetsLabel":"Préréglages de couleur","defaultsLabel":"Couleur par défaut","formatLabel":"Format","alphaLabel":"Alpha","hexLabel":"Hexadécimal","hueLabel":"Nuance","whitenessLabel":"Blancheur","blacknessLabel":"Noirceur","saturationLabel":"Saturation","lightnessLabel":"Légèreté","redLabel":"Rouge","greenLabel":"Vert","blueLabel":"Bleu"}'
         data-color-presets='{"hue": 270, "hueSteps": 24, "lightSteps": 10}'
         data-color-keywords="orange,hwb(12deg 0% 11%):default,magenta,blue">
-        <input type="text" class="color-preview btn-appearance" name="picker6" id="picker6" value="hwb(12deg 0% 11%)" autocomplete="off" spellcheck="false" placeholder="Selectează culoarea în format RGB">
       </color-picker>
       <ul class="mb-5">
         <li>this is a <code>CustomElement</code> instance;</li>
-        <li><code>componentLabels</code> option is default;</li>
-        <li><code>colorLabels</code> option is default;</li>
+        <li><code>componentLabels</code> option is set via DATA API;</li>
+        <li><code>colorLabels</code> option is set via DATA API;</li>
         <li><code>data-format="hwb"</code> attribute is used;</li>
         <li><code>colorPresets</code> option is set via DATA API to use a <b>ColorPalette</b>;</li>
         <li><code>colorKeywords</code> option is set via DATA API;</li>
@@ -142,9 +138,7 @@
     </div>
     <div class="col">
       <label for="picker7">Button Color</label>
-      <color-picker data-format="hsl">
-        <input type="text" class="color-preview btn-appearance" name="picker7" id="picker7" value="hsl(261deg 82% 33%)" autocomplete="off" spellcheck="false"  placeholder="Set color HSL format">
-      </color-picker>
+      <color-picker data-format="hsl" data-id="picker7" data-value="hsl(261deg 82% 33%)" data-placeholder="Set colour HSL format"></color-picker>
       <ul class="mb-5">
         <li>this is a <code>CustomElement</code> instance;</li>
         <li><code>componentLabels</code> option is default;</li>

@@ -273,7 +273,7 @@ export default class ColorPicker {
       ? JSON.parse(componentLabels) : componentLabels;
 
     /** @type {Record<string, string>} */
-    self.componentLabels = ObjectAssign(colorPickerLabels, tempComponentLabels);
+    self.componentLabels = ObjectAssign({ ...colorPickerLabels }, tempComponentLabels);
 
     /** @type {Color} */
     self.color = new Color(input.value || '#fff', format);
@@ -1201,9 +1201,7 @@ export default class ColorPicker {
       const relatedBtn = openPicker ? pickerToggle : menuToggle;
       const animationDuration = openDropdown && getElementTransitionDuration(openDropdown);
 
-      // if (!self.isValid) {
       self.value = self.color.toString(true);
-      // }
 
       if (openDropdown) {
         removeClass(openDropdown, 'show');
@@ -1222,7 +1220,7 @@ export default class ColorPicker {
         focus(pickerToggle);
       }
       setAttribute(input, tabIndex, '-1');
-      if (menuToggle) {
+      if (relatedBtn === menuToggle) {
         setAttribute(menuToggle, tabIndex, '-1');
       }
     }

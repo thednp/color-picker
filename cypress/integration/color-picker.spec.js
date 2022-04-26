@@ -8,10 +8,11 @@ import roundPart from '../../src/js/util/roundPart';
 import getRandomInt from '../fixtures/getRandomInt';
 import FORMAT from '../fixtures/format';
 import getMarkup from '../fixtures/getMarkup';
+import componentLabelsFrench from '../fixtures/componentLabelsFrench';
+import colorNamesFrench from '../fixtures/colorNamesFrench';
 
 const colorNames = ['white', 'black', 'grey', 'red', 'orange', 'brown', 'gold', 'olive', 'yellow', 'lime', 'green', 'teal', 'cyan', 'blue', 'violet', 'magenta', 'pink'];
 const colorNameValues = ['#fff', '#000', '#808080', '#f00', '#ffa500', '#653c24', '#c8af00', '#808000', '#ff0', '#0f0', '#080', '#075', '#0ff', '#05f', '#a7f', '#b0f', '#f0d'];
-const colorNamesFrench = 'blanc,noir,gris,rouge,orange,brun,or,olive,jaune,citron,vert,sarcelle,cyan,bleu,violet,magenta,rose';
 const colorPresets = '#330000,#990000,#ff0000,#ff6666,#ffcccc,#003333,#009999,#00ffff,#66ffff,#ccffff';
 
 describe('ColorPicker Class Test', () => {
@@ -84,10 +85,10 @@ describe('ColorPicker Class Test', () => {
     const id = getRandomInt(0,999);
     const format = FORMAT[getRandomInt(0,3)];
     const { init, selector } = ColorPicker;
-    let value;
+    let value, set;
 
     cy.get('@body').then((body) => {
-      value = getMarkup(body, id, format);
+      ({value, set} = getMarkup(body, id, format));
     });
 
     cy.get(`#color-picker-${id}`).then(($input) => {
@@ -96,9 +97,10 @@ describe('ColorPicker Class Test', () => {
 
     cy.get(`@input`).then(($input) => {
         const input = $input[0];
+        input.setAttribute('value', "currentColor");
         input.setAttribute('data-function', "color-picker");
         input.setAttribute('data-color-presets', '{"hue": 120, "hueSteps": 6, "lightSteps": 10}');
-        input.setAttribute('data-color-keywords', 'magenta, olive, yellow');
+        input.setAttribute('data-color-keywords', 'magenta, olive, yellow, red:default, currentColor:textColor');
         input.setAttribute('data-color-labels', colorNamesFrench);
         input.setAttribute('data-component-labels', '{"pickerLabel": "Couleur Sélection", "appearanceLabel": "Apparence de la couleur", "valueLabel": "Valeur de couleur", "toggleLabel": "Sélectionner la couleur", "presetsLabel": "Préréglages de couleur", "defaultsLabel": "Couleur par défaut", "formatLabel": "Format", "alphaLabel": "Alpha", "hexLabel": "Hexadécimal", "hueLabel": "Nuance", "whitenessLabel": "Blancheur", "blacknessLabel": "Noirceur", "saturationLabel": "Saturation", "lightnessLabel": "Légèreté", "redLabel": "Rouge", "greenLabel": "Vert", "blueLabel": "Bleu"}');
       });
@@ -122,18 +124,19 @@ describe('ColorPicker Class Test', () => {
         cy.get('@cp').its('colorLabels').then(({white,black,grey,red,orange,brown,gold,olive,yellow,lime,green,teal,cyan,blue,violet,magenta,pink}) => {
           expect([white,black,grey,red,orange,brown,gold,olive,yellow,lime,green,teal,cyan,blue,violet,magenta,pink])
             .to.deep.equal(colorNamesFrench.split(','));
-        });
+        })
 
-        cy.get('@cp').its('input').should('be.instanceOf', HTMLInputElement);
-        cy.get('@cp').its('format').should('equal', format);
-        cy.get('@cp').its('value').should('equal', value);
-        cy.get('@cp').its('colorKeywords').should('deep.equal', ['magenta','olive','yellow']);
-        cy.get('@cp').its('colorPresets').should('be.instanceOf', ColorPalette);
-        cy.get('@cp').its('colorPresets').its('colors').each((c) => {
+        .get('@cp').its('input').should('be.instanceOf', HTMLInputElement)
+        .get('@cp').its('format').should('equal', format)
+        .get('@cp').its('value').should('not.equal', value) // not `value`
+        .get('@cp').its('value').should('equal', new Color('#fff', format).toString(true)) // <- currentColor
+        .get('@cp').its('colorKeywords').should('deep.equal', ['magenta', 'olive', 'yellow', 'red:default', 'currentColor:textColor'])
+        .get('@cp').its('colorPresets').should('be.instanceOf', ColorPalette)
+        .get('@cp').its('colorPresets').its('colors').each((c) => {
           expect(c).to.be.instanceOf(Color);
-        });
-        cy.get('@cp').its('colorPicker').should('be.instanceOf', HTMLDivElement);
-        cy.get('@cp').its('colorMenu').should('be.instanceOf', HTMLDivElement);
+        })
+        .get('@cp').its('colorPicker').should('be.instanceOf', HTMLDivElement)
+        .get('@cp').its('colorMenu').should('be.instanceOf', HTMLDivElement);
       });
   });
 
@@ -141,7 +144,7 @@ describe('ColorPicker Class Test', () => {
     cy.get('body').then((body) => {
       const id = getRandomInt(0,999);
       const format = FORMAT[getRandomInt(0,3)];
-      const value = getMarkup(body, id, format);
+      const {value} = getMarkup(body, id, format);
 
       cy.get(`#color-picker-${id}`).then((input) => {
         let cp;
@@ -149,27 +152,9 @@ describe('ColorPicker Class Test', () => {
         if (input.length) {
           cp = new ColorPicker(input[0], {
             colorKeywords: 'orange, lime, darkred',
-            colorPresets: '#330033, #990099, #ff00ff, #ff66ff, #ffccff',
+            colorPresets: '#330033, #990099, #ff00ff, #ff66ff, #ffccff'.split(','),
             colorLabels: colorNamesFrench,
-            componentLabels: {
-              pickerLabel: "Couleur Sélection", 
-              appearanceLabel: "Apparence de la couleur", 
-              valueLabel: "Valeur de couleur", 
-              toggleLabel: "Sélectionner la couleur", 
-              presetsLabel: "Préréglages de couleur", 
-              defaultsLabel: "Couleur par défaut", 
-              formatLabel: "Format", 
-              alphaLabel: "Alpha", 
-              hexLabel: "Hexadécimal", 
-              hueLabel: "Nuance", 
-              whitenessLabel: "Blancheur", 
-              blacknessLabel: "Noirceur", 
-              saturationLabel: "Saturation", 
-              lightnessLabel: "Légèreté", 
-              redLabel: "Rouge", 
-              greenLabel: "Vert", 
-              blueLabel: "Bleu",
-            }
+            componentLabels: componentLabelsFrench,
           });
           cy.wrap(cp).as('cp');
         }
@@ -252,13 +237,12 @@ describe('ColorPicker Class Test', () => {
   });
 
 
-  it('Test event listeners', function() {
-    let value;
+  it('Test showing & hiding `colorPicker` / `presetsMenu`', function() {
     cy.get('@body').then((body) => {
       const id = getRandomInt(0,999);
       const format = FORMAT[getRandomInt(0,3)];
 
-      value = getMarkup(body, id, format);
+      ({value} = getMarkup(body, id, format));
 
       const a = document.createElement('a');
       a.setAttribute('href', '#');
@@ -270,17 +254,18 @@ describe('ColorPicker Class Test', () => {
       });
     });
 
-    cy.get('@input').then(($input) => {
-      let cp;
-      if ($input.length) {
-        cp = new ColorPicker($input[0], {
-          colorKeywords: 'olive,green,red,:empty,transparent',
-          colorPresets: colorPresets,
-          colorLabels: colorNamesFrench,
-        });
-      }
-      cy.wrap(cp).as('cp');
-    });
+    cy.wait(200)
+      .get('@input').then(($input) => {
+        let cp;
+        if ($input.length) {
+          cp = new ColorPicker($input[0], {
+            colorKeywords: 'olive,green,red,:empty,transparent',
+            colorPresets: colorPresets,
+            colorLabels: colorNamesFrench,
+          });
+        }
+        cy.wrap(cp).as('cp');
+      }).wait(200);
 
     cy.log('Testing `click` on `pickerToggle`');
     cy.get('@cp').its('pickerToggle').click()
@@ -330,16 +315,18 @@ describe('ColorPicker Class Test', () => {
       cy.get('@cp').its('colorPicker').should('have.class', 'show');
     });
 
-    cy.wait(17);
+    cy.wait(350);
 
     cy.log('Testing `focusout` on `input`');
-    cy.get('@a').focus({force: true}).then(() => {
-        cy.get('@cp').its('colorPicker').should('not.have.class', 'show');
-      })
-      .wait(350);
+    cy.get('@a').focus({force: true, timeout: 0 })
+      // .get('@a').trigger('focusin', {force: true})
+      .then(() => {
+        cy.get('@cp').its('colorPicker').should('not.have.class', 'show')
+      });
 
+    cy.wait(350);
 
-    cy.log('Testing `pointerup` on body while `colorPicker` open');
+    cy.log('Testing `pointerup` on body while `colorPicker` is open');
     cy.get('@cp').invoke('togglePicker')
       .wait(350)
       .get('@body').click('topRight').then(() => {
@@ -366,31 +353,54 @@ describe('ColorPicker Class Test', () => {
         cy.get('@cp').its('value').should('not.equal', 'wombat');
       });
 
-
     cy.log('Type in a valid value and call `hide`, should keep previous value');
     cy.get('@cp').invoke('showPicker')
-      .get('@cp').its('input').focus().clear().type('hsl 120 100 50')
+      .get('@cp').its('input').focus().clear().type('hsl 0 0 100')
       .wait(17)
       .get('@cp').invoke('hide')
       .wait(17)
       .get('@cp').its('rgb').should(({ r,g,b }) => {
-        expect([r,g,b].map(roundPart)).to.not.deep.equal([0,255,0]);
+        expect([r,g,b].map(roundPart)).to.not.deep.equal([255,255,255]);
       })
-      .get('@cp').its('value').should('not.equal', 'hsl 120 100 50');
+      .get('@cp').its('value').should('not.equal', 'hsl 0 0 100');
+  });
 
-    cy.wait(350);
+
+  it('Test `keyboard` and other event listeners', function() {
+    let value;
+    cy.get('@body').then((body) => {
+      const id = getRandomInt(0,999);
+      const format = FORMAT[getRandomInt(0,3)];
+
+      ({value} = getMarkup(body, id, format));
+
+      cy.get(`#color-picker-${id}`).then((input) => {
+        cy.wrap(input[0]).as('input');
+      });
+    });
+
+    cy.get('@input').then(($input) => {
+      let cp;
+      if ($input.length) {
+        cp = new ColorPicker($input[0], {
+          colorKeywords: 'olive,green,red,:empty,transparent',
+          colorPresets: colorPresets,
+          colorLabels: colorNamesFrench,
+        });
+      }
+      cy.wrap(cp).as('cp');
+    });
 
     cy.log('Type in a valid value and press `Escape`, should keep previous value');
     cy.get('@cp').invoke('showPicker')
-      .get('@cp').its('input').focus().clear().type('hsl 240 100 50')
-      // .wait(350)
-      .get('@doc').trigger('keyup', { code: 'Escape' })
-      // .wait(350)
+      .get('@cp').its('input').focus().clear().type('hsl 0 0 100')
+      .wait(17)
+      .get('@cp').its('input').trigger('keyup', { code: 'Escape' })
+      .wait(17)
       .get('@cp').its('rgb').should(({ r,g,b }) => {
-        expect([r,g,b].map(roundPart)).to.not.deep.equal([0,0,255]);
+        expect([r,g,b].map(roundPart)).to.not.deep.equal([255,255,255]);
       })
-      .get('@cp').its('value').should('not.equal', 'hsl 240 100 50');
-
+      .get('@cp').its('value').should('not.equal', 'hsl 0 0 100');
 
     cy.wait(350);
 
@@ -473,122 +483,6 @@ describe('ColorPicker Class Test', () => {
 
     cy.wait(350);
 
-    cy.log('Testing `click` on `visuals`');
-    cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}').then(() => {
-      cy.get('@cp').its('visuals').eq(0).click()
-        .wait(17)
-        .get('@cp').its('rgb').should(({ r,g,b }) => {
-          expect([r,g,b].map(roundPart)).to.deep.equal([128,64,64]);
-        });
-    });
-
-    cy.get('@cp').its('input').focus().clear().type('hsl 300 100 50{enter}').then(() => {
-      cy.get('@cp').its('visuals').eq(1).click(-0.1, -0.1, { force: true })
-        .wait(17)
-        .get('@cp').its('rgb').should(({ r,g,b }) => {
-          expect([r,g,b].map(roundPart)).to.deep.equal([255,0,0]);
-        });
-    })
-
-    cy.get('@cp').its('input').focus().clear().type('hsl 120 100 50{enter}').then(() => {
-      cy.get('@cp').its('visuals').eq(2).click({ force: true })
-        .wait(17)
-        .get('@cp').its('rgb').should(({ r,g,b,a }) => {
-          expect([...[r,g,b].map(roundPart), a]).to.deep.equal([0,255,0, 0.5]);
-        });
-    });
-
-    cy.log('Testing mouse event listeners on `controlKnobs`');
-    cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}')
-      .get('@cp').its('rgb').then((rgb) => {
-        cy.get('@cp').its('visuals').eq(0).then((visual) => {
-          const { width, height} = visual[0].getBoundingClientRect();
-          
-          cy.get('@cp').its('controlKnobs').eq(0)
-            .trigger('mousedown', { force: true })
-            .trigger('mousemove', -width, -height, { force: true })
-            .trigger('mousemove', -width - 100, -height - 100, { force: true })
-            .trigger('mousemove', 300, 300, { force: true })
-            .trigger('mousemove', -width + 50, -height + 50, { force: true })
-            .wait(17)
-            .get('@cp').its('rgb').should('not.deep.equal', rgb);
-        });
-      });
-
-    cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}')
-      .get('@cp').its('rgb').then((rgb) => {
-        cy.get('@cp').its('visuals').eq(1).then((visual) => {
-          const { width, height } = visual[0].getBoundingClientRect();
-
-          cy.get('@cp').its('controlKnobs').eq(1)
-            .trigger('mousedown', { force: true })
-            .trigger('mousemove', width / 2, -height - 100, { force: true })
-            .trigger('mousemove', width / 2, 300, { force: true })
-            .trigger('mousemove', width / 2, -height + 20, { force: true })
-            .wait(17)
-            .get('@cp').its('rgb').should('not.deep.equal', rgb);
-          });
-        });
-
-    cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}')
-      .get('@cp').its('rgb').then((rgb) => {
-        cy.get('@cp').its('visuals').eq(2).then((visual) => {
-          const { width, height } = visual[0].getBoundingClientRect();
-
-          cy.get('@cp').its('controlKnobs').eq(2)
-            .trigger('mousedown', { force: true })
-            .trigger('mousemove', width / 2, -height - 100, { force: true })
-            .trigger('mousemove', width / 2, 300, { force: true })
-            .trigger('mousemove', width / 2, -height + 20, { force: true })
-            .wait(17)
-            .get('@cp').its('rgb').should('not.deep.equal', rgb);
-          });
-        });
-
-
-    cy.log('Testing keyboard event listeners on `controlKnobs`');
-    cy.get('@cp').its('input').focus().clear().type('hsl 300 100 50{enter}').then(() => {
-      const rgb = cy.get('@cp').its('rgb');
-      cy.get('@cp').its('controlKnobs').eq(0).focus()
-        .trigger('keydown', { code: 'ArrowDown' })
-        .trigger('keydown', { code: 'ArrowDown' })
-        .trigger('keydown', { code: 'a' }) // edge case
-        .trigger('keydown', { code: 'ArrowUp' })
-        .trigger('keydown', { code: 'ArrowRight' })
-        .trigger('keydown', { code: 'ArrowRight' })
-        .trigger('keydown', { code: 'ArrowLeft' })
-        .wait(17)
-        .get('@cp').its('rgb').should('not.deep.equal', rgb);
-    });
-
-    cy.get('@cp').its('input').focus().clear().type('hsl 180 100 50{enter}').then(() => {
-      const rgb = cy.get('@cp').its('rgb');
-      cy.get('@cp').its('controlKnobs').eq(1).focus()
-        .trigger('keydown', { code: 'ArrowDown' })
-        .trigger('keydown', { code: 'ArrowDown' })
-        .trigger('keydown', { code: 'b' }) // edge case
-        .trigger('keydown', { code: 'ArrowUp' })
-        .trigger('keydown', { code: 'ArrowLeft' })
-        .trigger('keydown', { code: 'ArrowLeft' })
-        .trigger('keydown', { code: 'ArrowRight' })
-        .wait(17)
-        .get('@cp').its('rgb').should('not.deep.equal', rgb);
-    });
-
-    cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}').then(() => {
-      const rgb = cy.get('@cp').its('rgb');
-      cy.get('@cp').its('controlKnobs').eq(2).focus()
-        .trigger('keydown', { code: 'ArrowDown' })
-        .trigger('keydown', { code: 'ArrowDown' })
-        .trigger('keydown', { code: 'C' }) // edge case
-        .trigger('keydown', { code: 'ArrowUp' })
-        .trigger('keydown', { code: 'ArrowLeft' })
-        .trigger('keydown', { code: 'ArrowLeft' })
-        .trigger('keydown', { code: 'ArrowRight' })
-        .wait(17)
-        .get('@cp').its('rgb').should('not.deep.equal', rgb);
-    });
-
     cy.log('Test repositioning dropdown on scroll');
     cy.get('@win').scrollTo('top')
       .get('@cp').invoke('togglePicker')
@@ -597,6 +491,143 @@ describe('ColorPicker Class Test', () => {
           .should('have.class', 'top')
           .and('not.have.class', 'bottom');
       });
+  });
+
+
+  it('Test controls', function() {
+    cy.get('body').then((body) => {
+      const id = getRandomInt(0,999);
+      const format = FORMAT[getRandomInt(0,3)];
+
+      getMarkup(body, id, format);
+
+      cy.get(`#color-picker-${id}`).then((input) => {
+        let cp;
+        if (input.length) {
+          cp = new ColorPicker(input[0], {
+            colorKeywords: 'green,green,red,transparent',
+            colorPresets: colorPresets,
+          });
+        }
+        cy.wrap(cp).as('cp');
+      });
+
+      cy.log('Testing `click` on `visuals`');
+      cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}').then(() => {
+        cy.get('@cp').its('visuals').eq(0).click()
+          .wait(17)
+          .get('@cp').its('rgb').should(({ r,g,b }) => {
+            expect([r,g,b].map(roundPart)).to.deep.equal([128,64,64]);
+          });
+      });
+  
+      cy.get('@cp').its('input').focus().clear().type('hsl 300 100 50{enter}').then(() => {
+        cy.get('@cp').its('visuals').eq(1).click(-0.1, -0.1, { force: true })
+          .wait(17)
+          .get('@cp').its('rgb').should(({ r,g,b }) => {
+            expect([r,g,b].map(roundPart)).to.deep.equal([255,0,0]);
+          });
+      })
+  
+      cy.get('@cp').its('input').focus().clear().type('hsl 120 100 50{enter}').then(() => {
+        cy.get('@cp').its('visuals').eq(2).click({ force: true })
+          .wait(17)
+          .get('@cp').its('rgb').should(({ r,g,b,a }) => {
+            expect([...[r,g,b].map(roundPart), a]).to.deep.equal([0,255,0, 0.5]);
+          });
+      });
+  
+      cy.log('Testing mouse event listeners on `controlKnobs`');
+      cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}')
+        .get('@cp').its('rgb').then((rgb) => {
+          cy.get('@cp').its('visuals').eq(0).then((visual) => {
+            const { width, height} = visual[0].getBoundingClientRect();
+            
+            cy.get('@cp').its('controlKnobs').eq(0)
+              .trigger('mousedown', { force: true })
+              .trigger('mousemove', -width, -height, { force: true })
+              .trigger('mousemove', -width - 100, -height - 100, { force: true })
+              .trigger('mousemove', 300, 300, { force: true })
+              .trigger('mousemove', -width + 50, -height + 50, { force: true })
+              .wait(17)
+              .get('@cp').its('rgb').should('not.deep.equal', rgb);
+          });
+        });
+  
+      cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}')
+        .get('@cp').its('rgb').then((rgb) => {
+          cy.get('@cp').its('visuals').eq(1).then((visual) => {
+            const { width, height } = visual[0].getBoundingClientRect();
+  
+            cy.get('@cp').its('controlKnobs').eq(1)
+              .trigger('mousedown', { force: true })
+              .trigger('mousemove', width / 2, -height - 100, { force: true })
+              .trigger('mousemove', width / 2, 300, { force: true })
+              .trigger('mousemove', width / 2, -height + 20, { force: true })
+              .wait(17)
+              .get('@cp').its('rgb').should('not.deep.equal', rgb);
+            });
+          });
+  
+      cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}')
+        .get('@cp').its('rgb').then((rgb) => {
+          cy.get('@cp').its('visuals').eq(2).then((visual) => {
+            const { width, height } = visual[0].getBoundingClientRect();
+  
+            cy.get('@cp').its('controlKnobs').eq(2)
+              .trigger('mousedown', { force: true })
+              .trigger('mousemove', width / 2, -height - 100, { force: true })
+              .trigger('mousemove', width / 2, 300, { force: true })
+              .trigger('mousemove', width / 2, -height + 20, { force: true })
+              .wait(17)
+              .get('@cp').its('rgb').should('not.deep.equal', rgb);
+            });
+          });
+  
+  
+      cy.log('Testing keyboard event listeners on `controlKnobs`');
+      cy.get('@cp').its('input').focus().clear().type('hsl 300 100 50{enter}').then(() => {
+        const rgb = cy.get('@cp').its('rgb');
+        cy.get('@cp').its('controlKnobs').eq(0).focus()
+          .trigger('keydown', { code: 'ArrowDown' })
+          .trigger('keydown', { code: 'ArrowDown' })
+          .trigger('keydown', { code: 'a' }) // edge case
+          .trigger('keydown', { code: 'ArrowUp' })
+          .trigger('keydown', { code: 'ArrowRight' })
+          .trigger('keydown', { code: 'ArrowRight' })
+          .trigger('keydown', { code: 'ArrowLeft' })
+          .wait(17)
+          .get('@cp').its('rgb').should('not.deep.equal', rgb);
+      });
+  
+      cy.get('@cp').its('input').focus().clear().type('hsl 180 100 50{enter}').then(() => {
+        const rgb = cy.get('@cp').its('rgb');
+        cy.get('@cp').its('controlKnobs').eq(1).focus()
+          .trigger('keydown', { code: 'ArrowDown' })
+          .trigger('keydown', { code: 'ArrowDown' })
+          .trigger('keydown', { code: 'b' }) // edge case
+          .trigger('keydown', { code: 'ArrowUp' })
+          .trigger('keydown', { code: 'ArrowLeft' })
+          .trigger('keydown', { code: 'ArrowLeft' })
+          .trigger('keydown', { code: 'ArrowRight' })
+          .wait(17)
+          .get('@cp').its('rgb').should('not.deep.equal', rgb);
+      });
+  
+      cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}').then(() => {
+        const rgb = cy.get('@cp').its('rgb');
+        cy.get('@cp').its('controlKnobs').eq(2).focus()
+          .trigger('keydown', { code: 'ArrowDown' })
+          .trigger('keydown', { code: 'ArrowDown' })
+          .trigger('keydown', { code: 'C' }) // edge case
+          .trigger('keydown', { code: 'ArrowUp' })
+          .trigger('keydown', { code: 'ArrowLeft' })
+          .trigger('keydown', { code: 'ArrowLeft' })
+          .trigger('keydown', { code: 'ArrowRight' })
+          .wait(17)
+          .get('@cp').its('rgb').should('not.deep.equal', rgb);
+      });      
+    });
   });
 
 
@@ -683,10 +714,11 @@ describe('ColorPicker Class Test', () => {
 
       getMarkup(body, id, format);
 
-      cy.get(`#color-picker-${id}`).then((input) => {
+      cy.get(`#color-picker-${id}`).then(($input) => {
         let cp;
-        if (input.length) {
-          cp = new ColorPicker(input[0], {
+        if ($input.length) {
+          const [input] = $input.get();
+          cp = new ColorPicker(input, {
             colorKeywords: 'olive,green,red,transparent',
             colorPresets: colorPresets,
             colorLabels: colorNamesFrench,
@@ -695,7 +727,7 @@ describe('ColorPicker Class Test', () => {
         cy.wrap(cp).as('cp');
       });
       
-      cy.wait(350);
+      cy.wait(200);
 
       frenchColors.forEach((color) => {
         const webcolor = colorNameValues[frenchColors.indexOf(color)];

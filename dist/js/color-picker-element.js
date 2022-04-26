@@ -1,5 +1,5 @@
 /*!
-* ColorPickerElement v0.0.2 (http://thednp.github.io/color-picker)
+* ColorPickerElement v0.0.3 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -19,25 +19,6 @@
     if (node instanceof HTMLElement) return node.ownerDocument;
     if (node instanceof Window) return node.document;
     return window.document;
-  }
-
-  /**
-   * A global array of possible `ParentNode`.
-   */
-  const parentNodes = [Document, Element, HTMLElement];
-
-  /**
-   * Shortcut for `HTMLElement.getElementsByTagName` method. Some `Node` elements
-   * like `ShadowRoot` do not support `getElementsByTagName`.
-   *
-   * @param {string} selector the tag name
-   * @param {(HTMLElement | Element | Document)=} parent optional Element to look into
-   * @return {HTMLCollectionOf<HTMLElement | Element>} the 'HTMLCollection'
-   */
-  function getElementsByTagName(selector, parent) {
-    const lookUp = parent && parentNodes
-      .some((x) => parent instanceof x) ? parent : getDocument();
-    return lookUp.getElementsByTagName(selector);
   }
 
   /**
@@ -1624,6 +1605,11 @@
   }
 
   /**
+   * A global array of possible `ParentNode`.
+   */
+  const parentNodes = [Document, Element, HTMLElement];
+
+  /**
    * A global array with `Element` | `HTMLElement`.
    */
   const elementNodes = [Element, HTMLElement];
@@ -2393,14 +2379,12 @@
       // color presets
       if ((colorPresets instanceof Array && colorPresets.length)
         || (colorPresets instanceof ColorPalette && colorPresets.colors)) {
-        const presetsMenu = getColorMenu(self, colorPresets, 'color-options');
-        presetsDropdown.append(presetsMenu);
+        presetsDropdown.append(getColorMenu(self, colorPresets, 'color-options'));
       }
 
       // explicit defaults [reset, initial, inherit, transparent, currentColor]
       if (colorKeywords && colorKeywords.length) {
-        const keywordsMenu = getColorMenu(self, colorKeywords, 'color-defaults');
-        presetsDropdown.append(keywordsMenu);
+        presetsDropdown.append(getColorMenu(self, colorKeywords, 'color-defaults'));
       }
 
       const presetsBtn = createElement({
@@ -2437,7 +2421,7 @@
     setAttribute(input, tabIndex, '-1');
   }
 
-  var version = "0.0.2";
+  var version = "0.0.3";
 
   // @ts-ignore
 
@@ -2652,7 +2636,7 @@
         ? JSON.parse(componentLabels) : componentLabels;
 
       /** @type {Record<string, string>} */
-      self.componentLabels = ObjectAssign(colorPickerLabels, tempComponentLabels);
+      self.componentLabels = ObjectAssign({ ...colorPickerLabels }, tempComponentLabels);
 
       /** @type {Color} */
       self.color = new Color(input.value || '#fff', format);
@@ -3580,9 +3564,7 @@
         const relatedBtn = openPicker ? pickerToggle : menuToggle;
         const animationDuration = openDropdown && getElementTransitionDuration(openDropdown);
 
-        // if (!self.isValid) {
         self.value = self.color.toString(true);
-        // }
 
         if (openDropdown) {
           removeClass(openDropdown, 'show');
@@ -3601,7 +3583,7 @@
           focus(pickerToggle);
         }
         setAttribute(input, tabIndex, '-1');
-        if (menuToggle) {
+        if (relatedBtn === menuToggle) {
           setAttribute(menuToggle, tabIndex, '-1');
         }
       }
@@ -3639,14 +3621,76 @@
     getBoundingClientRect,
   });
 
+  /**
+   * A small utility to toggle `ColorPickerElement` attributes
+   * when `connectedCallback` or `disconnectedCallback` methods
+   * are called and helps the instance keep its value and settings instact.
+   *
+   * @param {CP.ColorPickerElement} self ColorPickerElement instance
+   * @param {Function=} callback when `true`, attributes are added
+   *
+   * @example
+   * const attributes = [
+   *   // essentials
+   *   'value', 'format',
+   *   // presets menus
+   *   'color-presets', 'color-keywords',
+   *   // labels
+   *   'color-labels', 'component-labels',
+   * ];
+   */
+  function toggleCEAttr(self, callback) {
+    if (callback) {
+      const { input, colorPicker } = self;
+
+      const {
+        value, format, colorPresets, colorKeywords, componentLabels, colorLabels,
+      } = colorPicker;
+
+      const { id, placeholder } = input;
+
+      setAttribute(self, 'data-id', id);
+      setAttribute(self, 'data-value', value);
+      setAttribute(self, 'data-format', format);
+      setAttribute(self, 'data-placeholder', placeholder);
+
+      if (ObjectKeys(colorPickerLabels).some((l) => colorPickerLabels[l] !== componentLabels[l])) {
+        setAttribute(self, 'data-component-labels', JSON.stringify(componentLabels));
+      }
+      if (!colorNames.every((c) => c === colorLabels[c])) {
+        setAttribute(self, 'data-color-labels', colorNames.map((n) => colorLabels[n]).join(','));
+      }
+      if (colorPresets instanceof ColorPalette) {
+        const { hue, hueSteps, lightSteps } = colorPresets;
+        setAttribute(self, 'data-color-presets', JSON.stringify({ hue, hueSteps, lightSteps }));
+      }
+      if (Array.isArray(colorPresets) && colorPresets.length) {
+        setAttribute(self, 'data-color-presets', colorPresets.join(','));
+      }
+      if (colorKeywords) {
+        setAttribute(self, 'data-color-keywords', colorKeywords.join(','));
+      }
+      setTimeout(callback, 0);
+    } else {
+      // keep id
+      // removeAttribute(self, 'data-id');
+      removeAttribute(self, 'data-value');
+      removeAttribute(self, 'data-format');
+      removeAttribute(self, 'data-placeholder');
+      removeAttribute(self, 'data-component-labels');
+      removeAttribute(self, 'data-color-labels');
+      removeAttribute(self, 'data-color-presets');
+      removeAttribute(self, 'data-color-keywords');
+    }
+  }
+
   let CPID = 0;
 
   /**
    * `ColorPickerElement` Web Component.
    * @example
    * <label for="UNIQUE_ID">Label</label>
-   * <color-picker>
-   *   <input id="UNIQUE_ID" value="red" format="hex" class="color-preview btn-appearance">
+   * <color-picker data-id="UNIQUE_ID" data-value="red" data-format="hex">
    * </color-picker>
    * // or
    * <label for="UNIQUE_ID">Label</label>
@@ -3665,54 +3709,66 @@
     get value() { return this.input && this.input.value; }
 
     connectedCallback() {
-      if (this.input) return;
+      const self = this;
+      if (self.input) return;
 
-      let [input] = getElementsByTagName('input', this);
-      const value = (input && getAttribute(input, 'value')) || getAttribute(this, 'data-value') || '#fff';
-      const format = (input && getAttribute(input, 'format')) || getAttribute(this, 'data-format') || 'rgb';
-      let id = (input && getAttribute(input, 'id')) || getAttribute(this, 'data-id');
+      let id = getAttribute(self, 'data-id');
+      const value = getAttribute(self, 'data-value') || '#fff';
+      const format = getAttribute(self, 'data-format') || 'rgb';
+      const placeholder = getAttribute(self, 'data-placeholder') || '';
 
       if (!id) {
         id = `color-picker-${format}-${CPID}`;
         CPID += 1;
       }
 
-      if (!input) {
-        input = createElement({
-          tagName: 'input',
-          type: 'text',
-          className: 'color-preview btn-appearance',
-        });
+      const input = createElement({
+        tagName: 'input',
+        type: 'text',
+        className: 'color-preview btn-appearance',
+      });
 
-        setAttribute(input, 'id', id);
-        setAttribute(input, 'name', id);
-        setAttribute(input, 'autocomplete', 'off');
-        setAttribute(input, 'spellcheck', 'false');
-        setAttribute(input, 'value', value);
-        this.append(input);
-      }
+      setAttribute(input, 'id', id);
+      setAttribute(input, 'name', id);
+      setAttribute(input, 'autocomplete', 'off');
+      setAttribute(input, 'spellcheck', 'false');
+      setAttribute(input, 'value', value);
+      setAttribute(input, 'placeholder', placeholder);
+      self.append(input);
+
       /** @type {HTMLInputElement} */
       // @ts-ignore - `HTMLInputElement` is `HTMLElement`
-      this.input = input;
+      self.input = input;
 
       // @ts-ignore - `HTMLInputElement` is `HTMLElement`
-      this.colorPicker = new ColorPicker(input);
+      self.colorPicker = new ColorPicker(input);
 
       // @ts-ignore - `shadowRoot` is defined in the constructor
-      this.shadowRoot.append(createElement('slot'));
+      self.shadowRoot.append(createElement('slot'));
+
+      // remove Attributes
+      toggleCEAttr(self);
     }
 
     /** @this {ColorPickerElement} */
     disconnectedCallback() {
-      const { input, colorPicker, shadowRoot } = this;
-      if (colorPicker) colorPicker.dispose();
-      if (input) input.remove();
-      if (shadowRoot) shadowRoot.innerHTML = '';
+      const self = this;
+      const { input, colorPicker, shadowRoot } = self;
 
-      ObjectAssign(this, {
-        colorPicker: undefined,
-        input: undefined,
-      });
+      const callback = () => {
+        // remove markup
+        input.remove();
+        colorPicker.dispose();
+        shadowRoot.innerHTML = '';
+
+        ObjectAssign(self, {
+          colorPicker: undefined,
+          input: undefined,
+        });
+      };
+
+      // re-add Attributes
+      toggleCEAttr(self, callback);
     }
   }
 

@@ -18,6 +18,12 @@ module.exports = (on, config) => {
     },
     plugins: [require('./esbuild-istanbul')()]
   }
+
+  /* istanbul ignore next */
+  if (global.__coverage__) {
+    // add method "GET /__coverage__" and response with JSON
+    onRequest = (response) => response.sendJSON({ coverage: global.__coverage__ })
+  }
   
   // pass ESBuild options to be applied to each spec file
   on('file:preprocessor', createBundler(esBuildOptions));

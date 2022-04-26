@@ -24,5 +24,5 @@ export default function getMarkup(body, id, format) {
   if (body) {
     body.append(label, cpWrapper);
   }
-  return value;
+  return {set, value};
 }
