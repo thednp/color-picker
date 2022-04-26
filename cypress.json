@@ -1,9 +1,10 @@
 {
+  "baseUrl": "http://localhost:3003",
   "video": false,
   "screenshot": false,
   "env": {
     "codeCoverage": {
-      "url": "./__coverage__"
+      "url": "http://localhost:3003/__coverage__"
     }
   }  
 }

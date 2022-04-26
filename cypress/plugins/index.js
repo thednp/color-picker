@@ -22,7 +22,8 @@ module.exports = (on, config) => {
   /* istanbul ignore next */
   if (global.__coverage__) {
     // add method "GET /__coverage__" and response with JSON
-    onRequest = (response) => response.sendJSON({ coverage: global.__coverage__ })
+    // onRequest = (response) => response.sendJSON({ coverage: global.__coverage__ })
+    require('@cypress/code-coverage/middleware/express')(require('express')())
   }
   
   // pass ESBuild options to be applied to each spec file
