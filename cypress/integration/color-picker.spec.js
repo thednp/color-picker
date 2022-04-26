@@ -716,8 +716,9 @@ describe('ColorPicker Class Test', () => {
 
       cy.get(`#color-picker-${id}`).then(($input) => {
         let cp;
-        if ($input.length) {
-          const [input] = $input.get();
+        const [input] = $input.get();
+
+        if (input instanceof HTMLInputElement) {
           cp = new ColorPicker(input, {
             colorKeywords: 'olive,green,red,transparent',
             colorPresets: colorPresets,

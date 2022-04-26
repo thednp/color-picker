@@ -34,7 +34,7 @@
     "start-server1": "http-server -p 3003 --silent",
     "test1": "npx nyc --include src/js --reportFile .nyc_output/out.json start-server-and-test start-server http://localhost:3003 cy:run",
     "test2": "npx nyc --include src/js --instrument true start-server-and-test start-server http://localhost:3003 cy:run",
-    "test": "npx cypress run",
+    "test": "NODE_ENV=test cypress run",
     "cypress": "npx cypress open",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
     "coverage:copy": "ncp coverage/lcov-report docs/lcov",
