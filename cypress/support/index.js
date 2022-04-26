@@ -19,3 +19,25 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 import '@cypress/code-coverage/support'
+
+import { join } from 'path';
+import { existsSync, mkdirSync } from 'fs';
+
+before(() => {
+  cy.task('createTemp')
+})
+
+Cypress.Commands.add('createTemp', () => {
+  const tempDir = '.nyc_output';
+  const nycFilename = join(tempDir, 'out.json');
+  
+  if (!existsSync(tempDir)) {
+    mkdirSync(tempDir, { recursive: true })
+    debug('created folder %s for output coverage', tempDir)
+  }
+  
+  
+  if (!existsSync(nycFilename)) {
+    writeFileSync(nycFilename, JSON.stringify({}, null, 2))
+  }
+})
