@@ -714,7 +714,7 @@ describe('ColorPicker Class Test', () => {
 
       getMarkup(body, id, format);
 
-      cy.get(`#color-picker-${id}`).should('exist').then(($input) => {
+      cy.get(`#color-picker-${id}`).then(($input) => {
         let cp;
         
         if ($input.length) {
