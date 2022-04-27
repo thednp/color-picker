@@ -26,7 +26,8 @@ const instrumenter = createInstrumenter({
 const esbuildPluginIstanbul = () => ({
   name: 'istanbul',
   setup(build) {
-    build.onLoad({filter: /\\color-picker\\src\\js\\/ },
+    // build.onLoad({filter: /\\color-picker\\src\\js\\/ },
+    build.onLoad({filter: /\/color-picker\/src\/js\// },
       async ({ path }) => {
         // const contents = String(readFileSync(path));
         // const contents = readFileSync(path, 'utf8');

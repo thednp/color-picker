@@ -19,10 +19,3 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 import '@cypress/code-coverage/support'
-
-
-
-// before(() => {
-//   cy.task('createTemp')
-// })
-
