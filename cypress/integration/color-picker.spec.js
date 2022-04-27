@@ -714,11 +714,11 @@ describe('ColorPicker Class Test', () => {
 
       getMarkup(body, id, format);
 
-      cy.get(`#color-picker-${id}`).then(($input) => {
+      cy.get(`#color-picker-${id}`).should('exist').then(($input) => {
         let cp;
-        const [input] = $input.get();
-
-        if (input instanceof HTMLInputElement) {
+        
+        if ($input.length) {
+          const [input] = $input;
           cp = new ColorPicker(input, {
             colorKeywords: 'olive,green,red,transparent',
             colorPresets: colorPresets,
@@ -756,11 +756,12 @@ describe('ColorPicker Class Test', () => {
         // const value = 
         getMarkup(body, id, format);
   
-        cy.get(`#color-picker-${id}`).then((input) => {
+        cy.get(`#color-picker-${id}`).then(($input) => {
           let cp;
-          if (input.length) {
-            input[0].value = '';
-            cp = new ColorPicker(input[0], {
+          if ($input.length) {
+            const [input] = $input;
+            input.value = '';
+            cp = new ColorPicker(input, {
               colorKeywords: ['green','green','red','transparent','currentColor'],
               colorPresets: colorPresets.split(','),
               colorLabels: colorNamesFrench.split(','),

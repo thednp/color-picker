@@ -1,9 +1,17 @@
 // sources
 // * https://github.com/enketo/enketo-express/blob/master/tools/esbuild-plugin-istanbul.js
 
-// const istanbul = require('istanbul-lib-coverage')
 const { readFileSync } = require('fs');
 const { createInstrumenter } = require('istanbul-lib-instrument');
+const debug = require('debug')('istanbul-lib-instrument')
+
+// import Cypress settings
+const { env: { sourceFolder } } = require('../../cypress.json');
+const [name] = process.cwd().split(/[\\|\/]/).slice(-1);
+const sourcePath = sourceFolder.replace(/\\/,'\/');
+
+const sourceFilter = `${name}/${sourcePath}`;
+
 /**
  * @typedef {import('istanbul-lib-instrument').InstrumenterOptions} InstrumenterOptions
  */
@@ -17,24 +25,20 @@ const instrumenter = createInstrumenter({
   esModules: true,
 });
 
-// let coverageMap = RawSourceMap;
-
-
 /**
  * @return {import('esbuild').Plugin}
  */
 const esbuildPluginIstanbul = () => ({
   name: 'istanbul',
   setup(build) {
-    // build.onLoad({filter: /\\color-picker\\src\\js\\/ },
-    build.onLoad({filter: /\/color\-picker\/src\/js\// },
+    build.onLoad({filter: /\.(js|jsx|ts|tsx)$/ },
       async ({ path }) => {
-        // const contents = String(readFileSync(path));
-        // const contents = readFileSync(path, 'utf8');
-        // const instrumented = await instrument(contents, path);
         const contents = String(readFileSync(path, 'utf8'));
-        // const contents = (readFileSync(path, 'utf8'));
 
+        if (!sourceFilter.split(/\\|\//).every((word) => path.includes(word))) {
+          return { contents };
+        }
+        debug('instrumenting %s for output coverage', path);
         const instrumented = instrumenter.instrumentSync(contents, path);
 
         return { contents: instrumented };
