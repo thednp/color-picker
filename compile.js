@@ -26,7 +26,6 @@ const MIN = args.MIN === 'true' ? '.min' : '';
 const INPUTFILE = args.INPUTFILE ? args.INPUTFILE : `./src/scss/color-picker${DIR}.scss`;
 const OUTPUTFILE = args.OUTPUTFILE ? args.OUTPUTFILE : `./dist/css/color-picker${DIR}${MIN}.css`;
 const COMPRESS = args.MIN === 'true' ? 'compressed' : 'expanded';
-const COPY = args.COPY === 'true' || false;
 
 // Helper Functions
 function compile(inputPath, writePath, compressType) {
@@ -38,15 +37,4 @@ function compile(inputPath, writePath, compressType) {
   console.log(`✅ Compiled ${inputPath} to ${writePath}.`)
 }
 
-function copy(input,output) {
-  fs.copyFile(input, output, (err) => {
-    if (err) throw err;
-    console.log(`✅ Copied ${input} to ${output}`);
-  });
-}
-
-if (COPY) {
-  copy(INPUTFILE, OUTPUTFILE)
-} else {
-  compile(INPUTFILE,OUTPUTFILE,COMPRESS)
-}
+compile(INPUTFILE,OUTPUTFILE,COMPRESS);

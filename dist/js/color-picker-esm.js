@@ -1,5 +1,5 @@
 /*!
-* ColorPicker v0.0.3 (http://thednp.github.io/color-picker)
+* ColorPicker v1.0.0 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -9,27 +9,26 @@ const EventRegistry = {};
 /**
  * The global event listener.
  *
- * @this {Element | HTMLElement | Window | Document}
- * @param {Event} e
- * @returns {void}
+ * @type {EventListener}
+ * @this {EventTarget}
  */
 function globalListener(e) {
   const that = this;
-  const { type } = e;
-  const oneEvMap = EventRegistry[type] ? [...EventRegistry[type]] : [];
+  const { type, target } = e;
 
-  oneEvMap.forEach((elementsMap) => {
+  [...EventRegistry[type]].forEach((elementsMap) => {
     const [element, listenersMap] = elementsMap;
-    [...listenersMap].forEach((listenerMap) => {
-      if (element === that) {
+    /* istanbul ignore else */
+    if ([target, that].some((el) => element === el)) {
+      [...listenersMap].forEach((listenerMap) => {
         const [listener, options] = listenerMap;
         listener.apply(element, [e]);
 
         if (options && options.once) {
           removeListener(element, type, listener, options);
         }
-      }
-    });
+      });
+    }
   });
 }
 
@@ -37,10 +36,7 @@ function globalListener(e) {
  * Register a new listener with its options and attach the `globalListener`
  * to the target if this is the first listener.
  *
- * @param {Element | HTMLElement | Window | Document} element
- * @param {string} eventType
- * @param {EventListenerObject['handleEvent']} listener
- * @param {AddEventListenerOptions=} options
+ * @type {Listener.ListenerAction<EventTarget>}
  */
 const addListener = (element, eventType, listener, options) => {
   // get element listeners first
@@ -58,9 +54,7 @@ const addListener = (element, eventType, listener, options) => {
   const { size } = oneElementMap;
 
   // register listener with its options
-  if (oneElementMap) {
-    oneElementMap.set(listener, options);
-  }
+  oneElementMap.set(listener, options);
 
   // add listener last
   if (!size) {
@@ -72,10 +66,7 @@ const addListener = (element, eventType, listener, options) => {
  * Remove a listener from registry and detach the `globalListener`
  * if no listeners are found in the registry.
  *
- * @param {Element | HTMLElement | Window | Document} element
- * @param {string} eventType
- * @param {EventListenerObject['handleEvent']} listener
- * @param {AddEventListenerOptions=} options
+ * @type {Listener.ListenerAction<EventTarget>}
  */
 const removeListener = (element, eventType, listener, options) => {
   // get listener first
@@ -94,6 +85,7 @@ const removeListener = (element, eventType, listener, options) => {
   if (!oneEventMap || !oneEventMap.size) delete EventRegistry[eventType];
 
   // remove listener last
+  /* istanbul ignore else */
   if (!oneElementMap || !oneElementMap.size) {
     element.removeEventListener(eventType, globalListener, eventOptions);
   }
@@ -196,40 +188,28 @@ const keydownEvent = 'keydown';
 const changeEvent = 'change';
 
 /**
- * A global namespace for `touchstart` event.
- * @type {string}
- */
-const touchstartEvent = 'touchstart';
-
-/**
  * A global namespace for `touchmove` event.
  * @type {string}
  */
 const touchmoveEvent = 'touchmove';
 
 /**
- * A global namespace for `touchend` event.
+ * A global namespace for `pointerdown` event.
  * @type {string}
  */
-const touchendEvent = 'touchend';
+const pointerdownEvent = 'pointerdown';
 
 /**
- * A global namespace for `mousedown` event.
+ * A global namespace for `pointermove` event.
  * @type {string}
  */
-const mousedownEvent = 'mousedown';
+const pointermoveEvent = 'pointermove';
 
 /**
- * A global namespace for `mousemove` event.
+ * A global namespace for `pointerup` event.
  * @type {string}
  */
-const mousemoveEvent = 'mousemove';
-
-/**
- * A global namespace for `mouseup` event.
- * @type {string}
- */
-const mouseupEvent = 'mouseup';
+const pointerupEvent = 'pointerup';
 
 /**
  * A global namespace for `scroll` event.
@@ -275,27 +255,6 @@ function getDocument(node) {
  */
 function getDocumentElement(node) {
   return getDocument(node).documentElement;
-}
-
-/**
- * Returns the `Window` object of a target node.
- * @see https://github.com/floating-ui/floating-ui
- *
- * @param {(Node | HTMLElement | Element | Window)=} node target node
- * @returns {globalThis}
- */
-function getWindow(node) {
-  if (node == null) {
-    return window;
-  }
-
-  if (!(node instanceof Window)) {
-    const { ownerDocument } = node;
-    return ownerDocument ? ownerDocument.defaultView || window : window;
-  }
-
-  // @ts-ignore
-  return node;
 }
 
 /**
@@ -2246,17 +2205,16 @@ function getColorMenu(self, colorsSource, menuClass) {
   const isOptionsMenu = menuClass === 'color-options';
   const isPalette = colorsSource instanceof ColorPalette;
   const menuLabel = isOptionsMenu ? presetsLabel : defaultsLabel;
-  let colorsArray = isPalette ? colorsSource.colors : colorsSource;
-  colorsArray = colorsArray instanceof Array ? colorsArray : [];
+  const colorsArray = isPalette ? colorsSource.colors : colorsSource;
   const colorsCount = colorsArray.length;
   const { lightSteps } = isPalette ? colorsSource : { lightSteps: null };
-  const fit = lightSteps || [9, 10].find((x) => colorsCount > x * 2 && !(colorsCount % x)) || 5;
+  const fit = lightSteps || [9, 10].find((x) => colorsCount >= x * 2 && !(colorsCount % x)) || 5;
   const isMultiLine = isOptionsMenu && colorsCount > fit;
   let rowCountHover = 2;
-  rowCountHover = isMultiLine && colorsCount >= fit * 2 ? 3 : rowCountHover;
-  rowCountHover = colorsCount >= fit * 3 ? 4 : rowCountHover;
-  rowCountHover = colorsCount >= fit * 4 ? 5 : rowCountHover;
-  const rowCount = rowCountHover - (colorsCount < fit * 3 ? 1 : 2);
+  rowCountHover = isMultiLine && colorsCount > fit * 2 ? 3 : rowCountHover;
+  rowCountHover = isMultiLine && colorsCount > fit * 3 ? 4 : rowCountHover;
+  rowCountHover = isMultiLine && colorsCount > fit * 4 ? 5 : rowCountHover;
+  const rowCount = rowCountHover - (colorsCount <= fit * 3 ? 1 : 2);
   const isScrollable = isMultiLine && colorsCount > rowCount * fit;
   let finalClass = menuClass;
   finalClass += isScrollable ? ' scrollable' : '';
@@ -2264,7 +2222,7 @@ function getColorMenu(self, colorsSource, menuClass) {
   const gap = isMultiLine ? '1px' : '0.25rem';
   let optionSize = isMultiLine ? 1.75 : 2;
   optionSize = fit > 5 && isMultiLine ? 1.5 : optionSize;
-  const menuHeight = `${(rowCount || 1) * optionSize}rem`;
+  const menuHeight = `${rowCount * optionSize}rem`;
   const menuHeightHover = `calc(${rowCountHover} * ${optionSize}rem + ${rowCountHover - 1} * ${gap})`;
   /** @type {HTMLUListElement} */
   // @ts-ignore -- <UL> is an `HTMLElement`
@@ -2371,12 +2329,12 @@ function setMarkup(self) {
     });
 
     // color presets
-    if ((colorPresets instanceof Array && colorPresets.length)
-      || (colorPresets instanceof ColorPalette && colorPresets.colors)) {
+    if (colorPresets) {
       presetsDropdown.append(getColorMenu(self, colorPresets, 'color-options'));
     }
 
     // explicit defaults [reset, initial, inherit, transparent, currentColor]
+    // also custom defaults [default: #069, complementary: #930]
     if (colorKeywords && colorKeywords.length) {
       presetsDropdown.append(getColorMenu(self, colorKeywords, 'color-defaults'));
     }
@@ -2415,7 +2373,7 @@ function setMarkup(self) {
   setAttribute(input, tabIndex, '-1');
 }
 
-var version = "0.0.3";
+var version = "1.0.0";
 
 // @ts-ignore
 
@@ -2437,7 +2395,7 @@ const colorPickerDefaults = {
 // ColorPicker Static Methods
 // ==========================
 
-/** @type {CP.GetInstance<ColorPicker>} */
+/** @type {CP.GetInstance<ColorPicker, HTMLInputElement>} */
 const getColorPickerInstance = (element) => getInstance(element, colorPickerString);
 
 /** @type {CP.InitCallback<ColorPicker>} */
@@ -2472,12 +2430,10 @@ function toggleEventsOnShown(self, action) {
   const fn = action ? addListener : removeListener;
   const { input, colorMenu, parent } = self;
   const doc = getDocument(input);
-  const win = getWindow(input);
-  const pointerEvents = `on${touchstartEvent}` in doc
-    ? { down: touchstartEvent, move: touchmoveEvent, up: touchendEvent }
-    : { down: mousedownEvent, move: mousemoveEvent, up: mouseupEvent };
+  // const win = getWindow(input);
+  const win = doc.defaultView;
 
-  fn(self.controls, pointerEvents.down, self.pointerDown);
+  fn(self.controls, pointerdownEvent, self.pointerDown);
   self.controlKnobs.forEach((x) => fn(x, keydownEvent, self.handleKnobs));
 
   // @ts-ignore -- this is `Window`
@@ -2492,8 +2448,8 @@ function toggleEventsOnShown(self, action) {
     fn(colorMenu, keydownEvent, self.menuKeyHandler);
   }
 
-  fn(doc, pointerEvents.move, self.pointerMove);
-  fn(doc, pointerEvents.up, self.pointerUp);
+  fn(doc, pointermoveEvent, self.pointerMove);
+  fn(doc, pointerupEvent, self.pointerUp);
   fn(parent, focusoutEvent, self.handleFocusOut);
   fn(doc, keyupEvent, self.handleDismiss);
 }
@@ -2512,6 +2468,7 @@ function firePickerChange(self) {
  * @returns {void}
  */
 function removePosition(element) {
+  /* istanbul ignore else */
   if (element) {
     ['bottom', 'top'].forEach((x) => removeClass(element, x));
   }
@@ -2614,6 +2571,7 @@ class ColorPicker {
     } = normalizeOptions(this.isCE ? parent : input, colorPickerDefaults, config || {});
 
     let translatedColorLabels = colorNames;
+    /* istanbul ignore else */
     if (colorLabels instanceof Array && colorLabels.length === 17) {
       translatedColorLabels = colorLabels;
     } else if (colorLabels && colorLabels.split(',').length === 17) {
@@ -2639,14 +2597,14 @@ class ColorPicker {
     self.format = format;
 
     // set colour defaults
-    if (colorKeywords instanceof Array) {
+    if (colorKeywords instanceof Array && colorKeywords.length) {
       self.colorKeywords = colorKeywords;
     } else if (typeof colorKeywords === 'string' && colorKeywords.length) {
       self.colorKeywords = colorKeywords.split(',').map((x) => x.trim());
     }
 
     // set colour presets
-    if (colorPresets instanceof Array) {
+    if (colorPresets instanceof Array && colorPresets.length) {
       self.colorPresets = colorPresets;
     } else if (typeof colorPresets === 'string' && colorPresets.length) {
       if (isValidJSON(colorPresets)) {
@@ -2777,6 +2735,7 @@ class ColorPicker {
     let colorName;
 
     // determine color appearance
+    /* istanbul ignore else */
     if (lightness === 100 && saturation === 0) {
       colorName = colorLabels.white;
     } else if (lightness === 0) {
@@ -2877,13 +2836,14 @@ class ColorPicker {
     const self = this;
     const { activeElement } = getDocument(self.input);
 
-    if ((e.type === touchmoveEvent && self.dragElement)
+    self.updateDropdownPosition();
+
+    /* istanbul ignore next */
+    if (([pointermoveEvent, touchmoveEvent].includes(e.type) && self.dragElement)
       || (activeElement && self.controlKnobs.includes(activeElement))) {
       e.stopPropagation();
       e.preventDefault();
     }
-
-    self.updateDropdownPosition();
   }
 
   /**
@@ -2957,7 +2917,9 @@ class ColorPicker {
 
     self.update();
 
+    /* istanbul ignore else */
     if (currentActive !== target) {
+      /* istanbul ignore else */
       if (currentActive) {
         removeClass(currentActive, 'active');
         removeAttribute(currentActive, ariaSelected);
@@ -2975,15 +2937,13 @@ class ColorPicker {
 
   /**
    * The `ColorPicker` *touchstart* / *mousedown* events listener for control knobs.
-   * @param {TouchEvent} e
+   * @param {PointerEvent} e
    * @this {ColorPicker}
    */
   pointerDown(e) {
     const self = this;
     /** @type {*} */
-    const {
-      type, target, touches, pageX, pageY,
-    } = e;
+    const { target, pageX, pageY } = e;
     const { colorMenu, visuals, controlKnobs } = self;
     const [v1, v2, v3] = visuals;
     const [c1, c2, c3] = controlKnobs;
@@ -2991,11 +2951,10 @@ class ColorPicker {
     const visual = controlKnobs.includes(target) ? target.previousElementSibling : target;
     const visualRect = getBoundingClientRect(visual);
     const html = getDocumentElement(v1);
-    const X = type === 'touchstart' ? touches[0].pageX : pageX;
-    const Y = type === 'touchstart' ? touches[0].pageY : pageY;
-    const offsetX = X - html.scrollLeft - visualRect.left;
-    const offsetY = Y - html.scrollTop - visualRect.top;
+    const offsetX = pageX - html.scrollLeft - visualRect.left;
+    const offsetY = pageY - html.scrollTop - visualRect.top;
 
+    /* istanbul ignore else */
     if (target === v1 || target === c1) {
       self.dragElement = visual;
       self.changeControl1(offsetX, offsetY);
@@ -3019,7 +2978,7 @@ class ColorPicker {
 
   /**
    * The `ColorPicker` *touchend* / *mouseup* events listener for control knobs.
-   * @param {TouchEvent} e
+   * @param {PointerEvent} e
    * @this {ColorPicker}
    */
   pointerUp({ target }) {
@@ -3028,9 +2987,8 @@ class ColorPicker {
     const doc = getDocument(parent);
     const currentOpen = querySelector(`${colorPickerParentSelector}.open`, doc) !== null;
     const selection = doc.getSelection();
-    // @ts-ignore
+
     if (!self.dragElement && !selection.toString().length
-      // @ts-ignore
       && !parent.contains(target)) {
       self.hide(currentOpen);
     }
@@ -3040,25 +2998,20 @@ class ColorPicker {
 
   /**
    * The `ColorPicker` *touchmove* / *mousemove* events listener for control knobs.
-   * @param {TouchEvent} e
+   * @param {PointerEvent} e
    */
   pointerMove(e) {
     const self = this;
     const { dragElement, visuals } = self;
     const [v1, v2, v3] = visuals;
-    const {
-      // @ts-ignore
-      type, touches, pageX, pageY,
-    } = e;
+    const { pageX, pageY } = e;
 
     if (!dragElement) return;
 
     const controlRect = getBoundingClientRect(dragElement);
     const win = getDocumentElement(v1);
-    const X = type === touchmoveEvent ? touches[0].pageX : pageX;
-    const Y = type === touchmoveEvent ? touches[0].pageY : pageY;
-    const offsetX = X - win.scrollLeft - controlRect.left;
-    const offsetY = Y - win.scrollTop - controlRect.top;
+    const offsetX = pageX - win.scrollLeft - controlRect.left;
+    const offsetY = pageY - win.scrollTop - controlRect.top;
 
     if (dragElement === v1) {
       self.changeControl1(offsetX, offsetY);
@@ -3092,13 +3045,16 @@ class ColorPicker {
     const currentKnob = controlKnobs.find((x) => x === activeElement);
     const yRatio = offsetHeight / 360;
 
+    /* istanbul ignore else */
     if (currentKnob) {
       let offsetX = 0;
       let offsetY = 0;
 
+      /* istanbul ignore else */
       if (target === c1) {
         const xRatio = offsetWidth / 100;
 
+        /* istanbul ignore else */
         if ([keyArrowLeft, keyArrowRight].includes(code)) {
           self.controlPositions.c1x += code === keyArrowRight ? xRatio : -xRatio;
         } else if ([keyArrowUp, keyArrowDown].includes(code)) {
@@ -3144,6 +3100,7 @@ class ColorPicker {
     const isNonColorValue = self.hasNonColor && nonColors.includes(currentValue);
     const alpha = i4 ? v4 : (1 - controlPositions.c3y / offsetHeight);
 
+    /* istanbul ignore else */
     if (activeElement === input || (activeElement && inputs.includes(activeElement))) {
       if (activeElement === input) {
         if (isNonColorValue) {
@@ -3458,6 +3415,7 @@ class ColorPicker {
     const hue = roundPart(hsl.h * 360);
     let newColor;
 
+    /* istanbul ignore else */
     if (format === 'hex') {
       newColor = self.color.toHexString(true);
       i1.value = self.hex;
@@ -3560,11 +3518,13 @@ class ColorPicker {
 
       self.value = self.color.toString(true);
 
+      /* istanbul ignore else */
       if (openDropdown) {
         removeClass(openDropdown, 'show');
         setAttribute(relatedBtn, ariaExpanded, 'false');
         setTimeout(() => {
           removePosition(openDropdown);
+          /* istanbul ignore else */
           if (!querySelector('.show', parent)) {
             removeClass(parent, 'open');
             toggleEventsOnShown(self);

@@ -32,9 +32,6 @@ export interface RGBA extends RGB {
  * @link https://en.wikibooks.org/wiki/Color_Models:_RGB,_HSV,_HSL#HSL
  */
 export interface HSL {
-  // h: number | string;
-  // s: number | string;
-  // l: number | string;
   h: number;
   s: number;
   l: number;
@@ -79,12 +76,17 @@ export interface ColorPickerOptions {
   colorLabels?: string[];
   componentLabels?: Record<string, string>;
   format?: ColorFormats;
-  colorPresets?: string[];
+  colorPresets?: string[] | {
+    hue: number,
+    lightSteps: number,
+    hueSteps: number,
+    colors: string[],
+  };
   colorKeywords?: string[];
 }
 
 export type ColorInput = string | RGB | RGBA | HSL | HSLA | HSV | HSVA | HWB | ColorObject;
 export type ColorFormats = string | 'rgb' | 'hex' | 'hex3' | 'hex4' | 'hex6' | 'hex8' | 'hsl' | 'hsv' | 'hwb';
 
-export type GetInstance<T> = (element: string | HTMLInputElement) => T | null;
-export type InitCallback<T> = (element: string | HTMLInputElement) => T;
+export type GetInstance<T, ET> = (target: ET | string, component: string) => T | null;
+export type InitCallback<T> = (element: HTMLInputElement | string ) => T;

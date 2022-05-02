@@ -1,5 +1,5 @@
 /*!
-* ColorPalette v0.0.3 (http://thednp.github.io/color-picker)
+* ColorPalette v1.0.0 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */

@@ -16,20 +16,13 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - uses: bahmutov/npm-install@v1
-      - run: npm run bundle
+      - run: npm run lint:js
+      - run: npm run lint:css
+      - run: npm run build-js
+      - run: npm run compile-scss
       - run: npm run test
 
       - name: Upload coverage report on Node v${{ matrix.node }} to coveralls.io...
         uses: coverallsapp/github-action@v1.1.2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload coverage report on Node v${{ matrix.node }} to codecov.io...
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{secrets.CODECOV_TOKEN}}
-          files: ./coverage/lcov.info
-          flags: electron
-          name: codecov-client-electron
-          fail_ci_if_error: true
-          verbose: true

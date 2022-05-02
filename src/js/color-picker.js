@@ -1,4 +1,4 @@
-import { addListener, removeListener } from 'event-listener.js';
+import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
 import ariaDescription from 'shorter-js/src/strings/ariaDescription';
 import ariaSelected from 'shorter-js/src/strings/ariaSelected';
@@ -16,12 +16,12 @@ import focusinEvent from 'shorter-js/src/strings/focusinEvent';
 import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
 import keydownEvent from 'shorter-js/src/strings/keydownEvent';
 import changeEvent from 'shorter-js/src/strings/changeEvent';
-import touchstartEvent from 'shorter-js/src/strings/touchstartEvent';
+
 import touchmoveEvent from 'shorter-js/src/strings/touchmoveEvent';
-import touchendEvent from 'shorter-js/src/strings/touchendEvent';
-import mousedownEvent from 'shorter-js/src/strings/mousedownEvent';
-import mousemoveEvent from 'shorter-js/src/strings/mousemoveEvent';
-import mouseupEvent from 'shorter-js/src/strings/mouseupEvent';
+import pointerdownEvent from 'shorter-js/src/strings/pointerdownEvent';
+import pointermoveEvent from 'shorter-js/src/strings/pointermoveEvent';
+import pointerupEvent from 'shorter-js/src/strings/pointerupEvent';
+
 import scrollEvent from 'shorter-js/src/strings/scrollEvent';
 import keyupEvent from 'shorter-js/src/strings/keyupEvent';
 import resizeEvent from 'shorter-js/src/strings/resizeEvent';
@@ -29,7 +29,6 @@ import focusoutEvent from 'shorter-js/src/strings/focusoutEvent';
 
 import getDocument from 'shorter-js/src/get/getDocument';
 import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
-import getWindow from 'shorter-js/src/get/getWindow';
 import getElementStyle from 'shorter-js/src/get/getElementStyle';
 import getUID from 'shorter-js/src/get/getUID';
 import getBoundingClientRect from 'shorter-js/src/get/getBoundingClientRect';
@@ -80,7 +79,7 @@ const colorPickerDefaults = {
 // ColorPicker Static Methods
 // ==========================
 
-/** @type {CP.GetInstance<ColorPicker>} */
+/** @type {CP.GetInstance<ColorPicker, HTMLInputElement>} */
 const getColorPickerInstance = (element) => getInstance(element, colorPickerString);
 
 /** @type {CP.InitCallback<ColorPicker>} */
@@ -115,12 +114,10 @@ function toggleEventsOnShown(self, action) {
   const fn = action ? addListener : removeListener;
   const { input, colorMenu, parent } = self;
   const doc = getDocument(input);
-  const win = getWindow(input);
-  const pointerEvents = `on${touchstartEvent}` in doc
-    ? { down: touchstartEvent, move: touchmoveEvent, up: touchendEvent }
-    : { down: mousedownEvent, move: mousemoveEvent, up: mouseupEvent };
+  // const win = getWindow(input);
+  const win = doc.defaultView;
 
-  fn(self.controls, pointerEvents.down, self.pointerDown);
+  fn(self.controls, pointerdownEvent, self.pointerDown);
   self.controlKnobs.forEach((x) => fn(x, keydownEvent, self.handleKnobs));
 
   // @ts-ignore -- this is `Window`
@@ -135,8 +132,8 @@ function toggleEventsOnShown(self, action) {
     fn(colorMenu, keydownEvent, self.menuKeyHandler);
   }
 
-  fn(doc, pointerEvents.move, self.pointerMove);
-  fn(doc, pointerEvents.up, self.pointerUp);
+  fn(doc, pointermoveEvent, self.pointerMove);
+  fn(doc, pointerupEvent, self.pointerUp);
   fn(parent, focusoutEvent, self.handleFocusOut);
   fn(doc, keyupEvent, self.handleDismiss);
 }
@@ -155,6 +152,7 @@ function firePickerChange(self) {
  * @returns {void}
  */
 function removePosition(element) {
+  /* istanbul ignore else */
   if (element) {
     ['bottom', 'top'].forEach((x) => removeClass(element, x));
   }
@@ -257,6 +255,7 @@ export default class ColorPicker {
     } = normalizeOptions(this.isCE ? parent : input, colorPickerDefaults, config || {});
 
     let translatedColorLabels = colorNames;
+    /* istanbul ignore else */
     if (colorLabels instanceof Array && colorLabels.length === 17) {
       translatedColorLabels = colorLabels;
     } else if (colorLabels && colorLabels.split(',').length === 17) {
@@ -282,14 +281,14 @@ export default class ColorPicker {
     self.format = format;
 
     // set colour defaults
-    if (colorKeywords instanceof Array) {
+    if (colorKeywords instanceof Array && colorKeywords.length) {
       self.colorKeywords = colorKeywords;
     } else if (typeof colorKeywords === 'string' && colorKeywords.length) {
       self.colorKeywords = colorKeywords.split(',').map((x) => x.trim());
     }
 
     // set colour presets
-    if (colorPresets instanceof Array) {
+    if (colorPresets instanceof Array && colorPresets.length) {
       self.colorPresets = colorPresets;
     } else if (typeof colorPresets === 'string' && colorPresets.length) {
       if (isValidJSON(colorPresets)) {
@@ -420,6 +419,7 @@ export default class ColorPicker {
     let colorName;
 
     // determine color appearance
+    /* istanbul ignore else */
     if (lightness === 100 && saturation === 0) {
       colorName = colorLabels.white;
     } else if (lightness === 0) {
@@ -520,13 +520,14 @@ export default class ColorPicker {
     const self = this;
     const { activeElement } = getDocument(self.input);
 
-    if ((e.type === touchmoveEvent && self.dragElement)
+    self.updateDropdownPosition();
+
+    /* istanbul ignore next */
+    if (([pointermoveEvent, touchmoveEvent].includes(e.type) && self.dragElement)
       || (activeElement && self.controlKnobs.includes(activeElement))) {
       e.stopPropagation();
       e.preventDefault();
     }
-
-    self.updateDropdownPosition();
   }
 
   /**
@@ -600,7 +601,9 @@ export default class ColorPicker {
 
     self.update();
 
+    /* istanbul ignore else */
     if (currentActive !== target) {
+      /* istanbul ignore else */
       if (currentActive) {
         removeClass(currentActive, 'active');
         removeAttribute(currentActive, ariaSelected);
@@ -618,15 +621,13 @@ export default class ColorPicker {
 
   /**
    * The `ColorPicker` *touchstart* / *mousedown* events listener for control knobs.
-   * @param {TouchEvent} e
+   * @param {PointerEvent} e
    * @this {ColorPicker}
    */
   pointerDown(e) {
     const self = this;
     /** @type {*} */
-    const {
-      type, target, touches, pageX, pageY,
-    } = e;
+    const { target, pageX, pageY } = e;
     const { colorMenu, visuals, controlKnobs } = self;
     const [v1, v2, v3] = visuals;
     const [c1, c2, c3] = controlKnobs;
@@ -634,11 +635,10 @@ export default class ColorPicker {
     const visual = controlKnobs.includes(target) ? target.previousElementSibling : target;
     const visualRect = getBoundingClientRect(visual);
     const html = getDocumentElement(v1);
-    const X = type === 'touchstart' ? touches[0].pageX : pageX;
-    const Y = type === 'touchstart' ? touches[0].pageY : pageY;
-    const offsetX = X - html.scrollLeft - visualRect.left;
-    const offsetY = Y - html.scrollTop - visualRect.top;
+    const offsetX = pageX - html.scrollLeft - visualRect.left;
+    const offsetY = pageY - html.scrollTop - visualRect.top;
 
+    /* istanbul ignore else */
     if (target === v1 || target === c1) {
       self.dragElement = visual;
       self.changeControl1(offsetX, offsetY);
@@ -662,7 +662,7 @@ export default class ColorPicker {
 
   /**
    * The `ColorPicker` *touchend* / *mouseup* events listener for control knobs.
-   * @param {TouchEvent} e
+   * @param {PointerEvent} e
    * @this {ColorPicker}
    */
   pointerUp({ target }) {
@@ -671,9 +671,8 @@ export default class ColorPicker {
     const doc = getDocument(parent);
     const currentOpen = querySelector(`${colorPickerParentSelector}.open`, doc) !== null;
     const selection = doc.getSelection();
-    // @ts-ignore
+
     if (!self.dragElement && !selection.toString().length
-      // @ts-ignore
       && !parent.contains(target)) {
       self.hide(currentOpen);
     }
@@ -683,25 +682,20 @@ export default class ColorPicker {
 
   /**
    * The `ColorPicker` *touchmove* / *mousemove* events listener for control knobs.
-   * @param {TouchEvent} e
+   * @param {PointerEvent} e
    */
   pointerMove(e) {
     const self = this;
     const { dragElement, visuals } = self;
     const [v1, v2, v3] = visuals;
-    const {
-      // @ts-ignore
-      type, touches, pageX, pageY,
-    } = e;
+    const { pageX, pageY } = e;
 
     if (!dragElement) return;
 
     const controlRect = getBoundingClientRect(dragElement);
     const win = getDocumentElement(v1);
-    const X = type === touchmoveEvent ? touches[0].pageX : pageX;
-    const Y = type === touchmoveEvent ? touches[0].pageY : pageY;
-    const offsetX = X - win.scrollLeft - controlRect.left;
-    const offsetY = Y - win.scrollTop - controlRect.top;
+    const offsetX = pageX - win.scrollLeft - controlRect.left;
+    const offsetY = pageY - win.scrollTop - controlRect.top;
 
     if (dragElement === v1) {
       self.changeControl1(offsetX, offsetY);
@@ -735,13 +729,16 @@ export default class ColorPicker {
     const currentKnob = controlKnobs.find((x) => x === activeElement);
     const yRatio = offsetHeight / 360;
 
+    /* istanbul ignore else */
     if (currentKnob) {
       let offsetX = 0;
       let offsetY = 0;
 
+      /* istanbul ignore else */
       if (target === c1) {
         const xRatio = offsetWidth / 100;
 
+        /* istanbul ignore else */
         if ([keyArrowLeft, keyArrowRight].includes(code)) {
           self.controlPositions.c1x += code === keyArrowRight ? xRatio : -xRatio;
         } else if ([keyArrowUp, keyArrowDown].includes(code)) {
@@ -787,6 +784,7 @@ export default class ColorPicker {
     const isNonColorValue = self.hasNonColor && nonColors.includes(currentValue);
     const alpha = i4 ? v4 : (1 - controlPositions.c3y / offsetHeight);
 
+    /* istanbul ignore else */
     if (activeElement === input || (activeElement && inputs.includes(activeElement))) {
       if (activeElement === input) {
         if (isNonColorValue) {
@@ -1101,6 +1099,7 @@ export default class ColorPicker {
     const hue = roundPart(hsl.h * 360);
     let newColor;
 
+    /* istanbul ignore else */
     if (format === 'hex') {
       newColor = self.color.toHexString(true);
       i1.value = self.hex;
@@ -1203,11 +1202,13 @@ export default class ColorPicker {
 
       self.value = self.color.toString(true);
 
+      /* istanbul ignore else */
       if (openDropdown) {
         removeClass(openDropdown, 'show');
         setAttribute(relatedBtn, ariaExpanded, 'false');
         setTimeout(() => {
           removePosition(openDropdown);
+          /* istanbul ignore else */
           if (!querySelector('.show', parent)) {
             removeClass(parent, 'open');
             toggleEventsOnShown(self);

@@ -23,17 +23,16 @@ export default function getColorMenu(self, colorsSource, menuClass) {
   const isOptionsMenu = menuClass === 'color-options';
   const isPalette = colorsSource instanceof ColorPalette;
   const menuLabel = isOptionsMenu ? presetsLabel : defaultsLabel;
-  let colorsArray = isPalette ? colorsSource.colors : colorsSource;
-  colorsArray = colorsArray instanceof Array ? colorsArray : [];
+  const colorsArray = isPalette ? colorsSource.colors : colorsSource;
   const colorsCount = colorsArray.length;
   const { lightSteps } = isPalette ? colorsSource : { lightSteps: null };
-  const fit = lightSteps || [9, 10].find((x) => colorsCount > x * 2 && !(colorsCount % x)) || 5;
+  const fit = lightSteps || [9, 10].find((x) => colorsCount >= x * 2 && !(colorsCount % x)) || 5;
   const isMultiLine = isOptionsMenu && colorsCount > fit;
   let rowCountHover = 2;
-  rowCountHover = isMultiLine && colorsCount >= fit * 2 ? 3 : rowCountHover;
-  rowCountHover = colorsCount >= fit * 3 ? 4 : rowCountHover;
-  rowCountHover = colorsCount >= fit * 4 ? 5 : rowCountHover;
-  const rowCount = rowCountHover - (colorsCount < fit * 3 ? 1 : 2);
+  rowCountHover = isMultiLine && colorsCount > fit * 2 ? 3 : rowCountHover;
+  rowCountHover = isMultiLine && colorsCount > fit * 3 ? 4 : rowCountHover;
+  rowCountHover = isMultiLine && colorsCount > fit * 4 ? 5 : rowCountHover;
+  const rowCount = rowCountHover - (colorsCount <= fit * 3 ? 1 : 2);
   const isScrollable = isMultiLine && colorsCount > rowCount * fit;
   let finalClass = menuClass;
   finalClass += isScrollable ? ' scrollable' : '';
@@ -41,7 +40,7 @@ export default function getColorMenu(self, colorsSource, menuClass) {
   const gap = isMultiLine ? '1px' : '0.25rem';
   let optionSize = isMultiLine ? 1.75 : 2;
   optionSize = fit > 5 && isMultiLine ? 1.5 : optionSize;
-  const menuHeight = `${(rowCount || 1) * optionSize}rem`;
+  const menuHeight = `${rowCount * optionSize}rem`;
   const menuHeightHover = `calc(${rowCountHover} * ${optionSize}rem + ${rowCountHover - 1} * ${gap})`;
   /** @type {HTMLUListElement} */
   // @ts-ignore -- <UL> is an `HTMLElement`

@@ -1,0 +1,7 @@
+$transparency-levels: (
+  15, 25, 33, 50, 75, 90
+);
+
+$dropdown-transition: transform .33s ease, opacity .33s ease;
+$btn-transition: box-shadow .33s ease, border .33s ease;
+$options-transition: height .33s ease;

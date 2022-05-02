@@ -13,7 +13,7 @@ import colorNamesFrench from '../fixtures/colorNamesFrench';
 
 const colorNames = ['white', 'black', 'grey', 'red', 'orange', 'brown', 'gold', 'olive', 'yellow', 'lime', 'green', 'teal', 'cyan', 'blue', 'violet', 'magenta', 'pink'];
 const colorNameValues = ['#fff', '#000', '#808080', '#f00', '#ffa500', '#653c24', '#c8af00', '#808000', '#ff0', '#0f0', '#080', '#075', '#0ff', '#05f', '#a7f', '#b0f', '#f0d'];
-const colorPresets = '#330000,#990000,#ff0000,#ff6666,#ffcccc,#003333,#009999,#00ffff,#66ffff,#ccffff';
+const colorPresets = '#470000,#750000,#a30000,#d10000,#ff0000,#ff2e2e,#ff5c5c,#ff8a8a,#ffb8b8,#ffe6e6,#004700,#007500,#00a300,#00d100,#00ff00,#2eff2e,#5cff5c,#8aff8a,#b8ffb8,#e6ffe6,#000047,#000075,#0000a3,#0000d1,#0000ff,#2e2eff,#5c5cff,#8a8aff,#b8b8ff,#e6e6ff';
 
 describe('ColorPicker Class Test', () => {
 
@@ -22,11 +22,9 @@ describe('ColorPicker Class Test', () => {
       .get('body').then((body) => {
         cy.wrap(body[0]).as('body');
         cy.wrap(body[0].ownerDocument).as('doc');
-        cy.wrap(body[0].defaultView).as('win');
       })
-      .wait(200);
+      .wait(200)
   });
-
  
   it('initialize with no parameter throws error', () => {
     const args = [];
@@ -78,6 +76,8 @@ describe('ColorPicker Class Test', () => {
           cy.wrap(cpe).as('cp');
         }
         cy.get('@cp').its('isCE').should('be.true');
+        cy.get('@cp').its('colorPicker').its('colorPresets').should('be.undefined');
+        cy.get('@cp').its('colorPicker').its('colorKeywords').should('be.undefined');
       });
   });
 
@@ -85,13 +85,14 @@ describe('ColorPicker Class Test', () => {
     const id = getRandomInt(0,999);
     const format = FORMAT[getRandomInt(0,3)];
     const { init, selector } = ColorPicker;
-    let value, set;
+    let value;
 
     cy.get('@body').then((body) => {
-      ({value, set} = getMarkup(body, id, format));
+      ({value} = getMarkup(body, id, format));
     });
 
-    cy.get(`#color-picker-${id}`).then(($input) => {
+    // cy.get(`#color-picker-${id}`).then(($input) => {
+    cy.get('input').then(($input) => {
       cy.wrap($input[0]).as('input');
     });
 
@@ -146,7 +147,8 @@ describe('ColorPicker Class Test', () => {
       const format = FORMAT[getRandomInt(0,3)];
       const {value} = getMarkup(body, id, format);
 
-      cy.get(`#color-picker-${id}`).then((input) => {
+      // cy.get(`#color-picker-${id}`).then((input) => {
+      cy.get('input').then((input) => {
         let cp;
         
         if (input.length) {
@@ -176,66 +178,114 @@ describe('ColorPicker Class Test', () => {
     });
   });
 
+  it('inject markup and initialize with `colorKeywords`', () => {
+    cy.get('body').then((body) => {
+      const id = getRandomInt(0,999);
+      const format = FORMAT[getRandomInt(0,3)];
+      const {value} = getMarkup(body, id, format);
 
-  it('Test touch event listeners', function() {
+      // cy.get(`#color-picker-${id}`).then((input) => {
+      cy.get('input').then((input) => {
+        let cp;
+        
+        if (input.length) {
+          cp = new ColorPicker(input[0], {
+            colorKeywords: 'orange, lime, darkred',
+          });
+          cy.wrap(cp).as('cp');
+        }
+      });
+      cy.get('@cp').then(() => {
+        cy.get('@cp').its('colorKeywords').should('be.instanceOf', Array);
+      });
+    });
+  });
+
+  it('inject markup and initialize with `colorPresets`', () => {
+    cy.get('body').then((body) => {
+      const id = getRandomInt(0,999);
+      const format = FORMAT[getRandomInt(0,3)];
+      getMarkup(body, id, format);
+
+      cy.get('input').then((input) => {
+        let cp;
+        
+        if (input.length) {
+          cp = new ColorPicker(input[0], {
+            colorPresets: '#330033, #990099, #ff00ff, #ff66ff, #ffccff'.split(','),
+          });
+          cy.wrap(cp).as('cp');
+        }
+      });
+      cy.get('@cp').then(() => {
+        cy.get('@cp').its('colorPresets').should('be.instanceOf', Array);
+      });
+    });
+  });  
+
+  it('Test `pointer` event listeners', function() {
     cy.get('@body').then((body) => {
       const id = getRandomInt(0,999);
       const format = FORMAT[getRandomInt(0,3)];
 
       getMarkup(body, id, format);
       
-      // fake touch event support
+      cy.log('fake touch event support');
       if (body[0]) {
         body[0].ownerDocument.ontouchstart = () => {};
       }
-      cy.get(`#color-picker-${id}`).then((input) => {
-        cy.wrap(input[0]).as('input');
-      });
-    });
 
-    cy.get('@input').then(($input) => {
-      let cp;
-      if ($input.length) {
-        cp = new ColorPicker($input[0]);
-      }
-      cy.wrap(cp).as('cp');
+      cy.get(`#color-picker-${id}`).then((input) => {
+        // .get(`input`).then((input) => {
+          let cp;
+          if (input.length) {
+            cp = new ColorPicker(input[0]);
+          }
+          cy.wrap(cp).as('cp');
+        });
     });
 
     cy.log('Testing touch event listeners on `visuals`');
     cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}')
       .get('@cp').its('rgb').then((rgb) => {
-        cy.get('@cp').its('visuals').eq(0).trigger('touchstart', 0, 0, { force: true, touches: [{ pageX: 0, pageY: 0 }] })
-          .get('@cp').its('visuals').eq(0).trigger('touchmove', -0.5, -0.5, { force: true, touches: [{ pageX: -0.5, pageY: -0.5 }] })
-          .get('@cp').its('visuals').eq(0).trigger('touchmove', -500, -500, { force: true, touches: [{ pageX: -500, pageY: -500 }] })
-          .get('@cp').its('visuals').eq(0).trigger('touchmove', 500, 500, { force: true, touches: [{ pageX: 500, pageY: 500 }] })
-          .get('@cp').its('visuals').eq(0).trigger('touchend', 100, 100, { force: true, touches: [{ pageX: 100, pageY: 100 }] })
-          .wait(17)
-          .get('@cp').its('rgb').should('not.deep.equal', rgb);
+        cy.get('@cp').its('visuals').eq(0).trigger('pointerdown', 0, 0, { force: true, pointerType: 'touch' })
+          .get('@cp').its('visuals').eq(0).trigger('pointermove', -5, -5, { force: true, pointerType: 'touch' })
+          .get('@cp').its('visuals').eq(0).trigger('pointermove', 500, 500, { force: true, pointerType: 'touch' })
+          .get('@cp').its('visuals').eq(0).trigger('pointermove', 100, 100, { force: true, pointerType: 'touch' })
+          .get('@cp').its('visuals').eq(0).trigger('pointerup', 100, 100, { force: true, pointerType: 'touch' })
+          .then(() => {
+            cy.wait(17)
+              .get('@cp').its('rgb').should('not.deep.equal', rgb);
+            })
+        });
+  
+    cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}')
+      .get('@cp').its('rgb').then((rgb) => {
+        cy.get('@cp').its('visuals').eq(1).trigger('pointerdown', 3, 0, { force: true, pointerType: 'touch' })
+          .get('@cp').its('visuals').eq(1).trigger('pointermove', 0, -5, { force: true, pointerType: 'touch' })
+          .get('@cp').its('visuals').eq(1).trigger('pointermove', 3, 500, { force: true, pointerType: 'touch' })
+          .get('@cp').its('visuals').eq(1).trigger('pointermove', 3, 100, { force: true, pointerType: 'touch' })
+          .get('@cp').its('visuals').eq(1).trigger('pointerup', 3, 100, { force: true, pointerType: 'touch' })
+          .then(() => {
+            cy.wait(17)
+              .get('@cp').its('rgb').should('not.deep.equal', rgb);
+          })
       });
 
     cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}')
       .get('@cp').its('rgb').then((rgb) => {
-        cy.get('@cp').its('visuals').eq(1).trigger('touchstart', 0, 0, { force: true, touches: [{ pageX: 0, pageY: 0 }] })
-          .get('@cp').its('visuals').eq(1).trigger('touchmove', 0, -500, { force: true, touches: [{ pageX: 0, pageY: -500 }] })
-          .get('@cp').its('visuals').eq(1).trigger('touchmove', 0, 500, { force: true, touches: [{ pageX: 0, pageY: 500 }] })
-          .get('@cp').its('visuals').eq(1).trigger('touchmove', 0, 200, { force: true, touches: [{ pageX: 0, pageY: 200 }] })
-          .get('@cp').its('visuals').eq(1).trigger('touchend', 0, 100, { force: true, touches: [{ pageX: 0, pageY: 100 }] })
-          .wait(17)
-          .get('@cp').its('rgb').should('not.deep.equal', rgb);
+        cy.get('@cp').its('visuals').eq(2).trigger('pointerdown', 3, 0, { force: true, pointerType: 'touch' })
+          .get('@cp').its('visuals').eq(2).trigger('pointermove', 3, -5, { force: true, pointerType: 'touch' })
+          .get('@cp').its('visuals').eq(2).trigger('pointermove', 3, 200, { force: true, pointerType: 'touch' })
+          .get('@cp').its('visuals').eq(2).trigger('pointermove', 3, 500, { force: true, pointerType: 'touch' })
+          .get('@cp').its('visuals').eq(2).trigger('pointermove', 3, 100, { force: true, pointerType: 'touch' })
+          .get('@cp').its('visuals').eq(2).trigger('pointerup', 3, 100, { force: true, pointerType: 'touch' })
+          .then(() => {
+            cy.wait(17)
+            .get('@cp').its('rgb').should('not.deep.equal', rgb);
+          })
       });
-
-    cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}')
-      .get('@cp').its('rgb').then((rgb) => {
-      cy.get('@cp').its('visuals').eq(2).trigger('touchstart', 0, 0, { force: true, touches: [{ pageX: 0, pageY: 0 }] })
-        .get('@cp').its('visuals').eq(2).trigger('touchmove', 0, -500, { force: true, touches: [{ pageX: 0, pageY: -500 }] })
-        .get('@cp').its('visuals').eq(2).trigger('touchmove', 0, 500, { force: true, touches: [{ pageX: 0, pageY: 500 }] })
-        .get('@cp').its('visuals').eq(2).trigger('touchmove', 0, 200, { force: true, touches: [{ pageX: 0, pageY: 200 }] })
-        .get('@cp').its('visuals').eq(2).trigger('touchend', 0, 100, { force: true, touches: [{ pageX: 0, pageY: 100 }] })
-        .wait(17)
-        .get('@cp').its('rgb').should('not.deep.equal', rgb);
-    });
   });
-
 
   it('Test showing & hiding `colorPicker` / `presetsMenu`', function() {
     cy.get('@body').then((body) => {
@@ -249,7 +299,8 @@ describe('ColorPicker Class Test', () => {
       a.innerText = 'Some link';
       body.append(a);
       cy.wrap(a).as('a');
-      cy.get(`#color-picker-${id}`).then((input) => {
+      // cy.get(`#color-picker-${id}`).then((input) => {
+      cy.get('input').then((input) => {
         cy.wrap(input[0]).as('input');
       });
     });
@@ -272,7 +323,7 @@ describe('ColorPicker Class Test', () => {
       .get('@cp').its('colorPicker').should('have.class', 'show')
       .get('@cp').invoke('hide');
 
-    cy.wait(350);
+    cy.wait(17);
 
     cy.log('Testing `click` on `menuToggle`');
     cy.get('@cp').its('menuToggle').click()
@@ -315,7 +366,7 @@ describe('ColorPicker Class Test', () => {
       cy.get('@cp').its('colorPicker').should('have.class', 'show');
     });
 
-    cy.wait(350);
+    cy.wait(17);
 
     cy.log('Testing `focusout` on `input`');
     cy.get('@a').focus({force: true, timeout: 0 })
@@ -324,17 +375,17 @@ describe('ColorPicker Class Test', () => {
         cy.get('@cp').its('colorPicker').should('not.have.class', 'show')
       });
 
-    cy.wait(350);
+    cy.wait(17);
 
     cy.log('Testing `pointerup` on body while `colorPicker` is open');
     cy.get('@cp').invoke('togglePicker')
-      .wait(350)
+      .wait(17)
       .get('@body').click('topRight').then(() => {
         cy.wait(17);
         cy.get('@cp').its('colorPicker').should('not.have.class', 'show');
       });
 
-    cy.wait(350);
+    cy.wait(17);
     cy.log('Type in `transparent` and press `enter`');
     cy.get('@cp').its('input').focus().clear().type('transparent{enter}')
       .get('@cp').its('rgb').then(({r,g,b,a}) => {
@@ -348,7 +399,7 @@ describe('ColorPicker Class Test', () => {
       });
 
     cy.log('Type in an invalid value and press `enter`, should reset value')
-    cy.wait(350).get('@cp').invoke('showPicker')
+    cy.wait(17).get('@cp').invoke('showPicker')
       .get('@cp').its('input').focus().clear().type('wombat{enter}').then(() => {
         cy.get('@cp').its('value').should('not.equal', 'wombat');
       });
@@ -366,7 +417,7 @@ describe('ColorPicker Class Test', () => {
   });
 
 
-  it('Test `keyboard` and other event listeners', function() {
+  it('Test `keyboard` event listeners', function() {
     let value;
     cy.get('@body').then((body) => {
       const id = getRandomInt(0,999);
@@ -375,6 +426,7 @@ describe('ColorPicker Class Test', () => {
       ({value} = getMarkup(body, id, format));
 
       cy.get(`#color-picker-${id}`).then((input) => {
+      // cy.get('input').then((input) => {
         cy.wrap(input[0]).as('input');
       });
     });
@@ -402,11 +454,11 @@ describe('ColorPicker Class Test', () => {
       })
       .get('@cp').its('value').should('not.equal', 'hsl 0 0 100');
 
-    cy.wait(350);
+    cy.wait(17);
 
     cy.log('Testing `keyboard` events on `colorKeywords`');
     cy.get('@cp').invoke('toggleMenu');
-    cy.wait(350);
+    cy.wait(17);
     cy.get('.color-defaults li').eq(0).focus().trigger('keydown', { code: 'ArrowRight' }).then(() => {
       cy.get('.color-defaults li').eq(1).should('be.focused');        
     });
@@ -446,9 +498,9 @@ describe('ColorPicker Class Test', () => {
       cy.get('.color-options li').eq(0).should('be.focused');        
     });;
     cy.get('.color-options li').eq(0).focus().trigger('keydown', { code: 'ArrowDown' }).then(() => {
-      cy.get('.color-options li').eq(5).should('be.focused');        
+      cy.get('.color-options li').eq(10).should('be.focused');        
     });
-    cy.get('.color-options li').eq(5).trigger('keydown', { code: 'ArrowUp' }).then(() => {
+    cy.get('.color-options li').eq(10).trigger('keydown', { code: 'ArrowUp' }).then(() => {
       cy.get('.color-options li').eq(0).should('be.focused');        
     });;
 
@@ -480,28 +532,64 @@ describe('ColorPicker Class Test', () => {
       .get('@doc').trigger('keyup', { code: 'Escape' })
       .wait(17)
       .get('@cp').its('colorPicker').should('not.have.class', 'show');
-
-    cy.wait(350);
-
-    cy.log('Test repositioning dropdown on scroll');
-    cy.get('@win').scrollTo('top')
-      .get('@cp').invoke('togglePicker')
-      .get('@win').scrollTo('bottom').then(() => {
-        cy.get('@cp').its('colorPicker')
-          .should('have.class', 'top')
-          .and('not.have.class', 'bottom');
-      });
   });
 
 
-  it('Test controls', function() {
+  it('Test `scroll` event listeners', function() {
+    const id = getRandomInt(0,999);
+    const format = FORMAT[getRandomInt(0,3)];
+
+    cy.get('@body').should('exist').then((body) => {
+      // const win = body[0].ownerDocument.defaultView;
+      cy.log('Test repositioning dropdown on scroll');
+      if (body.length) {
+        getMarkup(body, id, format);
+      }
+    })
+    .get(`#color-picker-${id}`).should('exist').then((input) => {
+      if (!input.length || !input[0]) return;
+      const cp = new ColorPicker(input[0], {
+        colorKeywords: 'olive,green,red,:empty,transparent',
+        colorPresets: colorPresets,
+        colorLabels: colorNamesFrench,
+      });
+
+      cp.togglePicker();
+
+      cy.scrollTo('top')
+        .wait(100)
+        .then((win) => {
+          cy.log(`html.scrollY is expected to be 0`)
+          expect(win.scrollY).to.equal(0)
+    
+          expect(cp.colorPicker).to.not.have.class('bottom');
+          expect(cp.colorPicker).to.have.class('top');
+        })
+
+      // TO DO - validate a switch
+      // cy.scrollTo('bottom')
+      //   .wait(100)
+      //   .then((win) => {
+      //     cy.log(`html.scrollY is expected to not be 0`)
+      //     // cy.wait(200);
+      //     expect(win.scrollY).to.not.equal(0)
+
+      //     expect(cp.colorPicker).to.have.class('bottom');
+      //     expect(cp.colorPicker).to.not.have.class('top');
+      //   })
+    })
+  });
+
+
+  it('Test controls mouse & keyboard events', function() {
     cy.get('body').then((body) => {
       const id = getRandomInt(0,999);
       const format = FORMAT[getRandomInt(0,3)];
 
       getMarkup(body, id, format);
 
-      cy.get(`#color-picker-${id}`).then((input) => {
+      // cy.get(`#color-picker-${id}`).then((input) => {
+      cy.get('input').then((input) => {
         let cp;
         if (input.length) {
           cp = new ColorPicker(input[0], {
@@ -544,11 +632,11 @@ describe('ColorPicker Class Test', () => {
             const { width, height} = visual[0].getBoundingClientRect();
             
             cy.get('@cp').its('controlKnobs').eq(0)
-              .trigger('mousedown', { force: true })
-              .trigger('mousemove', -width, -height, { force: true })
-              .trigger('mousemove', -width - 100, -height - 100, { force: true })
-              .trigger('mousemove', 300, 300, { force: true })
-              .trigger('mousemove', -width + 50, -height + 50, { force: true })
+              .trigger('pointerdown', { force: true })
+              .trigger('pointermove', -width, -height, { force: true })
+              .trigger('pointermove', -width - 100, -height - 100, { force: true })
+              .trigger('pointermove', 300, 300, { force: true })
+              .trigger('pointermove', -width + 50, -height + 50, { force: true })
               .wait(17)
               .get('@cp').its('rgb').should('not.deep.equal', rgb);
           });
@@ -560,10 +648,10 @@ describe('ColorPicker Class Test', () => {
             const { width, height } = visual[0].getBoundingClientRect();
   
             cy.get('@cp').its('controlKnobs').eq(1)
-              .trigger('mousedown', { force: true })
-              .trigger('mousemove', width / 2, -height - 100, { force: true })
-              .trigger('mousemove', width / 2, 300, { force: true })
-              .trigger('mousemove', width / 2, -height + 20, { force: true })
+              .trigger('pointerdown', { force: true })
+              .trigger('pointermove', width / 2, -height - 100, { force: true })
+              .trigger('pointermove', width / 2, 300, { force: true })
+              .trigger('pointermove', width / 2, -height + 20, { force: true })
               .wait(17)
               .get('@cp').its('rgb').should('not.deep.equal', rgb);
             });
@@ -575,10 +663,10 @@ describe('ColorPicker Class Test', () => {
             const { width, height } = visual[0].getBoundingClientRect();
   
             cy.get('@cp').its('controlKnobs').eq(2)
-              .trigger('mousedown', { force: true })
-              .trigger('mousemove', width / 2, -height - 100, { force: true })
-              .trigger('mousemove', width / 2, 300, { force: true })
-              .trigger('mousemove', width / 2, -height + 20, { force: true })
+              .trigger('pointerdown', { force: true })
+              .trigger('pointermove', width / 2, -height - 100, { force: true })
+              .trigger('pointermove', width / 2, 300, { force: true })
+              .trigger('pointermove', width / 2, -height + 20, { force: true })
               .wait(17)
               .get('@cp').its('rgb').should('not.deep.equal', rgb);
             });
@@ -638,7 +726,8 @@ describe('ColorPicker Class Test', () => {
 
       getMarkup(body, id, format);
 
-      cy.get(`#color-picker-${id}`).then((input) => {
+      // cy.get(`#color-picker-${id}`).then((input) => {
+      cy.get('input').then((input) => {
         let cp;
         if (input.length) {
           cp = new ColorPicker(input[0], {
@@ -655,14 +744,14 @@ describe('ColorPicker Class Test', () => {
         .should('have.class', 'picker')
         .and('have.class', 'show');
       });
-      cy.wait(350);
+      cy.wait(17);
       cy.get('@cp').invoke('togglePicker').then(() => {
         cy.get('.color-dropdown')
         .should('have.class', 'picker')
         .and('not.have.class', 'show');
       });
       
-      cy.wait(350);
+      cy.wait(17);
 
       cy.log('Testing `toggleMenu`');
       cy.get('@cp').invoke('toggleMenu').then(() => {
@@ -670,14 +759,14 @@ describe('ColorPicker Class Test', () => {
         .should('have.class', 'menu')
         .and('have.class', 'show');
       });
-      cy.wait(350);
+      cy.wait(17);
       cy.get('@cp').invoke('toggleMenu').then(() => {
         cy.get('.color-dropdown')
         .should('have.class', 'menu')
         .and('not.have.class', 'show');
       });
 
-      cy.wait(350);
+      cy.wait(17);
 
       cy.log('Testing `showPicker`');
       cy.get('@cp').invoke('showPicker').then(() => {
@@ -686,7 +775,7 @@ describe('ColorPicker Class Test', () => {
         .and('have.class', 'show');
       });
 
-      cy.wait(350);
+      cy.wait(17);
 
       cy.log('Testing `hide`');
       cy.get('@cp').invoke('hide').then(() => {
@@ -694,7 +783,7 @@ describe('ColorPicker Class Test', () => {
         .and('not.have.class', 'show');
       });
 
-      cy.wait(350);
+      cy.wait(17);
 
       cy.log('Testing `dispose`');
       cy.get('@cp').invoke('dispose').then(() => {
@@ -706,45 +795,43 @@ describe('ColorPicker Class Test', () => {
     });
   });
 
-  it('Test color appearance and color luminance', function() {
-    cy.get('body').then((body) => {
+  it('Test color appearance and color luminance', () => {
+    const frenchColors = colorNamesFrench.split(',');
+
+    cy.get('@body').then((body) => {
       const id = getRandomInt(0,999);
       const format = FORMAT[getRandomInt(0,3)];
-      const frenchColors = colorNamesFrench.split(',');
 
       getMarkup(body, id, format);
 
-      cy.get(`#color-picker-${id}`).then(($input) => {
+      cy.get(`#color-picker-${id}`).then((input) => {
         let cp;
         
-        if ($input.length) {
-          const [input] = $input;
-          cp = new ColorPicker(input, {
+        if (input.length) {
+          cp = new ColorPicker(input[0], {
             colorKeywords: 'olive,green,red,transparent',
             colorPresets: colorPresets,
             colorLabels: colorNamesFrench,
           });
         }
         cy.wrap(cp).as('cp');
-      });
-      
-      cy.wait(200);
-
-      frenchColors.forEach((color) => {
-        const webcolor = colorNameValues[frenchColors.indexOf(color)];
-        cy.get('@cp').its('input').focus().clear().type(`${webcolor}`)
-          .get('@cp').its('isValid').should('be.true')
-          .get('@cp').its('input').type('{enter}')
-          .get('@cp').its('appearance').should('be.equal', color);
-
-        if (colorNames[frenchColors.indexOf(color)] === 'white') {
-          cy.get('@cp').its('luminance').should('be.greaterThan', 0.99);
-        } else {
-          cy.get('@cp').its('luminance').should('be.lessThan', 0.99);
-        }
-        cy.wait(17);
-      });      
+      })
     });
+
+    frenchColors.forEach((color) => {
+      const webcolor = colorNameValues[frenchColors.indexOf(color)];
+      cy.get('@cp').its('input').focus().clear().type(`${webcolor}`)
+        .get('@cp').its('isValid').should('be.true')
+        .get('@cp').its('input').type('{enter}')
+        .get('@cp').its('appearance').should('be.equal', color);
+
+      if (colorNames[frenchColors.indexOf(color)] === 'white') {
+        cy.get('@cp').its('luminance').should('be.greaterThan', 0.99);
+      } else {
+        cy.get('@cp').its('luminance').should('be.lessThan', 0.99);
+      }
+      cy.wait(17);
+    });      
   });
 
   FORMAT.forEach((format) => {
@@ -756,7 +843,8 @@ describe('ColorPicker Class Test', () => {
         // const value = 
         getMarkup(body, id, format);
   
-        cy.get(`#color-picker-${id}`).then(($input) => {
+        // cy.get(`#color-picker-${id}`).then(($input) => {
+        cy.get('input').then(($input) => {
           let cp;
           if ($input.length) {
             const [input] = $input;

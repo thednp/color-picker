@@ -17,7 +17,6 @@ import vHidden from './vHidden';
 import tabIndex from './tabindex';
 
 import Color from '../color';
-import ColorPalette from '../color-palette';
 
 /**
 * Generate HTML markup and update instance properties.
@@ -75,12 +74,12 @@ export default function setMarkup(self) {
     });
 
     // color presets
-    if ((colorPresets instanceof Array && colorPresets.length)
-      || (colorPresets instanceof ColorPalette && colorPresets.colors)) {
+    if (colorPresets) {
       presetsDropdown.append(getColorMenu(self, colorPresets, 'color-options'));
     }
 
     // explicit defaults [reset, initial, inherit, transparent, currentColor]
+    // also custom defaults [default: #069, complementary: #930]
     if (colorKeywords && colorKeywords.length) {
       presetsDropdown.append(getColorMenu(self, colorKeywords, 'color-defaults'));
     }
