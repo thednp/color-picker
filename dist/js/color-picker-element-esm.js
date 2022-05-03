@@ -1,5 +1,5 @@
 /*!
-* ColorPickerElement v1.0.0 (http://thednp.github.io/color-picker)
+* ColorPickerElement v1.0.1 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -1227,12 +1227,12 @@ const EventRegistry = {};
  */
 function globalListener(e) {
   const that = this;
-  const { type, target } = e;
+  const { type } = e;
 
   [...EventRegistry[type]].forEach((elementsMap) => {
     const [element, listenersMap] = elementsMap;
     /* istanbul ignore else */
-    if ([target, that].some((el) => element === el)) {
+    if (element === that) {
       [...listenersMap].forEach((listenerMap) => {
         const [listener, options] = listenerMap;
         listener.apply(element, [e]);
@@ -2373,7 +2373,7 @@ function setMarkup(self) {
   setAttribute(input, tabIndex, '-1');
 }
 
-var version = "1.0.0";
+var version = "1.0.1";
 
 // @ts-ignore
 

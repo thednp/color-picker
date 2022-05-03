@@ -335,12 +335,6 @@ declare module "color-picker/src/js/color-picker" {
         /** Shows the `ColorPicker` dropdown. */
         showPicker(): void;
         /**
-         * The `Space` & `Enter` keys specific event listener.
-         * Toggle visibility of the `ColorPicker` / the presets menu, showing one will hide the other.
-         * @param {KeyboardEvent} e
-         * @this {ColorPicker}
-         */
-        /**
          * Toggle the `ColorPicker` dropdown visibility.
          * @param {Event=} e
          * @this {ColorPicker}
@@ -366,21 +360,21 @@ declare module "color-picker/src/js/color-picker" {
         menuKeyHandler(this: ColorPicker, e: KeyboardEvent): void;
         /**
          * The `ColorPicker` *touchstart* / *mousedown* events listener for control knobs.
-         * @param {TouchEvent} e
+         * @param {PointerEvent} e
          * @this {ColorPicker}
          */
-        pointerDown(this: ColorPicker, e: TouchEvent): void;
+        pointerDown(this: ColorPicker, e: PointerEvent): void;
         /**
          * The `ColorPicker` *touchmove* / *mousemove* events listener for control knobs.
-         * @param {TouchEvent} e
+         * @param {PointerEvent} e
          */
-        pointerMove(e: TouchEvent): void;
+        pointerMove(e: PointerEvent): void;
         /**
          * The `ColorPicker` *touchend* / *mouseup* events listener for control knobs.
-         * @param {TouchEvent} e
+         * @param {PointerEvent} e
          * @this {ColorPicker}
          */
-        pointerUp(this: ColorPicker, { target }: TouchEvent): void;
+        pointerUp(this: ColorPicker, { target }: PointerEvent): void;
         /**
          * Updates `ColorPicker` control positions on:
          * * initialization
@@ -508,14 +502,34 @@ declare module "color-picker/src/js/color-picker" {
     import ColorPalette from "color-picker/src/js/color-palette";
     import Color from "color-picker/src/js/color";
 }
+declare module "color-picker/src/js/util/toggleCEAttr" {
+    /**
+     * A small utility to toggle `ColorPickerElement` attributes
+     * when `connectedCallback` or `disconnectedCallback` methods
+     * are called and helps the instance keep its value and settings instact.
+     *
+     * @param {CP.ColorPickerElement} self ColorPickerElement instance
+     * @param {Function=} callback when `true`, attributes are added
+     *
+     * @example
+     * const attributes = [
+     *   // essentials
+     *   'value', 'format',
+     *   // presets menus
+     *   'color-presets', 'color-keywords',
+     *   // labels
+     *   'color-labels', 'component-labels',
+     * ];
+     */
+    export default function toggleCEAttr(self: CP.ColorPickerElement, callback?: Function | undefined): void;
+}
 declare module "color-picker/src/js/color-picker-element" {
     export default ColorPickerElement;
     /**
      * `ColorPickerElement` Web Component.
      * @example
      * <label for="UNIQUE_ID">Label</label>
-     * <color-picker>
-     *   <input id="UNIQUE_ID" value="red" format="hex" class="color-preview btn-appearance">
+     * <color-picker data-id="UNIQUE_ID" data-value="red" data-format="hex">
      * </color-picker>
      * // or
      * <label for="UNIQUE_ID">Label</label>

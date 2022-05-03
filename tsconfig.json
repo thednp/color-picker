@@ -14,7 +14,8 @@
   },
   "files": [
     "types/index.d.ts",
-    "types/cp.d.ts",
-    "types/source/types.d.ts", // comment before generate
+    "types/cp.d.ts", // comment before generate
+    "types/source/types.d.ts", // comment before generate, delete file
+    // "types/source/source.ts", // comment after generate
   ]
 }

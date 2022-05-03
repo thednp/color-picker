@@ -129,7 +129,7 @@ color-picker:focus,
 }
 .txt-light .color-preview:focus {
   color: var(--black-75);
-  box-shadow: 0 0 0 1px var(--black-50) inset, 0 0 0 3px var(--black-15);
+  box-shadow: 0 0 0 1px #000 inset, 0 0 0 3px var(--black-15);
 }
 .txt-light .color-preview::placeholder {
   color: var(--black-50);

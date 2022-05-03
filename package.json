@@ -1,6 +1,6 @@
 {
   "name": "@thednp/color-picker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Modern Color Picker Web Component",
   "main": "dist/js/color-picker.min.js",
   "module": "dist/js/color-picker.esm.js",
@@ -75,7 +75,7 @@
   },
   "homepage": "http://thednp.github.io/color-picker",
   "dependencies": {
-    "@thednp/event-listener": "^1.0.2",
+    "@thednp/event-listener": "^1.0.3",
     "shorter-js": "^0.3.4"
   },
   "devDependencies": {

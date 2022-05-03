@@ -1,5 +1,5 @@
 /*!
-* ColorPicker v1.0.0 (http://thednp.github.io/color-picker)
+* ColorPicker v1.0.1 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -149,7 +149,7 @@ color-picker:focus,
 
 .txt-light .color-preview:focus {
   color: var(--black-75);
-  box-shadow: 0 0 0 1px var(--black-50) inset, 0 0 0 3px var(--black-15);
+  box-shadow: 0 0 0 1px #000 inset, 0 0 0 3px var(--black-15);
 }
 
 .txt-light .color-preview::placeholder {

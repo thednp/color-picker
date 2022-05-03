@@ -43,6 +43,3 @@ declare module "@thednp/color-picker/src/js/color-picker" {
 declare module "@thednp/color-picker/src/js/color-picker-element" {
   export default ColorPickerElement;
 }
-
-export * as SHORTER from "shorter-js";
-export * as EventListener from "@thednp/event-listener";
