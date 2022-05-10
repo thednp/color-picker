@@ -1,5 +1,5 @@
 /*!
-* ColorPicker v1.0.2 (http://thednp.github.io/color-picker)
+* ColorPicker v1.0.1 (http://thednp.github.io/color-picker)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
 */
@@ -2373,7 +2373,7 @@ function setMarkup(self) {
   setAttribute(input, tabIndex, '-1');
 }
 
-var version = "1.0.2";
+var version = "1.0.1";
 
 const Version = version;
 
