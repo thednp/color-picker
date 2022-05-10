@@ -1,4 +1,3 @@
-// @ts-ignore
 import { version } from '../../package.json';
 
 const Version = version;
