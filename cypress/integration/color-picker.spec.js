@@ -229,14 +229,8 @@ describe('ColorPicker Class Test', () => {
       const format = FORMAT[getRandomInt(0,3)];
 
       getMarkup(body, id, format);
-      
-      cy.log('fake touch event support');
-      if (body[0]) {
-        body[0].ownerDocument.ontouchstart = () => {};
-      }
 
       cy.get(`#color-picker-${id}`).then((input) => {
-        // .get(`input`).then((input) => {
           let cp;
           if (input.length) {
             cp = new ColorPicker(input[0]);
@@ -248,11 +242,12 @@ describe('ColorPicker Class Test', () => {
     cy.log('Testing touch event listeners on `visuals`');
     cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}')
       .get('@cp').its('rgb').then((rgb) => {
-        cy.get('@cp').its('visuals').eq(0).trigger('pointerdown', 0, 0, { force: true, pointerType: 'touch' })
-          .get('@cp').its('visuals').eq(0).trigger('pointermove', -5, -5, { force: true, pointerType: 'touch' })
-          .get('@cp').its('visuals').eq(0).trigger('pointermove', 500, 500, { force: true, pointerType: 'touch' })
-          .get('@cp').its('visuals').eq(0).trigger('pointermove', 100, 100, { force: true, pointerType: 'touch' })
-          .get('@cp').its('visuals').eq(0).trigger('pointerup', 100, 100, { force: true, pointerType: 'touch' })
+        cy.get('@cp').its('visuals').eq(0)
+          .trigger('pointerdown', 0, 0, { force: true, pointerType: 'touch' })
+          .trigger('pointermove', -5, -5, { force: true, pointerType: 'touch' })
+          .trigger('pointermove', 500, 500, { force: true, pointerType: 'touch' })
+          .trigger('pointermove', 100, 100, { force: true, pointerType: 'touch' })
+          .trigger('pointerup', 100, 100, { force: true, pointerType: 'touch' })
           .then(() => {
             cy.wait(17)
               .get('@cp').its('rgb').should('not.deep.equal', rgb);
@@ -261,11 +256,12 @@ describe('ColorPicker Class Test', () => {
   
     cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}')
       .get('@cp').its('rgb').then((rgb) => {
-        cy.get('@cp').its('visuals').eq(1).trigger('pointerdown', 3, 0, { force: true, pointerType: 'touch' })
-          .get('@cp').its('visuals').eq(1).trigger('pointermove', 0, -5, { force: true, pointerType: 'touch' })
-          .get('@cp').its('visuals').eq(1).trigger('pointermove', 3, 500, { force: true, pointerType: 'touch' })
-          .get('@cp').its('visuals').eq(1).trigger('pointermove', 3, 100, { force: true, pointerType: 'touch' })
-          .get('@cp').its('visuals').eq(1).trigger('pointerup', 3, 100, { force: true, pointerType: 'touch' })
+        cy.get('@cp').its('visuals').eq(1)
+          .trigger('pointerdown', 3, 0, { force: true, pointerType: 'touch' })
+          .trigger('pointermove', 0, -5, { force: true, pointerType: 'touch' })
+          .trigger('pointermove', 3, 500, { force: true, pointerType: 'touch' })
+          .trigger('pointermove', 3, 100, { force: true, pointerType: 'touch' })
+          .trigger('pointerup', 3, 100, { force: true, pointerType: 'touch' })
           .then(() => {
             cy.wait(17)
               .get('@cp').its('rgb').should('not.deep.equal', rgb);
@@ -274,12 +270,13 @@ describe('ColorPicker Class Test', () => {
 
     cy.get('@cp').its('input').focus().clear().type('hsl 0 100 50{enter}')
       .get('@cp').its('rgb').then((rgb) => {
-        cy.get('@cp').its('visuals').eq(2).trigger('pointerdown', 3, 0, { force: true, pointerType: 'touch' })
-          .get('@cp').its('visuals').eq(2).trigger('pointermove', 3, -5, { force: true, pointerType: 'touch' })
-          .get('@cp').its('visuals').eq(2).trigger('pointermove', 3, 200, { force: true, pointerType: 'touch' })
-          .get('@cp').its('visuals').eq(2).trigger('pointermove', 3, 500, { force: true, pointerType: 'touch' })
-          .get('@cp').its('visuals').eq(2).trigger('pointermove', 3, 100, { force: true, pointerType: 'touch' })
-          .get('@cp').its('visuals').eq(2).trigger('pointerup', 3, 100, { force: true, pointerType: 'touch' })
+        cy.get('@cp').its('visuals').eq(2)
+          .trigger('pointerdown', 3, 0, { force: true, pointerType: 'touch' })
+          .trigger('pointermove', 3, -5, { force: true, pointerType: 'touch' })
+          .trigger('pointermove', 3, 200, { force: true, pointerType: 'touch' })
+          .trigger('pointermove', 3, 500, { force: true, pointerType: 'touch' })
+          .trigger('pointermove', 3, 100, { force: true, pointerType: 'touch' })
+          .trigger('pointerup', 3, 100, { force: true, pointerType: 'touch' })
           .then(() => {
             cy.wait(17)
             .get('@cp').its('rgb').should('not.deep.equal', rgb);
@@ -471,7 +468,7 @@ describe('ColorPicker Class Test', () => {
     });
     cy.get('.color-defaults li').eq(1).trigger('keydown', { code: 'ArrowUp' }).then(() => {
       cy.get('.color-defaults li').eq(0).should('be.focused');        
-    });;
+    });
     cy.log('set a color keyword as active');
     cy.get('@cp').its('value').then((value) => {
       cy.get('.color-defaults li').eq(0).trigger('keydown', { code: 'Enter' }).then(() => {
