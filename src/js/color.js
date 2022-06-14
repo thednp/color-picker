@@ -640,7 +640,7 @@ function inputToRGB(input) {
       format = 'hwb';
     }
     if (isValidCSSUnit(color.a)) {
-      a = color.a; // @ts-ignore -- `parseFloat` works with numbers too
+      a = color.a;
       a = isPercentage(`${a}`) || parseFloat(a) > 1 ? bound01(a, 100) : a;
     }
   }
@@ -651,9 +651,6 @@ function inputToRGB(input) {
   return {
     ok,
     format,
-    // r: Math.min(255, Math.max(rgb.r, 0)),
-    // g: Math.min(255, Math.max(rgb.g, 0)),
-    // b: Math.min(255, Math.max(rgb.b, 0)),
     r: rgb.r,
     g: rgb.g,
     b: rgb.b,

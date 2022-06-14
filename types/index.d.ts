@@ -18,7 +18,6 @@ export {
   InitCallback,
 } from './source/types';
 
-import './cp';
 import { default as Color } from "color-picker/src/js/color";
 import { default as ColorPalette } from "color-picker/src/js/color-palette";
 import { default as ColorPicker } from "color-picker/src/js/color-picker";

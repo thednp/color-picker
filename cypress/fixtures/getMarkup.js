@@ -2,7 +2,7 @@ import testSample from "./testSample";
 import getRandomInt from "./getRandomInt";
 
 export default function getMarkup(body, id, format) {
-  const set = testSample[getRandomInt(0,3)]
+  const set = testSample[getRandomInt(0,3)];
   const value = set[format];
 
   const label = document.createElement('label');

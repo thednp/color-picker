@@ -62,13 +62,10 @@ class ColorPickerElement extends HTMLElement {
     self.append(input);
 
     /** @type {HTMLInputElement} */
-    // @ts-ignore - `HTMLInputElement` is `HTMLElement`
     self.input = input;
 
-    // @ts-ignore - `HTMLInputElement` is `HTMLElement`
     self.colorPicker = new ColorPicker(input);
 
-    // @ts-ignore - `shadowRoot` is defined in the constructor
     self.shadowRoot.append(createElement('slot'));
 
     // remove Attributes
@@ -100,7 +97,7 @@ class ColorPickerElement extends HTMLElement {
 ObjectAssign(ColorPickerElement, {
   Color,
   ColorPicker,
-  ColorPalette, // @ts-ignore
+  ColorPalette,
   getInstance: ColorPicker.getInstance,
   Version,
 });

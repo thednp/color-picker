@@ -1353,7 +1353,7 @@ function inputToRGB(input) {
       format = 'hwb';
     }
     if (isValidCSSUnit(color.a)) {
-      a = color.a; // @ts-ignore -- `parseFloat` works with numbers too
+      a = color.a;
       a = isPercentage(`${a}`) || parseFloat(a) > 1 ? bound01(a, 100) : a;
     }
   }
@@ -1364,9 +1364,6 @@ function inputToRGB(input) {
   return {
     ok,
     format,
-    // r: Math.min(255, Math.max(rgb.r, 0)),
-    // g: Math.min(255, Math.max(rgb.g, 0)),
-    // b: Math.min(255, Math.max(rgb.b, 0)),
     r: rgb.r,
     g: rgb.g,
     b: rgb.b,
@@ -2428,15 +2425,12 @@ function toggleEventsOnShown(self, action) {
   const fn = action ? addListener : removeListener;
   const { input, colorMenu, parent } = self;
   const doc = getDocument(input);
-  // const win = getWindow(input);
   const win = doc.defaultView;
 
   fn(self.controls, pointerdownEvent, self.pointerDown);
   self.controlKnobs.forEach((x) => fn(x, keydownEvent, self.handleKnobs));
 
-  // @ts-ignore -- this is `Window`
   fn(win, scrollEvent, self.handleScroll);
-  // @ts-ignore -- this is `Window`
   fn(win, resizeEvent, self.update);
 
   [input, ...self.inputs].forEach((x) => fn(x, changeEvent, self.changeHandler));
@@ -2530,7 +2524,6 @@ class ColorPicker {
   constructor(target, config) {
     const self = this;
     /** @type {HTMLInputElement} */
-    // @ts-ignore
     const input = querySelector(target);
 
     // invalidate
@@ -2541,7 +2534,6 @@ class ColorPicker {
     if (!parent) throw new TypeError('ColorPicker requires a specific markup to work.');
 
     /** @type {HTMLElement} */
-    // @ts-ignore
     self.parent = parent;
 
     /** @type {number} */
@@ -2635,26 +2627,20 @@ class ColorPicker {
     const [colorPicker, colorMenu] = getElementsByClassName('color-dropdown', parent);
     // set main elements
     /** @type {HTMLElement} */
-    // @ts-ignore
     self.pickerToggle = querySelector('.picker-toggle', parent);
     /** @type {HTMLElement} */
-    // @ts-ignore
     self.menuToggle = querySelector('.menu-toggle', parent);
     /** @type {HTMLElement} */
-    // @ts-ignore
     self.colorPicker = colorPicker;
     /** @type {HTMLElement} */
-    // @ts-ignore
     self.colorMenu = colorMenu;
     /** @type {HTMLInputElement[]} */
-    // @ts-ignore
     self.inputs = [...getElementsByClassName('color-input', parent)];
     const [controls] = getElementsByClassName('color-controls', parent);
     self.controls = controls;
     /** @type {(HTMLElement | Element)[]} */
     self.controlKnobs = [...getElementsByClassName('knob', controls)];
     /** @type {(HTMLElement)[]} */
-    // @ts-ignore
     self.visuals = [...getElementsByClassName('visual-control', controls)];
 
     // update colour picker controls, inputs and visuals
@@ -2807,7 +2793,6 @@ class ColorPicker {
    * @this {ColorPicker}
    */
   handleFocusOut({ relatedTarget }) {
-    // @ts-ignore
     if (relatedTarget && !this.parent.contains(relatedTarget)) {
       this.hide(true);
     }
@@ -2851,7 +2836,6 @@ class ColorPicker {
    */
   menuKeyHandler(e) {
     const { target, code } = e;
-    // @ts-ignore
     const { previousElementSibling, nextElementSibling, parentElement } = target;
     const isColorOptionsMenu = parentElement && hasClass(parentElement, 'color-options');
     const allSiblings = [...parentElement.children];
@@ -2890,20 +2874,20 @@ class ColorPicker {
 
   /**
    * The `ColorPicker` click event listener for the colour menu presets / defaults.
-   * @param {Partial<Event>} e
+   * @param {Event} e
    * @this {ColorPicker}
    */
   menuClickHandler(e) {
     const self = this;
-    /** @type {*} */
     const { target } = e;
     const { colorMenu } = self;
     const newOption = (getAttribute(target, 'data-value') || '').trim();
     // invalidate for targets other than color options
     if (!newOption.length) return;
     const currentActive = querySelector('li.active', colorMenu);
-    let newColor = nonColors.includes(newOption) ? 'white' : newOption;
-    newColor = newOption === 'transparent' ? 'rgba(0,0,0,0)' : newOption;
+    let newColor = newOption;
+    newColor = nonColors.includes(newColor) ? 'white' : newColor;
+    newColor = newColor === 'transparent' ? 'rgba(0,0,0,0)' : newColor;
 
     const {
       r, g, b, a,

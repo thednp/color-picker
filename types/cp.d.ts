@@ -348,10 +348,10 @@ declare module "color-picker/src/js/color-picker" {
         toggleMenu(this: ColorPicker, e?: Event | undefined): void;
         /**
          * The `ColorPicker` click event listener for the colour menu presets / defaults.
-         * @param {Partial<Event>} e
+         * @param {Event} e
          * @this {ColorPicker}
          */
-        menuClickHandler(this: ColorPicker, e: Partial<Event>): void;
+        menuClickHandler(this: ColorPicker, e: Event): void;
         /**
          * The `ColorPicker` keyboard event listener for menu navigation.
          * @param {KeyboardEvent} e
@@ -416,7 +416,7 @@ declare module "color-picker/src/js/color-picker" {
         colorMenu: HTMLElement;
         /** @type {HTMLInputElement[]} */
         inputs: HTMLInputElement[];
-        controls: Element | HTMLElement;
+        controls: any;
         /** @type {(HTMLElement | Element)[]} */
         controlKnobs: (HTMLElement | Element)[];
         /** @type {(HTMLElement)[]} */
