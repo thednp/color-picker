@@ -1,19 +1,21 @@
-# ColorPicker [![Coverage Status](https://coveralls.io/repos/github/thednp/color-picker/badge.svg?branch=main)](https://coveralls.io/github/thednp/color-picker?branch=main) ![cypress version](https://img.shields.io/badge/cypress-9.6.1-brightgreen) ![typescript version](https://img.shields.io/badge/typescript-4.5.2-brightgreen) [![ci](https://github.com/thednp/color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/color-picker/actions/workflows/ci.yml)
+## ColorPicker
+[![Coverage Status](https://coveralls.io/repos/github/thednp/color-picker/badge.svg)](https://coveralls.io/github/thednp/color-picker)
+[![ci](https://github.com/thednp/color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/color-picker/actions/workflows/ci.yml)
+[![NPM Version](https://img.shields.io/npm/v/@thednp/color-picker.svg)](https://www.npmjs.com/package/@thednp/color-picker)
+[![NPM Downloads](https://img.shields.io/npm/dm/@thednp/color-picker.svg)](http://npm-stat.com/charts.html?package=@thednp/color-picker)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/@thednp/color-picker)](https://bundlephobia.com/package/@thednp/color-picker)
+[![jsDeliver](https://data.jsdelivr.com/v1/package/npm/@thednp/color-picker/badge)](https://www.jsdelivr.com/package/npm/@thednp/color-picker)
+![cypress version](https://img.shields.io/badge/cypress-9.6.1-brightgreen)
+![typescript version](https://img.shields.io/badge/typescript-4.5.2-brightgreen)
 
-The feature rich **ColorPicker** component for the modern web built with TypeScript definitions, WAI-ARIA compliant and lots of goodies. In addition, it features its own version of [TinyColor](https://github.com/bgrins/TinyColor) called simply `Color`.
+The feature rich **ColorPicker** component for the modern web built with TypeScript definitions, Cypress tested, WAI-ARIA compliant and lots of goodies. In addition, it features its own version of [TinyColor](https://github.com/bgrins/TinyColor) called simply `Color`.
+
+**ColorPicker** can use existing colour palettes or generate custom ones via DATA API configuration. If you want to play, check out [this codepen](https://codepen.io/thednp/pen/WNdRWPN) I've setup for you. Have fun!
 
 [![image](./docs/img/color-picker.png)](http://thednp.github.io/color-picker)
 
 
-[![NPM Version](https://img.shields.io/npm/v/@thednp/color-picker.svg?style=flat-square)](https://www.npmjs.com/package/@thednp/color-picker)
-[![NPM Downloads](https://img.shields.io/npm/dm/@thednp/color-picker.svg?style=flat-square)](http://npm-stat.com/charts.html?package=@thednp/color-picker)
-[![Bundle Size](https://img.shields.io/bundlephobia/minzip/@thednp/color-picker?style=flat-square)](https://bundlephobia.com/package/@thednp/color-picker)
-[![jsDeliver](https://data.jsdelivr.com/v1/package/npm/@thednp/color-picker/badge)](https://www.jsdelivr.com/package/npm/@thednp/color-picker)
-
-**ColorPicker** can use existing colour palettes or generate custom ones via DATA API configuration. If you want to play, check out [this codepen](https://codepen.io/thednp/pen/WNdRWPN) I've setup for you. Have fun!
-
-
-# Highlights
+## Highlights
 * Accessibility Focus for WAI-ARIA compliance
 * ES6+ sources with TypeScript definitions
 * Framework agnostic and flexible design
@@ -24,7 +26,8 @@ The feature rich **ColorPicker** component for the modern web built with TypeScr
 * Right To Left Languages Supported
 * light footprint, `10kb` in size when minified and gZipped
 
-# Wiki
+
+## Wiki
 For an in depth guide on all things **ColorPicker**, check out the wiki pages:
 * [Home](https://github.com/thednp/color-picker/wiki) - the **ColorPicker** wiki home.
 * [NPM](https://github.com/thednp/color-picker/wiki/NPM) - quick installation guide.
@@ -33,16 +36,15 @@ For an in depth guide on all things **ColorPicker**, check out the wiki pages:
 * [ES6+](https://github.com/thednp/color-picker/wiki/ES6) - your usual quick ES6+ guide.
 * [Node.js](https://github.com/thednp/color-picker/wiki/Node.js) - is this a thing?
 
-**Note** - the wiki pages are still under construction.
 
-# NPM
+## NPM
 You can install **ColorPicker** through NPM:
 
 ```
 $ npm install @thednp/color-picker
 ```
 
-# Browser Usage
+## Browser Usage
 Download the [latest package](https://github.com/thednp/color-picker/archive/master.zip). unpack and inspect the contents. You need to copy the `color-picker.js` and `color-picker.css` or their minified variations to your app `assets` folders as follows.
 Link the required CSS in your document `<head>` tag
 ```html
@@ -90,14 +92,14 @@ Alternatively you can use the `ColorPickerElement` custom element, the `data-fun
 As shown in the above example, all DATA API attributes for instance configuration are to be used on your **custom element**.
 
 
-# Initialize INPUT
+## Initialize INPUT
 ```javascript
 import ColorPicker from '@thednp/color-picker';
 
-let myPicker = new ColorPicker('#myPicker');
+const myPicker = new ColorPicker('#myPicker');
 ```
 
-# Initialize Custom Element
+## Initialize Custom Element
 ```javascript
 import ColorPickerElement from '@thednp/color-picker/src/color-picker-element';
 
@@ -116,7 +118,7 @@ document.body.append(myPicker);
 Other configuration options apply, see [the API Guide](https://github.com/thednp/color-picker/wiki/API).
 
 
-# Thanks
+## Thanks
 * Dimitris Grammatikogiannis for his [initial project](https://codepen.io/dgrammatiko/pen/zLvXwR) as well as testing and contributions
 * Serhii Kulykov for his [Vanilla Colorful](https://github.com/web-padawan/vanilla-colorful)
 * Brian Grinstead for his [TinyColor](https://github.com/bgrins/TinyColor)
@@ -125,5 +127,5 @@ Other configuration options apply, see [the API Guide](https://github.com/thednp
 * Ștefan Petre at eyecon for his [colorPicker](https://www.eyecon.ro/colorpicker/)
 * Brian Teeman for his [patience](https://github.com/joomla/joomla-cms/pull/35639)
 
-# License
+## License
 **ColorPicker** is released under the [MIT License](https://github.com/thednp/color-picker/blob/master/LICENSE).
