@@ -5,7 +5,7 @@
 [![NPM Downloads](https://img.shields.io/npm/dm/@thednp/color-picker.svg)](http://npm-stat.com/charts.html?package=@thednp/color-picker)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@thednp/color-picker)](https://bundlephobia.com/package/@thednp/color-picker)
 [![jsDeliver](https://data.jsdelivr.com/v1/package/npm/@thednp/color-picker/badge)](https://www.jsdelivr.com/package/npm/@thednp/color-picker)
-![cypress version](https://img.shields.io/badge/cypress-9.6.1-brightgreen)
+![cypress version](https://img.shields.io/badge/cypress-9.7.0-brightgreen)
 ![typescript version](https://img.shields.io/badge/typescript-4.5.2-brightgreen)
 
 The feature rich **ColorPicker** component for the modern web built with TypeScript definitions, Cypress tested, WAI-ARIA compliant and lots of goodies. In addition, it features its own version of [TinyColor](https://github.com/bgrins/TinyColor) called simply `Color`.
