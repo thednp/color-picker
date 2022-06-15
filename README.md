@@ -3,7 +3,7 @@
 [![ci](https://github.com/thednp/color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/color-picker/actions/workflows/ci.yml)
 [![NPM Version](https://img.shields.io/npm/v/@thednp/color-picker.svg)](https://www.npmjs.com/package/@thednp/color-picker)
 [![NPM Downloads](https://img.shields.io/npm/dm/@thednp/color-picker.svg)](http://npm-stat.com/charts.html?package=@thednp/color-picker)
-[![jsDeliver](https://img.shields.io/jsdelivr/npm/hw/@thednp/color-picker/badge)](https://www.jsdelivr.com/package/npm/@thednp/color-picker)
+[![jsDeliver](https://img.shields.io/jsdelivr/npm/hw/@thednp/color-picker)](https://www.jsdelivr.com/package/npm/@thednp/color-picker)
 ![cypress version](https://img.shields.io/badge/cypress-9.7.0-brightgreen)
 ![typescript version](https://img.shields.io/badge/typescript-4.5.2-brightgreen)
 
