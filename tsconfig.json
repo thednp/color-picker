@@ -1,21 +1,29 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "moduleResolution": "Node",
-    "declaration": true,
-    "resolveJsonModule": true,
-    "emitDeclarationOnly": true,
-    "strict": true,
-    "allowJs": true,
-    "checkJs": true,
-    "rootDir": "../",
-    "outDir": "types",
-    // "outFile": "types/cp.d.ts", // comment after generate
-  },
-  "files": [
-    "types/index.d.ts",
-    "types/cp.d.ts", // comment before generate
-    "types/source/types.d.ts", // comment before generate, delete file
-    // "types/source/source.ts", // comment after generate
-  ]
+  // https://janessagarrow.com/blog/typescript-and-esbuild/
+ "compilerOptions": {
+   "lib": ["DOM", "ESNext", "DOM.Iterable"],
+   "types": ["vite", "vite/client", "cypress", "@thednp/shorty", "@thednp/event-listener", "@thednp/color"],
+   "rootDir": "./",
+   "baseUrl": "./",
+   "module": "ESNext",
+   "target": "ESNext",
+   "moduleResolution": "Node",
+   "allowJs": true,
+   "forceConsistentCasingInFileNames": true,
+   "useDefineForClassFields": true,
+   "strict": true,
+   "sourceMap": true,
+   "resolveJsonModule": true,
+   "esModuleInterop": true,
+   "isolatedModules": true,
+   "noUnusedLocals": true,
+   "noUnusedParameters": true,
+   "noImplicitReturns": true,
+   "removeComments": false,
+   "allowSyntheticDefaultImports": true,
+   "noEmit": true,
+   "skipLibCheck": true // allows dts-bundle-generator to import from package.json
+ },
+ "include": ["src/*", "src/**/*"],
+ "exclude": ["node_modules", "experiments", "coverage", "dist"],
 }

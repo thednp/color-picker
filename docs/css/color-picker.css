@@ -1,10 +1,9 @@
 /*!
-* ColorPicker v1.0.1 (http://thednp.github.io/color-picker)
-* Copyright 2022 © thednp
-* Licensed under MIT (https://github.com/thednp/color-picker/blob/master/LICENSE)
+* ColorPicker v2.0.0-alpha1 (http://thednp.github.io/color-picker)
+* Copyright 2023 © thednp
+* Licensed under MIT (MIT/blob/main/LICENSE)
 */
 /* :host */
-color-picker,
 .color-picker {
   position: relative;
   display: flex;
@@ -42,7 +41,6 @@ color-picker,
   --visual-shadow: 0 0 0 1px var(--white-15) inset;
 }
 
-color-picker:focus,
 .color-picker:focus {
   outline: none;
 }
@@ -69,6 +67,7 @@ color-picker:focus,
 
 .color-dropdown.menu {
   right: 0;
+  max-height: 230px;
 }
 
 .open .color-dropdown.top {
@@ -127,8 +126,7 @@ color-picker:focus,
 /* color-preview */
 .color-preview {
   box-shadow: 0 0 0 1px rgba(120, 120, 120, 0.33) inset;
-  direction: ltr;
-  /* color value can never be rtl */
+  direction: ltr; /* color value can never be rtl */
 }
 
 .txt-dark .color-preview {
@@ -188,8 +186,6 @@ color-picker:focus,
 .txt-light .menu-toggle {
   background: var(--black-50);
 }
-
-.txt-light .menu-toggle:focus,
 .txt-light .menu-toggle:focus {
   background: var(--black-75);
 }
@@ -197,8 +193,6 @@ color-picker:focus,
 .txt-dark .menu-toggle {
   background: var(--white-33);
 }
-
-.txt-dark .menu-toggle:focus,
 .txt-dark .menu-toggle:focus {
   background: var(--white-50);
 }
@@ -241,8 +235,7 @@ color-picker:focus,
 /* color-defaults */
 .color-defaults {
   display: none;
-  flex-wrap: wrap;
-  flex-flow: column;
+  flex-flow: column wrap;
   margin: 0;
   list-style: none;
   padding-inline: 0;
@@ -251,10 +244,6 @@ color-picker:focus,
 .color-dropdown.menu .color-defaults,
 .color-dropdown.picker .color-controls {
   display: flex;
-}
-
-.color-dropdown.menu {
-  max-height: 230px;
 }
 
 .color-defaults .color-option {
@@ -311,8 +300,7 @@ color-picker:focus,
 }
 
 .multiline + .color-defaults {
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
 }
 .multiline + .color-defaults .color-option {
   padding: 0.25rem 0.33rem;
@@ -326,10 +314,9 @@ color-picker:focus,
   overflow: hidden;
   text-indent: 2.1rem;
 }
-
-.color-options .color-option:active,
-.color-options .color-option:focus {
+.color-options .color-option:active, .color-options .color-option:focus {
   outline: none;
+  box-shadow: 0 0 0 4px rgba(125, 125, 125, 0.75) inset;
 }
 
 .color-options .color-option::before {
@@ -348,12 +335,7 @@ color-picker:focus,
   mix-blend-mode: difference;
 }
 
-.color-options .color-option:active,
-.color-options .color-option:focus {
-  box-shadow: 0 0 0 4px rgba(125, 125, 125, 0.75) inset;
-}
-
-.color-options .color-option.active:after {
+.color-options .color-option.active::after {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -364,19 +346,18 @@ color-picker:focus,
   border-radius: 4px;
 }
 
-.txt-dark .color-options .color-option.active:after {
+.txt-dark .color-options .color-option.active::after {
   box-shadow: 0 0 0 4px var(--white-90);
 }
 
-.txt-light .color-options .color-option.active:after {
+.txt-light .color-options .color-option.active::after {
   box-shadow: 0 0 0 4px var(--black-90);
 }
 
 /* color-form */
 .color-form {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
   align-items: center;
   padding: 0.25rem 0 0;
   font: 12px sans-serif;
@@ -439,7 +420,6 @@ color-picker:focus,
   .visual-control {
     height: 230px;
   }
-
   .visual-control1 {
     width: 230px;
   }
@@ -448,7 +428,6 @@ color-picker:focus,
   .visual-control {
     height: 300px;
   }
-
   .visual-control1 {
     width: 300px;
   }

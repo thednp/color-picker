@@ -1,8 +1,9 @@
 extraction:
-  javascript:
+  typescript:
     index:
       exclude:
-        - node_modules
+        - coverage
         - cypress
-        - dist
         - docs
+        - experiments
+        - node_modules

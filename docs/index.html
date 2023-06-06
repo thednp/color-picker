@@ -46,6 +46,21 @@
   <button class="btn-appearance switch" id="rtlSwitch" title="Switch language direction" aria-label="Right To Left Languages Testing">RTL</button>
   <div class="row">
     <div class="col">
+      <label for="picker31">Accent Colour</label>
+      <div class="color-picker">
+        <input type="text" name="picker31" id="picker31" class="color-preview btn-appearance" autocomplete="off" spellcheck="false"
+          placeholder="Définir la couleur au format HSL" value="red" data-format="rgb" data-color-presets='{"hue": 0, "hueSteps": 12, "lightSteps": 10, "saturation": 85}'>
+      </div>
+      <ul class="mb-5">
+        <li>manually initialized via JavaScript;</li>
+        <li><code>componentLabels</code> option is default;</li>
+        <li><code>colorLabels</code> option is default;</li>
+        <li><code>data-format="hsl"</code> attribute is used;</li>
+        <li><code>colorPresets</code> option is set to <a href="https://material.io/archive/guidelines/style/color.html" target="_blank" title="Material Design Colors">Material Colors</a> via JavaScript API;</li>
+        <li><code>colorKeywords</code> option is set via JavaScript API;</li>
+      </ul>
+    </div>
+    <div class="col">
       <label for="picker0">Primary Color</label>
       <div class="color-picker">
         <input type="text" data-function="color-picker" data-color-keywords="red,orange,yellow,lime,green,blue,magenta,pink" class="color-preview btn-appearance" name="picker0" id="picker0" value="rgb(29 78 216 / 90%)" autocomplete="off" spellcheck="false" placeholder="Set colour RGB format">
@@ -105,7 +120,7 @@
     </div>
   </div>
   
-  <h2>Custom Element</h2>
+  <!-- <h2>Custom Element</h2>
   <div class="row">
     <div class="col">
       <label for="picker4">Background Color</label>
@@ -167,16 +182,16 @@
         <li><code>colorKeywords</code> option is default (<code>false</code>);</li>
       </ul>
     </div>
-  </div>
+  </div> -->
 
-  <h2>ColorPicker PlayGround</h2>
+  <!-- <h2>ColorPicker PlayGround</h2>
   <div class="row mb-5">
     <div class="col col-md-3">
       <p class="mb-3">Click the button below to add a new <code>&lt;color-picker&gt;</code> instance. Since forms aren't valid without input labels,
         calling <code>new ColorPickerElement()</code> will also create a <code>&lt;label&gt;</code>, with proper <code>name</code> &lt;-&gt; <code>id</code> association.</p>
       <button class="btn-appearance add" id="addCP" title="Add ColorPicker" aria-label="Add new ColorPicker into the page">Add ColorPickerElement</button>
     </div>
-  </div>
+  </div> -->
 </main>
 
 <footer>
@@ -190,7 +205,7 @@
 </footer>
 
 <script src="./js/color-picker.js"></script>
-<script src="./js/color-picker-element.js"></script>
+<!-- <script src="./js/color-picker-element.js"></script> -->
 
 <!-- LOCAL TESTING -->
 <!-- <script src="../dist/js/color-picker.js"></script>

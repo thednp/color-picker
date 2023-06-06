@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node: [14, 16]
+        node: [16]
     name: Test on Node v${{ matrix.node }}
     steps:
       - name: Checkout
@@ -15,10 +15,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-      - uses: bahmutov/npm-install@v1
-      - run: npm run lint:js
+      # - uses: bahmutov/npm-install@v1
       - run: npm run lint:css
-      - run: npm run build-js
+      - run: npm run build
       - run: npm run compile-scss
       - run: npm run test
 
