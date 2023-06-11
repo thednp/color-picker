@@ -10,7 +10,7 @@
 [![cypress version](https://img.shields.io/badge/cypress-12.9.0-brightgreen)](https://cypress.io/)
 [![vite version](https://img.shields.io/badge/vite-4.3.9-brightgreen)](https://github.com/vitejs)
 
-The feature rich **ColorPicker** component for the modern web sourced with TypeScript, Cypress tested, WAI-ARIA compliant and lots of goodies. In addition, it features its own version of [TinyColor](https://github.com/bgrins/TinyColor) called simply [Color](http://github.com/thednp/color).
+The feature rich **ColorPicker** component for the modern web, sourced with TypeScript, Cypress tested, WAI-ARIA compliant and lots of goodies. In addition, it features its own version of [TinyColor](https://github.com/bgrins/TinyColor) called simply [Color](http://github.com/thednp/color).
 
 **ColorPicker** can use existing colour palettes or generate custom ones via DATA API configuration. If you want to play, check out [this codepen](https://codepen.io/thednp/pen/WNdRWPN) I've setup for you. Have fun!
 
@@ -19,12 +19,13 @@ The feature rich **ColorPicker** component for the modern web sourced with TypeS
 ## Highlights
 
 - Accessibility Focus for WAI-ARIA compliance
-- ES6+ sources with TypeScript definitions
+- TypeScript sourced code base
 - Framework agnostic and flexible design
 - Supporting HEX(a), RGB(a), HSL(a) and HWB, the last three also in CSS4 Color Module flavours
 - Supports keyboard and touch events
 - Automatic repositioning of the popup dropdown on show / window scroll
 - SCSS sources with minimal style required
+- Cypress tested
 - Right To Left Languages Supported
 - light footprint, `10kb` in size when minified and gZipped
 

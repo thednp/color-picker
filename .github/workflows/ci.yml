@@ -15,7 +15,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-      # - uses: bahmutov/npm-install@v1
       - run: npm install
       - run: npm run lint:css
       - run: npm run build

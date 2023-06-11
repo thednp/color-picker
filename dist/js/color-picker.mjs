@@ -1567,7 +1567,7 @@ fe(o.getRootNode().host, t) : null, _ = (o, t) => at(o) ? o : (Q(t) ? t : K()).q
     format: u,
     ok: d
   };
-}, go = "1.0.6";
+}, go = "1.0.7";
 class y {
   // bring main utilities to front
   static matchers = I;
@@ -2110,7 +2110,7 @@ const He = {
     ), e.append(S, L);
   }
   i && c.includes(l) && (o.value = l), m(t, Y, "-1");
-}, fo = "2.0.0-alpha1", Z = "color-picker", mo = `[data-function="${Z}"]`, ae = `.${Z}`, vo = {
+}, fo = "2.0.0-alpha2", Z = "color-picker", mo = `[data-function="${Z}"]`, ae = `.${Z}`, vo = {
   componentLabels: He,
   colorLabels: Kt,
   format: "rgb",
