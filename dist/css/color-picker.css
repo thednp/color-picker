@@ -1,5 +1,5 @@
 /*!
-* ColorPicker v2.0.0-alpha1 (http://thednp.github.io/color-picker)
+* ColorPicker v2.0.0-alpha2 (http://thednp.github.io/color-picker)
 * Copyright 2023 © thednp
 * Licensed under MIT (MIT/blob/main/LICENSE)
 */
@@ -413,7 +413,7 @@
   cursor: ns-resize;
 }
 
-@media (min-width: 578px) {
+@media (width >= 578px) {
   .visual-control {
     height: 230px;
   }
@@ -421,7 +421,7 @@
     width: 230px;
   }
 }
-@media (min-width: 1200px) {
+@media (width >= 1200px) {
   .visual-control {
     height: 300px;
   }
