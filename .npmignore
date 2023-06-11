@@ -8,4 +8,5 @@ coverage
 cypress/videos
 cypress/screenshots
 cypress/coverage
+cypress/downloads
 cypress/instrumented
