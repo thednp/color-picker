@@ -65,7 +65,7 @@
   "dependencies": {
     "@thednp/color": "^1.0.7",
     "@thednp/event-listener": "^2.0.1",
-    "@thednp/shorty": "^2.0.0-alpha14"
+    "@thednp/shorty": "^2.0.0-alpha15"
   },
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
