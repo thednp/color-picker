@@ -65,6 +65,8 @@ export default class ColorPicker {
 	static setAttribute: (element: HTMLElement, att: string, value: string) => void;
 	static getBoundingClientRect: (element: HTMLElement, includeScale?: boolean | undefined) => import("@thednp/shorty").BoundingClientRect;
 	static version: string;
+	static colorNames: string[];
+	static colorPickerLabels: ColorPickerLabels;
 	id: number;
 	input: HTMLInputElement;
 	color: Color;
@@ -136,74 +138,74 @@ export default class ColorPicker {
 	 * @param e
 	 * @this {ColorPicker}
 	 */
-	handleFocusOut({ relatedTarget }: FocusEvent & {
+	handleFocusOut: ({ relatedTarget }: FocusEvent & {
 		relatedTarget: HTMLElement;
-	}): void;
+	}) => void;
 	/**
 	 * The `ColorPicker` *keyup* event listener when open.
 	 *
 	 * @param e
 	 * @this {ColorPicker}
 	 */
-	handleDismiss({ code }: KeyboardEvent): void;
+	handleDismiss: ({ code }: KeyboardEvent) => void;
 	/**
 	 * The `ColorPicker` *scroll* event listener when open.
 	 *
 	 * @param e
 	 * @this {ColorPicker}
 	 */
-	handleScroll(e: Event): void;
+	handleScroll: (e: Event) => void;
 	/**
 	 * The `ColorPicker` keyboard event listener for menu navigation.
 	 *
 	 * @param e
 	 */
-	menuKeyHandler(e: Event & {
+	menuKeyHandler: (e: Event & {
 		target: HTMLElement;
 		code: string;
-	}): void;
+	}) => void;
 	/**
 	 * The `ColorPicker` click event listener for the colour menu presets / defaults.
 	 *
 	 * @param e
 	 * @this {ColorPicker}
 	 */
-	menuClickHandler(e: Event): void;
+	menuClickHandler: (e: Event) => void;
 	/**
 	 * The `ColorPicker` *touchstart* / *mousedown* events listener for control knobs.
 	 *
 	 * @param e
 	 */
-	pointerDown(e: Event & {
+	pointerDown: (e: Event & {
 		target: HTMLElement;
 		pageX: number;
 		pageY: number;
-	}): void;
+	}) => void;
 	/**
 	 * The `ColorPicker` *touchend* / *mouseup* events listener for control knobs.
 	 *
 	 * @param e
 	 * @this
 	 */
-	pointerUp({ target }: PointerEvent & {
+	pointerUp: ({ target }: PointerEvent & {
 		target: HTMLElement;
-	}): void;
+	}) => void;
 	/**
 	 * The `ColorPicker` *touchmove* / *mousemove* events listener for control knobs.
 	 *
 	 * @param {PointerEvent} e
 	 */
-	pointerMove(e: PointerEvent): void;
+	pointerMove: (e: PointerEvent) => void;
 	/**
 	 * The `ColorPicker` *keydown* event listener for control knobs.
 	 *
 	 * @param e
 	 */
-	handleKnobs(e: Event & {
+	handleKnobs: (e: Event & {
 		code: string;
-	}): void;
+	}) => void;
 	/** The event listener of the colour form inputs. */
-	changeHandler(): void;
+	changeHandler: () => void;
 	/**
 	 * Updates `ColorPicker` first control:
 	 * * `lightness` and `saturation` for HEX/RGB;
@@ -233,7 +235,7 @@ export default class ColorPicker {
 	 * * initialization
 	 * * window resize
 	 */
-	update(): void;
+	update: () => void;
 	/** Updates the open dropdown position on *scroll* event. */
 	updateDropdownPosition(): void;
 	/** Updates control knobs' positions. */
@@ -253,16 +255,16 @@ export default class ColorPicker {
 	 *
 	 * @param e
 	 */
-	togglePicker(e?: Event): void;
+	togglePicker: (e?: Event) => void;
 	/** Shows the `ColorPicker` dropdown. */
-	showPicker(): void;
+	showPicker: () => void;
 	/**
 	 * Toggles the visibility of the `ColorPicker` presets menu.
 	 *
 	 * @param e
 	 * @this {ColorPicker}
 	 */
-	toggleMenu(e?: Event): void;
+	toggleMenu: (e?: Event) => void;
 	/**
 	 * Hides the currently open `ColorPicker` dropdown.
 	 *

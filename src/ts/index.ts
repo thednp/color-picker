@@ -208,6 +208,8 @@ export default class ColorPicker {
   public static setAttribute = setAttribute;
   public static getBoundingClientRect = getBoundingClientRect;
   public static version = version;
+  public static colorNames = colorNames;
+  public static colorPickerLabels = colorPickerLabels;
 
   id: number;
   input: HTMLInputElement;
@@ -317,22 +319,6 @@ export default class ColorPicker {
     } else if (isString(colorPresets)) {
       this.colorPresets = colorPresets.split(',').map((x: string) => x.trim());
     }
-
-    // bind events
-    this.showPicker = this.showPicker.bind(this);
-    this.togglePicker = this.togglePicker.bind(this);
-    this.toggleMenu = this.toggleMenu.bind(this);
-    this.menuClickHandler = this.menuClickHandler.bind(this);
-    this.menuKeyHandler = this.menuKeyHandler.bind(this);
-    this.pointerDown = this.pointerDown.bind(this);
-    this.pointerMove = this.pointerMove.bind(this);
-    this.pointerUp = this.pointerUp.bind(this);
-    this.update = this.update.bind(this);
-    this.handleScroll = this.handleScroll.bind(this);
-    this.handleFocusOut = this.handleFocusOut.bind(this);
-    this.changeHandler = this.changeHandler.bind(this);
-    this.handleDismiss = this.handleDismiss.bind(this);
-    this.handleKnobs = this.handleKnobs.bind(this);
 
     // generate markup
     setMarkup(this);
@@ -513,11 +499,11 @@ export default class ColorPicker {
    * @param e
    * @this {ColorPicker}
    */
-  handleFocusOut({ relatedTarget }: FocusEvent & { relatedTarget: HTMLElement }): void {
+  handleFocusOut = ({ relatedTarget }: FocusEvent & { relatedTarget: HTMLElement }): void => {
     if (relatedTarget && !this.parent.contains(relatedTarget)) {
       this.hide(true);
     }
-  }
+  };
 
   /**
    * The `ColorPicker` *keyup* event listener when open.
@@ -525,11 +511,11 @@ export default class ColorPicker {
    * @param e
    * @this {ColorPicker}
    */
-  handleDismiss({ code }: KeyboardEvent): void {
+  handleDismiss = ({ code }: KeyboardEvent): void => {
     if (this.isOpen && code === keyEscape) {
       this.hide();
     }
-  }
+  };
 
   /**
    * The `ColorPicker` *scroll* event listener when open.
@@ -537,7 +523,7 @@ export default class ColorPicker {
    * @param e
    * @this {ColorPicker}
    */
-  handleScroll(e: Event): void {
+  handleScroll = (e: Event): void => {
     const { activeElement } = getDocument(this.input);
 
     this.updateDropdownPosition();
@@ -550,14 +536,14 @@ export default class ColorPicker {
       e.stopPropagation();
       e.preventDefault();
     }
-  }
+  };
 
   /**
    * The `ColorPicker` keyboard event listener for menu navigation.
    *
    * @param e
    */
-  menuKeyHandler(e: Event & { target: HTMLElement; code: string }) {
+  menuKeyHandler = (e: Event & { target: HTMLElement; code: string }) => {
     const { target, code } = e;
     const { previousElementSibling, nextElementSibling, parentElement } = target;
     const isColorOptionsMenu = parentElement && hasClass(parentElement, 'color-options');
@@ -591,7 +577,7 @@ export default class ColorPicker {
     if ([keyEnter, keySpace].includes(code)) {
       this.menuClickHandler(e);
     }
-  }
+  };
 
   /**
    * The `ColorPicker` click event listener for the colour menu presets / defaults.
@@ -599,7 +585,7 @@ export default class ColorPicker {
    * @param e
    * @this {ColorPicker}
    */
-  menuClickHandler(e: Event): void {
+  menuClickHandler = (e: Event): void => {
     const { target } = e;
     const { colorMenu } = this;
     const newOption = (getAttribute(target as HTMLElement, 'data-value') || '').trim();
@@ -637,14 +623,14 @@ export default class ColorPicker {
       }
       firePickerChange(this);
     }
-  }
+  };
 
   /**
    * The `ColorPicker` *touchstart* / *mousedown* events listener for control knobs.
    *
    * @param e
    */
-  pointerDown(e: Event & { target: HTMLElement; pageX: number; pageY: number }) {
+  pointerDown = (e: Event & { target: HTMLElement; pageX: number; pageY: number }) => {
     const { target, pageX, pageY } = e;
     const { colorMenu, visuals, controlKnobs } = this;
     const [v1, v2, v3] = visuals;
@@ -675,7 +661,7 @@ export default class ColorPicker {
       }
     }
     e.preventDefault();
-  }
+  };
 
   /**
    * The `ColorPicker` *touchend* / *mouseup* events listener for control knobs.
@@ -683,7 +669,7 @@ export default class ColorPicker {
    * @param e
    * @this
    */
-  pointerUp({ target }: PointerEvent & { target: HTMLElement }) {
+  pointerUp = ({ target }: PointerEvent & { target: HTMLElement }) => {
     const { parent } = this;
     const doc = getDocument(parent);
     const currentOpen = querySelector(`${colorPickerParentSelector}.open`, doc) !== null;
@@ -694,14 +680,14 @@ export default class ColorPicker {
     }
 
     this.dragElement = undefined;
-  }
+  };
 
   /**
    * The `ColorPicker` *touchmove* / *mousemove* events listener for control knobs.
    *
    * @param {PointerEvent} e
    */
-  pointerMove(e: PointerEvent): void {
+  pointerMove = (e: PointerEvent): void => {
     const { dragElement, visuals } = this;
     const [v1, v2, v3] = visuals;
     const { pageX, pageY } = e;
@@ -724,14 +710,14 @@ export default class ColorPicker {
     if (dragElement === v3) {
       this.changeAlpha(offsetY);
     }
-  }
+  };
 
   /**
    * The `ColorPicker` *keydown* event listener for control knobs.
    *
    * @param e
    */
-  handleKnobs(e: Event & { code: string }) {
+  handleKnobs = (e: Event & { code: string }) => {
     const { target, code } = e;
 
     // only react to arrow buttons
@@ -777,10 +763,10 @@ export default class ColorPicker {
       }
       this.handleScroll(e);
     }
-  }
+  };
 
   /** The event listener of the colour form inputs. */
-  changeHandler(): void {
+  changeHandler = (): void => {
     let colorSource;
     const { inputs, format, value: currentValue, input, controlPositions, visuals } = this;
     const { activeElement } = getDocument(input);
@@ -845,7 +831,7 @@ export default class ColorPicker {
         this.value = currentValue;
       }
     }
-  }
+  };
 
   /**
    * Updates `ColorPicker` first control:
@@ -975,14 +961,14 @@ export default class ColorPicker {
    * * initialization
    * * window resize
    */
-  update() {
+  update = () => {
     this.updateDropdownPosition();
     this.updateAppearance();
     this.setControlPositions();
     this.updateInputs(true);
     this.updateControls();
     this.updateVisuals();
-  }
+  };
 
   /** Updates the open dropdown position on *scroll* event. */
   updateDropdownPosition() {
@@ -1155,7 +1141,7 @@ export default class ColorPicker {
    *
    * @param e
    */
-  togglePicker(e?: Event) {
+  togglePicker = (e?: Event) => {
     if (e) e.preventDefault();
     const { colorPicker } = this;
 
@@ -1164,16 +1150,16 @@ export default class ColorPicker {
     } else {
       showDropdown(this, colorPicker);
     }
-  }
+  };
 
   /** Shows the `ColorPicker` dropdown. */
-  showPicker() {
+  showPicker = () => {
     const { colorPicker } = this;
 
     if (!['top', 'bottom'].some(c => hasClass(colorPicker, c))) {
       showDropdown(this, colorPicker);
     }
-  }
+  };
 
   /**
    * Toggles the visibility of the `ColorPicker` presets menu.
@@ -1181,7 +1167,7 @@ export default class ColorPicker {
    * @param e
    * @this {ColorPicker}
    */
-  toggleMenu(e?: Event) {
+  toggleMenu = (e?: Event) => {
     if (e) e.preventDefault();
     const { colorMenu } = this;
 
@@ -1190,7 +1176,7 @@ export default class ColorPicker {
     } else {
       showDropdown(this, colorMenu);
     }
-  }
+  };
 
   /**
    * Hides the currently open `ColorPicker` dropdown.
