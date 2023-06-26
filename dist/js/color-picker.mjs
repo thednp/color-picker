@@ -2110,7 +2110,7 @@ const Vt = {
     ), e.append(S, L);
   }
   i && c.includes(l) && (o.value = l), m(t, Y, "-1");
-}, fo = "2.0.0-alpha4", Z = "color-picker", mo = `[data-function="${Z}"]`, le = `.${Z}`, vo = {
+}, fo = "2.0.0-alpha5", Z = "color-picker", mo = `[data-function="${Z}"]`, le = `.${Z}`, vo = {
   componentLabels: Vt,
   colorLabels: mt,
   format: "rgb",
