@@ -1,6 +1,6 @@
 {
   "name": "@thednp/color-picker",
-  "version": "2.0.0-alpha3",
+  "version": "2.0.0-alpha4",
   "author": "thednp",
   "license": "MIT",
   "description": "🎨 Modern Color Picker Component",
@@ -13,8 +13,8 @@
   "sass": "./src/scss/color-picker.scss",
   "exports": {
     ".": {
-      "require": "./dist/color-picker.cjs",
-      "import": "./dist/color-picker.mjs"
+      "require": "./dist/js/color-picker.cjs",
+      "import": "./dist/js/color-picker.mjs"
     }
   },
   "scripts": {
