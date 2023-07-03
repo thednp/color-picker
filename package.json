@@ -1,6 +1,6 @@
 {
   "name": "@thednp/color-picker",
-  "version": "2.0.0-alpha5",
+  "version": "2.0.0-alpha6",
   "author": "thednp",
   "license": "MIT",
   "description": "🎨 Modern Color Picker Component",
@@ -8,13 +8,29 @@
   "source": "./src/ts/index.ts",
   "main": "./dist/js/color-picker.js",
   "module": "./dist/js/color-picker.mjs",
-  "types": "./dist/js/color-picker.d.ts",
   "style": "./dist/css/color-picker.css",
   "sass": "./src/scss/color-picker.scss",
   "exports": {
     ".": {
       "require": "./dist/js/color-picker.cjs",
-      "import": "./dist/js/color-picker.mjs"
+      "import": "./dist/js/color-picker.mjs",
+      "types": "./dist/js/color-picker.d.ts"
+    },
+    "./dist/color-picker.css": {
+      "import": "./dist/color-picker.css",
+      "require": "./dist/color-picker.css"
+    },
+    "./dist/color-picker.rtl.css": {
+      "import": "./dist/color-picker.rtl.css",
+      "require": "./dist/color-picker.rtl.css"
+    },
+    "./src/scss/color-picker.scss": {
+      "import": "./src/scss/color-picker.scss",
+      "require": "./src/scss/color-picker.scss"
+    },
+    "./src/scss/color-picker.rtl.scss": {
+      "import": "./src/scss/color-picker.rtl.scss",
+      "require": "./src/scss/color-picker.rtl.scss"
     }
   },
   "scripts": {
@@ -63,20 +79,20 @@
     "typescript"
   ],
   "dependencies": {
-    "@thednp/color": "^1.0.7",
+    "@thednp/color": "^1.0.8",
     "@thednp/event-listener": "^2.0.1",
     "@thednp/shorty": "^2.0.0-alpha15"
   },
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
-    "@cypress/code-coverage": "^3.10.7",
+    "@cypress/code-coverage": "^3.10.8",
     "@types/istanbul-lib-instrument": "^1.7.4",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
     "cypress": "^12.16.0",
     "dts-bundle-generator": "^8.0.1",
-    "eslint": "^8.43.0",
-    "eslint-plugin-jsdoc": "^46.3.0",
+    "eslint": "^8.44.0",
+    "eslint-plugin-jsdoc": "^46.4.3",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-prettier": "^4.2.1",
     "istanbul-lib-coverage": "^3.2.0",
@@ -89,10 +105,10 @@
     "sass": "^1.63.6",
     "stylelint": "^15.9.0",
     "stylelint-config-standard": "^33.0.0",
-    "stylelint-config-standard-scss": "^9.0.0",
+    "stylelint-config-standard-scss": "^10.0.0",
     "stylelint-order": "^6.0.3",
     "stylelint-scss": "^5.0.1",
-    "typescript": "^5.1.3",
+    "typescript": "^5.1.6",
     "vite": "^4.3.9"
   }
 }
