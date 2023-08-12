@@ -5,6 +5,10 @@
   position: relative;
   display: flex;
 
+  &* {
+    box-sizing: content-box;
+  }
+
   @each $name in "white", "black" {
     @each $lvl in $transparency-levels {
       @if  type-of($name) == "string" and type-of($lvl) == "number" {

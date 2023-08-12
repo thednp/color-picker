@@ -1,5 +1,5 @@
 /*!
-* ColorPicker v2.0.0-alpha6 (http://thednp.github.io/color-picker)
+* ColorPicker v2.0.0-alpha7 (http://thednp.github.io/color-picker)
 * Copyright 2023 © thednp
 * Licensed under MIT (MIT/blob/main/LICENSE)
 */
@@ -39,6 +39,9 @@
   --option-color-active: var(--black-75);
   --option-bg-active: var(--white-90);
   --visual-shadow: 0 0 0 1px var(--white-15) inset;
+}
+.color-picker* {
+  box-sizing: content-box;
 }
 
 .color-picker:focus {
