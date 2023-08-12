@@ -40,8 +40,8 @@
   --option-bg-active: var(--white-90);
   --visual-shadow: 0 0 0 1px var(--white-15) inset;
 }
-.color-picker* {
-  box-sizing: content-box;
+.color-picker *, .color-picker *::before, .color-picker *::after {
+  box-sizing: revert;
 }
 
 .color-picker:focus {

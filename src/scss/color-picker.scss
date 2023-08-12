@@ -5,8 +5,8 @@
   position: relative;
   display: flex;
 
-  &* {
-    box-sizing: content-box;
+  *, *::before, *::after {
+    box-sizing: revert;
   }
 
   @each $name in "white", "black" {
