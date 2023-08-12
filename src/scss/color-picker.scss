@@ -6,7 +6,7 @@
   display: flex;
 
   *, *::before, *::after {
-    box-sizing: revert;
+    box-sizing: border-box;
   }
 
   @each $name in "white", "black" {
@@ -102,7 +102,8 @@
 /* btn-appearance */
 .btn-appearance {
   width: 100%;
-  height: 1.5rem;
+
+  // height: 1.5rem;
   padding: .6rem 1rem;
   font-size: 1rem;
   line-height: 1.5;
@@ -155,10 +156,10 @@
 /* picker-toggle */
 .picker-toggle {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
+  cursor: pointer;
   background: transparent;
   border: 0;
 }
@@ -465,6 +466,7 @@
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
   height: 7px;
 
   /* important for mobile devices */
