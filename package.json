@@ -1,6 +1,6 @@
 {
   "name": "@thednp/color-picker",
-  "version": "2.0.0-alpha7",
+  "version": "2.0.0-alpha8",
   "author": "thednp",
   "license": "MIT",
   "description": "🎨 Modern Color Picker Component",
@@ -16,13 +16,13 @@
       "import": "./dist/js/color-picker.mjs",
       "types": "./dist/js/color-picker.d.ts"
     },
-    "./dist/color-picker.css": {
-      "import": "./dist/color-picker.css",
-      "require": "./dist/color-picker.css"
+    "./dist/css/color-picker.css": {
+      "import": "./dist/css/color-picker.css",
+      "require": "./dist/css/color-picker.css"
     },
-    "./dist/color-picker.rtl.css": {
-      "import": "./dist/color-picker.rtl.css",
-      "require": "./dist/color-picker.rtl.css"
+    "./dist/css/color-picker.rtl.css": {
+      "import": "./dist/css/color-picker.rtl.css",
+      "require": "./dist/css/color-picker.rtl.css"
     },
     "./src/scss/color-picker.scss": {
       "import": "./src/scss/color-picker.scss",
