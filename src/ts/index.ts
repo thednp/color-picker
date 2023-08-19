@@ -37,6 +37,7 @@ import {
   getDocumentElement,
   getDocument,
   ObjectAssign,
+  ObjectFromEntries,
   Data,
   getInstance,
   setElementStyle,
@@ -67,6 +68,7 @@ import setMarkup from './util/setMarkup';
 
 import ColorPickerOptions from './interface/colorPickerOptions';
 import ColorPickerLabels from './interface/colorPickerLabels';
+import type ColorNames from './interface/ColorNames';
 import { version } from '../../package.json';
 
 // ColorPicker GC
@@ -224,7 +226,7 @@ export default class ColorPicker {
     c2y: number;
     c3y: number;
   };
-  colorLabels: Record<string, string> = {};
+  colorLabels: ColorNames = ObjectFromEntries(colorNames.map(c => [c, c])) as ColorNames;
   colorKeywords: string[] | false;
   colorPresets: ColorPalette | string[] | false;
   componentLabels: ColorPickerLabels;
@@ -265,7 +267,7 @@ export default class ColorPicker {
       c2y: 0,
       c3y: 0,
     };
-    this.colorLabels = {};
+    // this.colorLabels = {};
     this.colorKeywords = false;
     this.colorPresets = false;
 
@@ -285,9 +287,7 @@ export default class ColorPicker {
     }
 
     // expose colour labels to all methods
-    colorNames.forEach((c, i) => {
-      this.colorLabels[c] = translatedColorLabels[i].trim();
-    });
+    ObjectAssign(this.colorLabels, ObjectFromEntries(translatedColorLabels.map((c, i) => [colorNames[i], c])));
 
     // update and expose component labels
     const tempComponentLabels =
@@ -521,9 +521,8 @@ export default class ColorPicker {
    * The `ColorPicker` *scroll* event listener when open.
    *
    * @param e
-   * @this {ColorPicker}
    */
-  handleScroll = (e: Event): void => {
+  handleScroll = (e: Event) => {
     const { activeElement } = getDocument(this.input);
 
     this.updateDropdownPosition();
@@ -543,7 +542,7 @@ export default class ColorPicker {
    *
    * @param e
    */
-  menuKeyHandler = (e: Event & { target: HTMLElement; code: string }) => {
+  menuKeyHandler = (e: KeyboardEvent & { target: HTMLElement }) => {
     const { target, code } = e;
     const { previousElementSibling, nextElementSibling, parentElement } = target;
     const isColorOptionsMenu = parentElement && hasClass(parentElement, 'color-options');
@@ -585,7 +584,7 @@ export default class ColorPicker {
    * @param e
    * @this {ColorPicker}
    */
-  menuClickHandler = (e: Event): void => {
+  menuClickHandler = (e: Event) => {
     const { target } = e;
     const { colorMenu } = this;
     const newOption = (getAttribute(target as HTMLElement, 'data-value') || '').trim();
@@ -630,7 +629,8 @@ export default class ColorPicker {
    *
    * @param e
    */
-  pointerDown = (e: Event & { target: HTMLElement; pageX: number; pageY: number }) => {
+  pointerDown = (e: PointerEvent & { target: HTMLElement }) => {
+    if (e.button !== 0) return;
     const { target, pageX, pageY } = e;
     const { colorMenu, visuals, controlKnobs } = this;
     const [v1, v2, v3] = visuals;
@@ -687,7 +687,7 @@ export default class ColorPicker {
    *
    * @param {PointerEvent} e
    */
-  pointerMove = (e: PointerEvent): void => {
+  pointerMove = (e: PointerEvent) => {
     const { dragElement, visuals } = this;
     const [v1, v2, v3] = visuals;
     const { pageX, pageY } = e;

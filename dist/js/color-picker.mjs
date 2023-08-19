@@ -1,41 +1,41 @@
-const J = {}, ge = (o) => {
+const Z = {}, ue = (o) => {
   const { type: t, currentTarget: e } = o;
-  [...J[t]].forEach(([s, r]) => {
+  [...Z[t]].forEach(([s, r]) => {
     e === s && [...r].forEach(([n, i]) => {
       n.apply(s, [o]), typeof i == "object" && i.once && jt(s, t, n, i);
     });
   });
-}, ue = (o, t, e, s) => {
-  J[t] || (J[t] = /* @__PURE__ */ new Map());
-  const r = J[t];
+}, be = (o, t, e, s) => {
+  Z[t] || (Z[t] = /* @__PURE__ */ new Map());
+  const r = Z[t];
   r.has(o) || r.set(o, /* @__PURE__ */ new Map());
   const n = r.get(o), { size: i } = n;
-  n.set(e, s), i || o.addEventListener(t, ge, s);
+  n.set(e, s), i || o.addEventListener(t, ue, s);
 }, jt = (o, t, e, s) => {
-  const r = J[t], n = r && r.get(o), i = n && n.get(e), a = i !== void 0 ? i : s;
-  n && n.has(e) && n.delete(e), r && (!n || !n.size) && r.delete(o), (!r || !r.size) && delete J[t], (!n || !n.size) && o.removeEventListener(t, ge, a);
-}, Ut = "aria-description", Et = "aria-expanded", Me = "aria-hidden", St = "aria-selected", et = "aria-valuenow", ot = "aria-valuetext", Te = "change", Re = "DOMContentLoaded", Oe = "focusin", De = "focusout", _t = "keydown", Fe = "keyup", Mt = "click", Ie = "pointerdown", be = "pointermove", Ke = "pointerup", Ve = "resize", Be = "scroll", je = "touchmove", j = "ArrowDown", st = "ArrowUp", ht = "ArrowLeft", G = "ArrowRight", qe = "Enter", ze = "Escape", Wt = "Space", Ge = "transitionDuration", Ue = "transitionProperty", Y = "tabindex", _e = navigator.userAgentData, vt = _e, { userAgent: We } = navigator, wt = We, Xt = /iPhone|iPad|iPod|Android/i;
-vt ? vt.brands.some((o) => Xt.test(o.brand)) : Xt.test(wt);
-const Jt = /(iPhone|iPod|iPad)/;
-vt ? vt.brands.some((o) => Jt.test(o.brand)) : (
+  const r = Z[t], n = r && r.get(o), i = n && n.get(e), a = i !== void 0 ? i : s;
+  n && n.has(e) && n.delete(e), r && (!n || !n.size) && r.delete(o), (!r || !r.size) && delete Z[t], (!n || !n.size) && o.removeEventListener(t, ue, a);
+}, Ut = "aria-description", Et = "aria-expanded", Te = "aria-hidden", St = "aria-selected", et = "aria-valuenow", ot = "aria-valuetext", Re = "change", Oe = "DOMContentLoaded", De = "focusin", Fe = "focusout", _t = "keydown", Ie = "keyup", Mt = "click", Ke = "pointerdown", pe = "pointermove", Ve = "pointerup", Be = "resize", je = "scroll", qe = "touchmove", j = "ArrowDown", st = "ArrowUp", gt = "ArrowLeft", G = "ArrowRight", ze = "Enter", Ge = "Escape", Wt = "Space", Ue = "transitionDuration", _e = "transitionProperty", X = "tabindex", We = navigator.userAgentData, vt = We, { userAgent: Je } = navigator, wt = Je, Jt = /iPhone|iPad|iPod|Android/i;
+vt ? vt.brands.some((o) => Jt.test(o.brand)) : Jt.test(wt);
+const Zt = /(iPhone|iPod|iPad)/;
+vt ? vt.brands.some((o) => Zt.test(o.brand)) : (
   /* istanbul ignore next */
-  Jt.test(wt)
+  Zt.test(wt)
 );
 wt && wt.includes("Firefox");
 const { head: yt } = document;
 ["webkitPerspective", "perspective"].some((o) => o in yt.style);
-const Xe = (o, t, e, s) => {
+const Ze = (o, t, e, s) => {
   const r = s || !1;
   o.addEventListener(t, e, r);
-}, Je = (o, t, e, s) => {
+}, Xe = (o, t, e, s) => {
   const r = s || !1;
   o.removeEventListener(t, e, r);
 }, Ye = (o, t, e, s) => {
   const r = (n) => {
-    (n.target === o || n.currentTarget === o) && (e.apply(o, [n]), Je(o, t, r, s));
+    (n.target === o || n.currentTarget === o) && (e.apply(o, [n]), Xe(o, t, r, s));
   };
-  Xe(o, t, r, s);
-}, Ze = () => {
+  Ze(o, t, r, s);
+}, Qe = () => {
 };
 (() => {
   let o = !1;
@@ -43,7 +43,7 @@ const Xe = (o, t, e, s) => {
     const t = Object.defineProperty({}, "passive", {
       get: () => (o = !0, o)
     });
-    Ye(document, Re, Ze, t);
+    Ye(document, Oe, Qe, t);
   } catch {
   }
   return o;
@@ -55,7 +55,7 @@ const xt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), C
   o.classList.add(...t);
 }, O = (o, ...t) => {
   o.classList.remove(...t);
-}, T = (o, t) => o.classList.contains(t), qt = (o) => o != null && typeof o == "object" || !1, Q = (o) => qt(o) && typeof o.nodeType == "number" && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].some((t) => o.nodeType === t) || !1, at = (o) => Q(o) && o.nodeType === 1 || !1, W = /* @__PURE__ */ new Map(), ct = {
+}, T = (o, t) => o.classList.contains(t), qt = (o) => o != null && typeof o == "object" || !1, Q = (o) => qt(o) && typeof o.nodeType == "number" && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].some((t) => o.nodeType === t) || !1, lt = (o) => Q(o) && o.nodeType === 1 || !1, W = /* @__PURE__ */ new Map(), ht = {
   data: W,
   /**
    * Sets web components data.
@@ -65,7 +65,7 @@ const xt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), C
    * @param instance the component instance
    */
   set: (o, t, e) => {
-    at(o) && (W.has(t) || W.set(t, /* @__PURE__ */ new Map()), W.get(t).set(o, e));
+    lt(o) && (W.has(t) || W.set(t, /* @__PURE__ */ new Map()), W.get(t).set(o, e));
   },
   /**
    * Returns all instances for specified component.
@@ -82,9 +82,9 @@ const xt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), C
    * @returns the instance
    */
   get: (o, t) => {
-    if (!at(o) || !t)
+    if (!lt(o) || !t)
       return null;
-    const e = ct.getAllFor(t);
+    const e = ht.getAllFor(t);
     return o && e && e.get(o) || null;
   },
   /**
@@ -94,34 +94,34 @@ const xt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), C
    * @param component the component's name or a unique key
    */
   remove: (o, t) => {
-    const e = ct.getAllFor(t);
-    !e || !at(o) || (e.delete(o), e.size === 0 && W.delete(t));
+    const e = ht.getAllFor(t);
+    !e || !lt(o) || (e.delete(o), e.size === 0 && W.delete(t));
   }
-}, Qe = (o, t) => ct.get(o, t), V = (o) => typeof o == "string" || !1, to = (o) => qt(o) && o.constructor.name === "Window" || !1, pe = (o) => Q(o) && o.nodeType === 9 || !1, K = (o) => to(o) ? o.document : pe(o) ? o : Q(o) ? o.ownerDocument : window.document, B = (o, ...t) => Object.assign(o, ...t), x = (o) => {
+}, to = (o, t) => ht.get(o, t), B = (o) => typeof o == "string" || !1, eo = (o) => qt(o) && o.constructor.name === "Window" || !1, de = (o) => Q(o) && o.nodeType === 9 || !1, V = (o) => eo(o) ? o.document : de(o) ? o : Q(o) ? o.ownerDocument : window.document, K = (o, ...t) => Object.assign(o, ...t), x = (o) => {
   if (!o)
     return;
-  if (V(o))
-    return K().createElement(o);
+  if (B(o))
+    return V().createElement(o);
   const { tagName: t } = o, e = x(t);
   if (!e)
     return;
   const s = { ...o };
-  return delete s.tagName, B(e, s);
+  return delete s.tagName, K(e, s);
 }, Tt = (o, t) => {
   if (!o || !t)
     return;
-  if (V(t))
-    return K().createElementNS(o, t);
+  if (B(t))
+    return V().createElementNS(o, t);
   const { tagName: e } = t, s = Tt(o, e);
   if (!s)
     return;
   const r = { ...t };
-  return delete r.tagName, B(s, r);
-}, eo = (o, t) => o.dispatchEvent(t), Rt = (o, t) => {
+  return delete r.tagName, K(s, r);
+}, oo = (o, t) => o.dispatchEvent(t), Rt = (o, t) => {
   const e = getComputedStyle(o), s = t.replace("webkit", "Webkit").replace(/([A-Z])/g, "-$1").toLowerCase();
   return e.getPropertyValue(s);
-}, oo = (o) => {
-  const t = Rt(o, Ue), e = Rt(o, Ge), s = e.includes("ms") ? (
+}, so = (o) => {
+  const t = Rt(o, _e), e = Rt(o, Ue), s = e.includes("ms") ? (
     /* istanbul ignore next */
     1
   ) : 1e3, r = t && t !== "none" ? parseFloat(e) * s : (
@@ -132,29 +132,29 @@ const xt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), C
     /* istanbul ignore next */
     0
   ) : r;
-}, U = (o, t) => o.focus(t), Yt = (o) => ["true", !0].includes(o) ? !0 : ["false", !1].includes(o) ? !1 : ["null", "", null, void 0].includes(o) ? null : o !== "" && !Number.isNaN(+o) ? +o : o, pt = (o) => Object.entries(o), so = (o) => o.toLowerCase(), ro = (o, t, e, s) => {
+}, U = (o, t) => o.focus(t), Xt = (o) => ["true", !0].includes(o) ? !0 : ["false", !1].includes(o) ? !1 : ["null", "", null, void 0].includes(o) ? null : o !== "" && !Number.isNaN(+o) ? +o : o, dt = (o) => Object.entries(o), ro = (o) => o.toLowerCase(), no = (o, t, e, s) => {
   const r = { ...e }, n = { ...o.dataset }, i = { ...t }, a = {}, l = "title";
-  return pt(n).forEach(([c, h]) => {
-    const b = s && typeof c == "string" && c.includes(s) ? c.replace(s, "").replace(/[A-Z]/g, (u) => so(u)) : c;
-    a[b] = Yt(h);
-  }), pt(r).forEach(([c, h]) => {
-    r[c] = Yt(h);
-  }), pt(t).forEach(([c, h]) => {
+  return dt(n).forEach(([c, h]) => {
+    const b = s && typeof c == "string" && c.includes(s) ? c.replace(s, "").replace(/[A-Z]/g, (u) => ro(u)) : c;
+    a[b] = Xt(h);
+  }), dt(r).forEach(([c, h]) => {
+    r[c] = Xt(h);
+  }), dt(t).forEach(([c, h]) => {
     c in r ? i[c] = r[c] : c in a ? i[c] = a[c] : i[c] = c === l ? xt(o, l) : h;
   }), i;
-}, no = (o) => o.offsetHeight, D = (o, t) => {
-  pt(t).forEach(([e, s]) => {
-    if (s && V(e) && e.includes("--"))
+}, Yt = (o) => Object.fromEntries(o), io = (o) => o.offsetHeight, D = (o, t) => {
+  dt(t).forEach(([e, s]) => {
+    if (s && B(e) && e.includes("--"))
       o.style.setProperty(e, s);
     else {
       const r = {};
-      r[e] = s, B(o.style, r);
+      r[e] = s, K(o.style, r);
     }
   });
-}, io = (o) => qt(o) && o.constructor.name === "Map" || !1, de = (o) => o.toUpperCase(), gt = (o, t) => {
+}, ao = (o) => qt(o) && o.constructor.name === "Map" || !1, fe = (o) => o.toUpperCase(), ut = (o, t) => {
   const { width: e, height: s, top: r, right: n, bottom: i, left: a } = o.getBoundingClientRect();
   let l = 1, c = 1;
-  if (t && at(o)) {
+  if (t && lt(o)) {
     const { offsetWidth: h, offsetHeight: b } = o;
     l = h > 0 ? Math.round(e) / h : (
       /* istanbul ignore next */
@@ -174,23 +174,23 @@ const xt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), C
     x: a / l,
     y: r / c
   };
-}, Lt = (o) => K(o).documentElement;
-let Zt = 0, Qt = 0;
-const X = /* @__PURE__ */ new Map(), fe = (o, t) => {
-  let e = t ? Zt : Qt;
+}, Lt = (o) => V(o).documentElement;
+let Qt = 0, te = 0;
+const J = /* @__PURE__ */ new Map(), me = (o, t) => {
+  let e = t ? Qt : te;
   if (t) {
-    const s = fe(o), r = X.get(s) || /* @__PURE__ */ new Map();
-    X.has(s) || X.set(s, r), io(r) && !r.has(t) ? (r.set(t, e), Zt += 1) : e = r.get(t);
+    const s = me(o), r = J.get(s) || /* @__PURE__ */ new Map();
+    J.has(s) || J.set(s, r), ao(r) && !r.has(t) ? (r.set(t, e), Qt += 1) : e = r.get(t);
   } else {
     const s = o.id || o;
-    X.has(s) ? e = X.get(s) : (X.set(s, e), Qt += 1);
+    J.has(s) ? e = J.get(s) : (J.set(s, e), te += 1);
   }
   return e;
-}, ao = (o) => {
+}, lo = (o) => {
   var t;
-  return o ? pe(o) ? o.defaultView : Q(o) ? (t = o?.ownerDocument) == null ? void 0 : t.defaultView : o : window;
-}, At = (o) => Array.isArray(o) || !1, me = (o, t) => o ? o.closest(t) || // break out of `ShadowRoot`
-me(o.getRootNode().host, t) : null, _ = (o, t) => at(o) ? o : (Q(t) ? t : K()).querySelector(o), rt = (o, t) => (t && Q(t) ? t : K()).getElementsByClassName(
+  return o ? de(o) ? o.defaultView : Q(o) ? (t = o?.ownerDocument) == null ? void 0 : t.defaultView : o : window;
+}, At = (o) => Array.isArray(o) || !1, ve = (o, t) => o ? o.closest(t) || // break out of `ShadowRoot`
+ve(o.getRootNode().host, t) : null, _ = (o, t) => lt(o) ? o : (Q(t) ? t : V()).querySelector(o), rt = (o, t) => (t && Q(t) ? t : V()).getElementsByClassName(
   o
 ), zt = ["transparent", "currentColor", "inherit", "revert", "initial"], v = (o) => {
   const t = Math.floor(o);
@@ -1380,12 +1380,12 @@ me(o.getRootNode().host, t) : null, _ = (o, t) => at(o) ? o : (Q(t) ? t : K()).q
       b: 50
     }
   ]
-], ve = "deg|rad|grad|turn", we = "[-\\+]?\\d+%?", $e = "[-\\+]?\\d*\\.\\d+%?", ke = `[-\\+]?\\d*\\.?\\d+(?:${ve})?`, dt = `(?:${$e})|(?:${we})`, Ot = `(?:${dt})|(?:${ke}?)`, lo = "(?:[\\s|\\(\\s|\\s\\(\\s]+)?", co = "(?:[\\s|\\)\\s]+)?", te = "(?:[,|\\s]+)", ho = "(?:[,|\\/\\s]*)?", nt = `${lo}(${Ot})${te}(${dt})${te}(${dt})${ho}(${dt})?${co}`, I = {
+], we = "deg|rad|grad|turn", $e = "[-\\+]?\\d+%?", ke = "[-\\+]?\\d*\\.\\d+%?", ye = `[-\\+]?\\d*\\.?\\d+(?:${we})?`, ft = `(?:${ke})|(?:${$e})`, Ot = `(?:${ft})|(?:${ye}?)`, co = "(?:[\\s|\\(\\s|\\s\\(\\s]+)?", ho = "(?:[\\s|\\)\\s]+)?", ee = "(?:[,|\\s]+)", go = "(?:[,|\\/\\s]*)?", nt = `${co}(${Ot})${ee}(${ft})${ee}(${ft})${go}(${ft})?${ho}`, I = {
   CSS_UNIT: new RegExp(Ot),
-  ANGLES: ve,
-  CSS_ANGLE: ke,
-  CSS_INTEGER: we,
-  CSS_NUMBER: $e,
+  ANGLES: we,
+  CSS_ANGLE: ye,
+  CSS_INTEGER: $e,
+  CSS_NUMBER: ke,
   CSS_UNIT2: Ot,
   PERMISSIVE_MATCH: nt,
   hwb: new RegExp(`hwb${nt}`),
@@ -1396,21 +1396,21 @@ me(o.getRootNode().host, t) : null, _ = (o, t) => at(o) ? o : (Q(t) ? t : K()).q
   hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
   hex4: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
   hex8: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/
-}, ye = (o) => zt.includes(o), it = (o, t) => o !== null && typeof o == "object" && Object.keys(t).every((e) => e in o), xe = (o) => `${o}`.includes(".") && parseFloat(o) === 1, kt = (o) => typeof o == "string" && o.includes("%"), N = (o) => !!I.CSS_UNIT.exec(`${o}`), Pe = ["rgb", "hex", "hsl", "hsv", "hwb"], Se = (o) => zt.includes(o) || ["#", ...Pe].some((t) => o.includes(t)) ? !1 : $t.some(([t]) => o === t), R = (o, t) => {
+}, xe = (o) => zt.includes(o), it = (o, t) => o !== null && typeof o == "object" && Object.keys(t).every((e) => e in o), Pe = (o) => `${o}`.includes(".") && parseFloat(o) === 1, kt = (o) => typeof o == "string" && o.includes("%"), H = (o) => !!I.CSS_UNIT.exec(`${o}`), Se = ["rgb", "hex", "hsl", "hsv", "hwb"], Ce = (o) => zt.includes(o) || ["#", ...Se].some((t) => o.includes(t)) ? !1 : $t.some(([t]) => o === t), R = (o, t) => {
   let e = o;
   if (typeof o == "number" && Math.min(o, 0) === 0 && // round values to 6 decimals Math.round(N * (10 ** 6)) / 10 ** 6
   Math.max(o, 1) === 1)
     return o;
-  xe(o) && (e = "100%");
+  Pe(o) && (e = "100%");
   const s = kt(e);
   return e = t === 360 ? parseFloat(e) : Math.min(t, Math.max(0, parseFloat(e))), s && (e = e * t / 100), Math.abs(e - t) < 1e-6 ? 1 : (t === 360 ? e = (e < 0 ? e % t + t : e % t) / t : e = e % t / t, e);
 }, Dt = (o) => {
   let t = parseFloat(o);
   return (Number.isNaN(t) || t < 0 || t > 1) && (t = 1), t;
-}, ut = (o) => Math.min(1, Math.max(0, o)), z = (o) => o.length === 1 ? `0${o}` : String(o), Ce = (o) => {
+}, bt = (o) => Math.min(1, Math.max(0, o)), z = (o) => o.length === 1 ? `0${o}` : String(o), Le = (o) => {
   const [[, t]] = $t.filter(([e]) => e === o.toLowerCase());
   return t;
-}, H = (o) => parseInt(o, 16), Ft = (o) => H(o) / 255, Le = (o) => v(o * 255).toString(16), ee = (o, t, e) => {
+}, N = (o) => parseInt(o, 16), Ft = (o) => N(o) / 255, Ae = (o) => v(o * 255).toString(16), oe = (o, t, e) => {
   const s = Math.max(o, t, e), r = Math.min(o, t, e);
   let n = 0, i = 0;
   const a = (s + r) / 2;
@@ -1421,19 +1421,19 @@ me(o.getRootNode().host, t) : null, _ = (o, t) => at(o) ? o : (Q(t) ? t : K()).q
     i = a > 0.5 ? l / (2 - s - r) : l / (s + r), s === o && (n = (t - e) / l + (t < e ? 6 : 0)), s === t && (n = (e - o) / l + 2), s === e && (n = (o - t) / l + 4), n /= 6;
   }
   return { h: n, s: i, l: a };
-}, ft = (o, t, e) => {
+}, mt = (o, t, e) => {
   let s = e;
   return s < 0 && (s += 1), s > 1 && (s -= 1), s < 1 / 6 ? o + (t - o) * (6 * s) : s < 1 / 2 ? t : s < 2 / 3 ? o + (t - o) * (2 / 3 - s) * 6 : o;
-}, lt = (o, t, e) => {
+}, ct = (o, t, e) => {
   let s = 0, r = 0, n = 0;
   if (t === 0)
     r = e, n = e, s = e;
   else if (e) {
     const i = e < 0.5 ? e * (1 + t) : e + t - e * t, a = 2 * e - i;
-    s = ft(a, i, o + 1 / 3), r = ft(a, i, o), n = ft(a, i, o - 1 / 3);
+    s = mt(a, i, o + 1 / 3), r = mt(a, i, o), n = mt(a, i, o - 1 / 3);
   }
   return { r: s, g: r, b: n };
-}, oe = (o, t, e) => {
+}, se = (o, t, e) => {
   let s = 0, r = 0;
   const n = Math.min(o, t, e), i = Math.max(o, t, e), a = 1 - i;
   if (i === n)
@@ -1445,14 +1445,14 @@ me(o.getRootNode().host, t) : null, _ = (o, t) => at(o) ? o : (Q(t) ? t : K()).q
     w: n,
     b: a
   };
-}, Ae = (o, t, e) => {
+}, He = (o, t, e) => {
   if (t + e >= 1) {
     const i = t / (t + e);
     return { r: i, g: i, b: i };
   }
-  let { r: s, g: r, b: n } = lt(o, 1, 0.5);
+  let { r: s, g: r, b: n } = ct(o, 1, 0.5);
   return [s, r, n] = [s, r, n].map((i) => i * (1 - t - e) + t), { r: s, g: r, b: n };
-}, se = (o, t, e) => {
+}, re = (o, t, e) => {
   const s = Math.max(o, t, e), r = Math.min(o, t, e);
   let n = 0;
   const i = s, a = s - r, l = s === 0 ? 0 : a / s;
@@ -1460,30 +1460,30 @@ me(o.getRootNode().host, t) : null, _ = (o, t) => at(o) ? o : (Q(t) ? t : K()).q
 }, It = (o, t, e) => {
   const s = o * 6, r = t, n = e, i = Math.floor(s), a = s - i, l = n * (1 - r), c = n * (1 - a * r), h = n * (1 - (1 - a) * r), b = i % 6, u = [n, c, l, l, h, n][b], d = [h, n, n, c, l, l][b], g = [l, l, h, n, n, c][b];
   return { r: u, g: d, b: g };
-}, re = (o, t, e, s) => {
+}, ne = (o, t, e, s) => {
   const r = [
     z(v(o).toString(16)),
     z(v(t).toString(16)),
     z(v(e).toString(16))
   ];
   return s && r[0].charAt(0) === r[0].charAt(1) && r[1].charAt(0) === r[1].charAt(1) && r[2].charAt(0) === r[2].charAt(1) ? r[0].charAt(0) + r[1].charAt(0) + r[2].charAt(0) : r.join("");
-}, Nt = (o, t, e, s, r) => {
+}, Ht = (o, t, e, s, r) => {
   const n = [
     z(v(o).toString(16)),
     z(v(t).toString(16)),
     z(v(e).toString(16)),
-    z(Le(s))
+    z(Ae(s))
   ];
   return r && n[0].charAt(0) === n[0].charAt(1) && n[1].charAt(0) === n[1].charAt(1) && n[2].charAt(0) === n[2].charAt(1) && n[3].charAt(0) === n[3].charAt(1) ? n[0].charAt(0) + n[1].charAt(0) + n[2].charAt(0) + n[3].charAt(0) : n.join("");
 }, Ne = (o) => {
   const t = String(o).trim().toLowerCase();
-  if (Se(t))
-    return Object.assign(Ce(t), {
+  if (Ce(t))
+    return Object.assign(Le(t), {
       a: 1,
       format: "rgb",
       ok: !0
     });
-  if (ye(t))
+  if (xe(t))
     return {
       r: 0,
       g: 0,
@@ -1522,30 +1522,30 @@ me(o.getRootNode().host, t) : null, _ = (o, t) => at(o) ? o : (Q(t) ? t : K()).q
     format: "hwb",
     ok: !0
   } : ([, e, s, r, n] = I.hex8.exec(t) || [], e && s && r && n ? {
-    r: H(e),
-    g: H(s),
-    b: H(r),
+    r: N(e),
+    g: N(s),
+    b: N(r),
     a: Ft(n),
     format: "hex",
     ok: !0
   } : ([, e, s, r] = I.hex6.exec(t) || [], e && s && r ? {
-    r: H(e),
-    g: H(s),
-    b: H(r),
+    r: N(e),
+    g: N(s),
+    b: N(r),
     a: 1,
     format: "hex",
     ok: !0
   } : ([, e, s, r, n] = I.hex4.exec(t) || [], e && s && r && n ? {
-    r: H(e + e),
-    g: H(s + s),
-    b: H(r + r),
+    r: N(e + e),
+    g: N(s + s),
+    b: N(r + r),
     a: Ft(n + n),
     format: "hex",
     ok: !0
   } : ([, e, s, r] = I.hex3.exec(t) || [], e && s && r ? {
-    r: H(e + e),
-    g: H(s + s),
-    b: H(r + r),
+    r: N(e + e),
+    g: N(s + s),
+    b: N(r + r),
     a: 1,
     format: "hex",
     ok: !0
@@ -1557,9 +1557,9 @@ me(o.getRootNode().host, t) : null, _ = (o, t) => at(o) ? o : (Q(t) ? t : K()).q
     format: "rgb",
     ok: !o
   })))))));
-}, ne = (o) => {
+}, ie = (o) => {
   let t = { r: 0, g: 0, b: 0 }, e = o, s = 1, r, n, i, a, l, c, h, b, u = "rgb", d = !1;
-  return (!e || typeof e == "string") && (e = Ne(e), d = e.ok), it(e, t) && N(e.r) && N(e.g) && N(e.b) && ({ r: h, g: b, b: l } = e, [h, b, l] = [h, b, l].map((g) => R(g, kt(g) ? 100 : 255)), t = { r: h, g: b, b: l }, u = "format" in e ? e.format : "rgb"), it(e, { h: 0, s: 0, v: 0 }) && N(e.h) && N(e.s) && N(e.v) && ({ h: c, s: r, v: n } = e, c = R(c, 360), r = R(r, 100), n = R(n, 100), t = It(c, r, n), u = "hsv"), it(e, { h: 0, s: 0, l: 0 }) && N(e.h) && N(e.s) && N(e.l) && ({ h: c, s: r, l: i } = e, c = R(c, 360), r = R(r, 100), i = R(i, 100), t = lt(c, r, i), u = "hsl"), it(e, { h: 0, w: 0, b: 0 }) && N(e.h) && N(e.w) && N(e.b) && ({ h: c, w: a, b: l } = e, c = R(c, 360), a = R(a, 100), l = R(l, 100), t = Ae(c, a, l), u = "hwb"), N(e.a) && (s = e.a, s = kt(s) || parseFloat(`${s}`) > 1 ? R(s, 100) : s), {
+  return (!e || typeof e == "string") && (e = Ne(e), d = e.ok), it(e, t) && H(e.r) && H(e.g) && H(e.b) && ({ r: h, g: b, b: l } = e, [h, b, l] = [h, b, l].map((g) => R(g, kt(g) ? 100 : 255)), t = { r: h, g: b, b: l }, u = "format" in e ? e.format : "rgb"), it(e, { h: 0, s: 0, v: 0 }) && H(e.h) && H(e.s) && H(e.v) && ({ h: c, s: r, v: n } = e, c = R(c, 360), r = R(r, 100), n = R(n, 100), t = It(c, r, n), u = "hsv"), it(e, { h: 0, s: 0, l: 0 }) && H(e.h) && H(e.s) && H(e.l) && ({ h: c, s: r, l: i } = e, c = R(c, 360), r = R(r, 100), i = R(i, 100), t = ct(c, r, i), u = "hsl"), it(e, { h: 0, w: 0, b: 0 }) && H(e.h) && H(e.w) && H(e.b) && ({ h: c, w: a, b: l } = e, c = R(c, 360), a = R(a, 100), l = R(l, 100), t = He(c, a, l), u = "hwb"), H(e.a) && (s = e.a, s = kt(s) || parseFloat(`${s}`) > 1 ? R(s, 100) : s), {
     r: t.r,
     g: t.g,
     b: t.b,
@@ -1567,39 +1567,39 @@ me(o.getRootNode().host, t) : null, _ = (o, t) => at(o) ? o : (Q(t) ? t : K()).q
     format: u,
     ok: d
   };
-}, go = "1.0.8";
+}, uo = "1.0.8";
 class y {
   // bring main utilities to front
   static matchers = I;
-  static isOnePointZero = xe;
+  static isOnePointZero = Pe;
   static isPercentage = kt;
-  static isValidCSSUnit = N;
-  static isNonColor = ye;
-  static isColorName = Se;
+  static isValidCSSUnit = H;
+  static isNonColor = xe;
+  static isColorName = Ce;
   static isColorType = it;
   static pad2 = z;
-  static clamp01 = ut;
+  static clamp01 = bt;
   static bound01 = R;
   static boundAlpha = Dt;
-  static getRGBFromName = Ce;
+  static getRGBFromName = Le;
   static convertHexToDecimal = Ft;
-  static convertDecimalToHex = Le;
-  static rgbToHsl = ee;
-  static rgbToHex = re;
-  static rgbToHsv = se;
-  static rgbToHwb = oe;
-  static rgbaToHex = Nt;
+  static convertDecimalToHex = Ae;
+  static rgbToHsl = oe;
+  static rgbToHex = ne;
+  static rgbToHsv = re;
+  static rgbToHwb = se;
+  static rgbaToHex = Ht;
   static hslToRgb = It;
   static hsvToRgb = It;
-  static hueToRgb = ft;
-  static hwbToRgb = Ae;
-  static parseIntFromHex = H;
+  static hueToRgb = mt;
+  static hwbToRgb = He;
+  static parseIntFromHex = N;
   static stringInputToObject = Ne;
-  static inputToRGB = ne;
+  static inputToRGB = ie;
   static roundPart = v;
   static webColors = $t;
   static nonColors = zt;
-  static version = go;
+  static version = uo;
   // main public properties
   r;
   g;
@@ -1610,7 +1610,7 @@ class y {
   originalInput;
   // main public methods
   constructor(t, e) {
-    const s = e && Pe.includes(e) ? e : "", { r, g: n, b: i, a, ok: l, format: c } = ne(t);
+    const s = e && Se.includes(e) ? e : "", { r, g: n, b: i, a, ok: l, format: c } = ie(t);
     this.originalInput = t, this.r = r, this.g = n, this.b = i, this.a = a, this.ok = l, this.format = s || c;
   }
   /**
@@ -1691,7 +1691,7 @@ class y {
    */
   toHex(t) {
     const { r: e, g: s, b: r, a: n } = this.toRgb();
-    return n === 1 ? re(e, s, r, t) : Nt(e, s, r, n, t);
+    return n === 1 ? ne(e, s, r, t) : Ht(e, s, r, n, t);
   }
   /**
    * Returns the CSS valid hexadecimal vaue of the colour. When the parameter is *true*
@@ -1705,7 +1705,7 @@ class y {
    */
   toHex8(t) {
     const { r: e, g: s, b: r, a: n } = this.toRgb();
-    return Nt(e, s, r, n, t);
+    return Ht(e, s, r, n, t);
   }
   /**
    * Returns the HEX8 value of the colour.
@@ -1717,7 +1717,7 @@ class y {
    * Returns the colour as a HSVA object.
    */
   toHsv() {
-    const { r: t, g: e, b: s, a: r } = this, { h: n, s: i, v: a } = se(t, e, s);
+    const { r: t, g: e, b: s, a: r } = this, { h: n, s: i, v: a } = re(t, e, s);
     return {
       h: n,
       s: i,
@@ -1729,7 +1729,7 @@ class y {
    * Returns the colour as an HSLA object.
    */
   toHsl() {
-    const { r: t, g: e, b: s, a: r } = this, { h: n, s: i, l: a } = ee(t, e, s);
+    const { r: t, g: e, b: s, a: r } = this, { h: n, s: i, l: a } = oe(t, e, s);
     return {
       h: n,
       s: i,
@@ -1761,7 +1761,7 @@ class y {
    * Returns the colour as an HWBA object.
    */
   toHwb() {
-    const { r: t, g: e, b: s, a: r } = this, { h: n, w: i, b: a } = oe(t, e, s);
+    const { r: t, g: e, b: s, a: r } = this, { h: n, w: i, b: a } = se(t, e, s);
     return {
       h: n,
       w: i,
@@ -1790,7 +1790,7 @@ class y {
   saturate(t) {
     if (typeof t != "number")
       return this;
-    const { h: e, s, l: r } = this.toHsl(), { r: n, g: i, b: a } = lt(e, ut(s + t / 100), r);
+    const { h: e, s, l: r } = this.toHsl(), { r: n, g: i, b: a } = ct(e, bt(s + t / 100), r);
     return Object.assign(this, { r: n, g: i, b: a }), this;
   }
   /**
@@ -1812,7 +1812,7 @@ class y {
   lighten(t) {
     if (typeof t != "number")
       return this;
-    const { h: e, s, l: r } = this.toHsl(), { r: n, g: i, b: a } = lt(e, s, ut(r + t / 100));
+    const { h: e, s, l: r } = this.toHsl(), { r: n, g: i, b: a } = ct(e, s, bt(r + t / 100));
     return Object.assign(this, { r: n, g: i, b: a }), this;
   }
   /**
@@ -1828,7 +1828,7 @@ class y {
   spin(t) {
     if (typeof t != "number")
       return this;
-    const { h: e, s, l: r } = this.toHsl(), { r: n, g: i, b: a } = lt(ut((e * 360 + t) % 360 / 360), s, r);
+    const { h: e, s, l: r } = this.toHsl(), { r: n, g: i, b: a } = ct(bt((e * 360 + t) % 360 / 360), s, r);
     return Object.assign(this, { r: n, g: i, b: a }), this;
   }
   /** Returns a clone of the current `Color` instance. */
@@ -1905,7 +1905,7 @@ const Vt = {
   redLabel: "Red",
   greenLabel: "Green",
   blueLabel: "Blue"
-}, mt = [
+}, at = [
   "white",
   "black",
   "grey",
@@ -1923,8 +1923,8 @@ const Vt = {
   "violet",
   "magenta",
   "pink"
-], ie = (o) => {
-  if (!V(o))
+], ae = (o) => {
+  if (!B(o))
     return !1;
   try {
     JSON.parse(o);
@@ -1932,14 +1932,14 @@ const Vt = {
     return !1;
   }
   return !0;
-}, Bt = "v-hidden", uo = (o) => {
+}, Bt = "v-hidden", bo = (o) => {
   const { format: t, id: e, componentLabels: s } = o, r = x({
     tagName: "div",
     className: `color-form ${t}`
   });
   let n = ["hex"];
   return t === "rgb" ? n = ["red", "green", "blue", "alpha"] : t === "hsl" ? n = ["hue", "saturation", "lightness", "alpha"] : t === "hwb" && (n = ["hue", "whiteness", "blackness", "alpha"]), n.forEach((i) => {
-    const [a] = t === "hex" ? ["#"] : de(i).split(""), l = `color_${t}_${i}_${e}`, c = s[`${i}Label`], h = x({ tagName: "label" });
+    const [a] = t === "hex" ? ["#"] : fe(i).split(""), l = `color_${t}_${i}_${e}`, c = s[`${i}Label`], h = x({ tagName: "label" });
     m(h, "for", l), h.append(
       x({
         tagName: "span",
@@ -1963,13 +1963,13 @@ const Vt = {
       spellcheck: !1
     });
     let u = "100", d = "1";
-    i !== "alpha" && (t === "rgb" ? (u = "255", d = "1") : i === "hue" && (u = "360", d = "1")), B(b, {
+    i !== "alpha" && (t === "rgb" ? (u = "255", d = "1") : i === "hue" && (u = "360", d = "1")), K(b, {
       min: "0",
       max: u,
       step: d
     }), r.append(h, b);
   }), r;
-}, bo = (o) => {
+}, po = (o) => {
   const { format: t, componentLabels: e } = o, { hueLabel: s, alphaLabel: r, lightnessLabel: n, saturationLabel: i, whitenessLabel: a, blacknessLabel: l } = e, c = t === "hsl" ? 360 : 100, h = t === "hsl" ? 100 : 360, b = 100;
   let u = t === "hsl" ? `${s} & ${n}` : `${n} & ${i}`;
   u = t === "hwb" ? `${a} & ${l}` : u;
@@ -2023,7 +2023,7 @@ const Vt = {
     });
     E.append(A), g.append(E);
   }), g;
-}, ae = (o, t, e) => {
+}, le = (o, t, e) => {
   const { input: s, format: r, componentLabels: n } = o, { defaultsLabel: i, presetsLabel: a } = n, l = e === "color-options", c = t instanceof Kt, h = l ? a : i, b = c ? t.colors : t, u = b.length, { lightSteps: d } = c ? t : { lightSteps: null }, g = d || [9, 10].find((A) => u >= A * 2 && !(u % A)) || 5, p = l && u > g;
   let f = 2;
   f = p && u > g * 2 ? 3 : f, f = p && u > g * 3 ? 4 : f, f = p && u > g * 4 ? 5 : f;
@@ -2058,10 +2058,10 @@ const Vt = {
     });
     m(Pt, "data-value", `${F}`), l && D(Pt, { backgroundColor: F }), E.append(Pt);
   }), E;
-}, po = (o) => {
+}, fo = (o) => {
   const { input: t, parent: e, format: s, id: r, componentLabels: n, colorKeywords: i, colorPresets: a } = o, l = xt(t, "value") || "#fff", { nonColors: c } = y, { toggleLabel: h, pickerLabel: b, formatLabel: u, hexLabel: d } = n, g = c.includes(l) ? "#fff" : l;
   o.color = new y(g, s);
-  const p = s === "hex" ? d : de(s), f = x({
+  const p = s === "hex" ? d : fe(s), f = x({
     id: `picker-btn-${r}`,
     tagName: "button",
     className: "picker-toggle btn-appearance",
@@ -2080,13 +2080,13 @@ const Vt = {
     className: "color-dropdown picker",
     role: "group",
     ariaLabelledBy: `picker-btn-${r}`
-  }), $ = bo(o), P = uo(o);
+  }), $ = po(o), P = bo(o);
   if (w.append($, P), t.before(f), e.append(w), i || a) {
     const L = x({
       tagName: "div",
       className: "color-dropdown scrollable menu"
     });
-    a && L.append(ae(o, a, "color-options")), i && i.length && L.append(ae(o, i, "color-defaults"));
+    a && L.append(le(o, a, "color-options")), i && i.length && L.append(le(o, i, "color-defaults"));
     const S = x({
       tagName: "button",
       className: "menu-toggle btn-appearance",
@@ -2096,7 +2096,7 @@ const Vt = {
     }), C = encodeURI("http://www.w3.org/2000/svg"), M = Tt(C, {
       tagName: "svg"
     });
-    m(M, "xmlns", C), m(M, "viewBox", "0 0 512 512"), m(M, Me, "true");
+    m(M, "xmlns", C), m(M, "viewBox", "0 0 512 512"), m(M, Te, "true");
     const E = Tt(C, {
       tagName: "path"
     });
@@ -2109,41 +2109,41 @@ const Vt = {
       M
     ), e.append(S, L);
   }
-  i && c.includes(l) && (o.value = l), m(t, Y, "-1");
-}, fo = "2.0.0-alpha7", Z = "color-picker", mo = `[data-function="${Z}"]`, le = `.${Z}`, vo = {
+  i && c.includes(l) && (o.value = l), m(t, X, "-1");
+}, mo = "2.0.0-alpha9", Y = "color-picker", vo = `[data-function="${Y}"]`, ce = `.${Y}`, wo = {
   componentLabels: Vt,
-  colorLabels: mt,
+  colorLabels: at,
   format: "rgb",
   colorPresets: !1,
   colorKeywords: !1
-}, { roundPart: k, nonColors: bt } = y, wo = (o) => Qe(o, Z), $o = (o) => new ko(o), ce = (o, t) => {
-  const e = t ? ue : jt, { input: s, pickerToggle: r, menuToggle: n } = o;
-  e(s, Oe, o.showPicker), e(r, Mt, o.togglePicker), n && e(n, Mt, o.toggleMenu);
-}, He = (o, t) => {
-  const e = t ? ue : jt, { input: s, colorMenu: r, parent: n } = o, i = K(s), a = ao(i);
-  e(o.controls, Ie, o.pointerDown), o.controlKnobs.forEach((l) => e(l, _t, o.handleKnobs)), e(a, Be, o.handleScroll), e(a, Ve, o.update), [s, ...o.inputs].forEach((l) => e(l, Te, o.changeHandler)), r && (e(r, Mt, o.menuClickHandler), e(r, _t, o.menuKeyHandler)), e(i, be, o.pointerMove), e(i, Ke, o.pointerUp), e(n, De, o.handleFocusOut), e(i, Fe, o.handleDismiss);
-}, he = (o) => {
-  eo(o.input, new CustomEvent("colorpicker.change"));
-}, Ee = (o) => {
+}, { roundPart: k, nonColors: pt } = y, $o = (o) => to(o, Y), ko = (o) => new yo(o), he = (o, t) => {
+  const e = t ? be : jt, { input: s, pickerToggle: r, menuToggle: n } = o;
+  e(s, De, o.showPicker), e(r, Mt, o.togglePicker), n && e(n, Mt, o.toggleMenu);
+}, Ee = (o, t) => {
+  const e = t ? be : jt, { input: s, colorMenu: r, parent: n } = o, i = V(s), a = lo(i);
+  e(o.controls, Ke, o.pointerDown), o.controlKnobs.forEach((l) => e(l, _t, o.handleKnobs)), e(a, je, o.handleScroll), e(a, Be, o.update), [s, ...o.inputs].forEach((l) => e(l, Re, o.changeHandler)), r && (e(r, Mt, o.menuClickHandler), e(r, _t, o.menuKeyHandler)), e(i, pe, o.pointerMove), e(i, Ve, o.pointerUp), e(n, Fe, o.handleFocusOut), e(i, Ie, o.handleDismiss);
+}, ge = (o) => {
+  oo(o.input, new CustomEvent("colorpicker.change"));
+}, Me = (o) => {
   o && ["bottom", "top"].forEach((t) => O(o, t));
-}, Ht = (o, t) => {
+}, Nt = (o, t) => {
   const { colorPicker: e, colorMenu: s, menuToggle: r, pickerToggle: n, parent: i } = o, a = t === e, l = a ? s : e, c = a ? r : n, h = a ? n : r;
-  T(i, "open") || q(i, "open"), l && (O(l, "show"), Ee(l)), q(t, "bottom"), no(t), q(t, "show"), a && o.update(), o.isOpen || (He(o, !0), o.updateDropdownPosition(), o.isOpen = !0, m(o.input, Y, "0"), r && m(r, Y, "0")), m(h, Et, "true"), c && m(c, Et, "false");
+  T(i, "open") || q(i, "open"), l && (O(l, "show"), Me(l)), q(t, "bottom"), io(t), q(t, "show"), a && o.update(), o.isOpen || (Ee(o, !0), o.updateDropdownPosition(), o.isOpen = !0, m(o.input, X, "0"), r && m(r, X, "0")), m(h, Et, "true"), c && m(c, Et, "false");
 };
-class ko {
+class yo {
   // bring utils to staic
   static Color = y;
   static ColorPalette = Kt;
-  static getInstance = wo;
-  static init = $o;
-  static selector = mo;
+  static getInstance = $o;
+  static init = ko;
+  static selector = vo;
   // utils important for render
   static roundPart = k;
   static setElementStyle = D;
   static setAttribute = m;
-  static getBoundingClientRect = gt;
-  static version = fo;
-  static colorNames = mt;
+  static getBoundingClientRect = ut;
+  static version = mo;
+  static colorNames = at;
   static colorPickerLabels = Vt;
   id;
   input;
@@ -2153,7 +2153,7 @@ class ko {
   dragElement;
   isOpen = !1;
   controlPositions;
-  colorLabels = {};
+  colorLabels = Yt(at.map((t) => [t, t]));
   colorKeywords;
   colorPresets;
   componentLabels;
@@ -2176,40 +2176,38 @@ class ko {
     const s = _(t);
     if (typeof t > "u")
       throw new TypeError("ColorPicker target not specified.");
-    if (V(t) && !s)
+    if (B(t) && !s)
       throw new TypeError(`ColorPicker target "${t}" cannot be found.`);
     this.input = s;
-    const r = me(s, le);
+    const r = ve(s, ce);
     if (!r)
       throw new TypeError("ColorPicker requires a specific markup to work.");
-    this.parent = r, this.id = fe(s, Z), this.dragElement = void 0, this.isOpen = !1, this.controlPositions = {
+    this.parent = r, this.id = me(s, Y), this.dragElement = void 0, this.isOpen = !1, this.controlPositions = {
       c1x: 0,
       c1y: 0,
       c2y: 0,
       c3y: 0
-    }, this.colorLabels = {}, this.colorKeywords = !1, this.colorPresets = !1;
-    const { format: n, componentLabels: i, colorLabels: a, colorKeywords: l, colorPresets: c } = ro(
+    }, this.colorKeywords = !1, this.colorPresets = !1;
+    const { format: n, componentLabels: i, colorLabels: a, colorKeywords: l, colorPresets: c } = no(
       s,
-      vo,
+      wo,
       e || {}
     );
-    let h = mt;
-    At(a) && a.length === 17 ? h = a : V(a) && a.split(",").length === 17 && (h = a.split(",")), mt.forEach((p, f) => {
-      this.colorLabels[p] = h[f].trim();
-    });
-    const b = V(i) && ie(i) ? JSON.parse(i) : i;
-    if (this.componentLabels = B({ ...Vt }, b), this.color = new y(s.value || "#fff", n), this.format = n, At(l) && l.length ? this.colorKeywords = l : V(l) && l.length && (this.colorKeywords = l.split(",").map((p) => p.trim())), At(c) && c.length)
+    let h = at;
+    At(a) && a.length === 17 ? h = a : B(a) && a.split(",").length === 17 && (h = a.split(",")), K(this.colorLabels, Yt(h.map((p, f) => [at[f], p])));
+    const b = B(i) && ae(i) ? JSON.parse(i) : i;
+    if (this.componentLabels = K({ ...Vt }, b), this.color = new y(s.value || "#fff", n), this.format = n, At(l) && l.length ? this.colorKeywords = l : B(l) && l.length && (this.colorKeywords = l.split(",").map((p) => p.trim())), At(c) && c.length)
       this.colorPresets = c;
-    else if (c && ie(c)) {
+    else if (c && ae(c)) {
       const { hue: p, hueSteps: f, lightSteps: w, saturation: $ } = JSON.parse(c);
       this.colorPresets = new Kt(p, f, w, $);
     } else
-      V(c) && (this.colorPresets = c.split(",").map((p) => p.trim()));
-    po(this);
+      B(c) && (this.colorPresets = c.split(",").map((p) => p.trim()));
+    fo(this);
     const [u, d] = rt("color-dropdown", r);
     this.pickerToggle = _(".picker-toggle", r), this.menuToggle = _(".menu-toggle", r), this.colorPicker = u, this.colorMenu = d, this.inputs = [...rt("color-input", r)];
     const [g] = rt("color-controls", r);
-    this.controls = g, this.controlKnobs = [...rt("knob", g)], this.visuals = [...rt("visual-control", g)], this.update(), ce(this, !0), ct.set(s, Z, this);
+    this.controls = g, this.controlKnobs = [...rt("knob", g)], this.visuals = [...rt("visual-control", g)], this.update(), he(this, !0), ht.set(s, Y, this);
   }
   /** Returns the current colour value */
   get value() {
@@ -2225,7 +2223,7 @@ class ko {
   }
   /** Check if the colour presets include any non-colour. */
   get hasNonColor() {
-    return this.colorKeywords instanceof Array && this.colorKeywords.some((t) => bt.includes(t));
+    return this.colorKeywords instanceof Array && this.colorKeywords.some((t) => pt.includes(t));
   }
   /** Returns hexadecimal value of the current colour. */
   get hex() {
@@ -2322,17 +2320,16 @@ class ko {
    * @this {ColorPicker}
    */
   handleDismiss = ({ code: t }) => {
-    this.isOpen && t === ze && this.hide();
+    this.isOpen && t === Ge && this.hide();
   };
   /**
    * The `ColorPicker` *scroll* event listener when open.
    *
    * @param e
-   * @this {ColorPicker}
    */
   handleScroll = (t) => {
-    const { activeElement: e } = K(this.input);
-    this.updateDropdownPosition(), ([be, je].includes(t.type) && this.dragElement || e && this.controlKnobs.includes(e)) && (t.stopPropagation(), t.preventDefault());
+    const { activeElement: e } = V(this.input);
+    this.updateDropdownPosition(), ([pe, qe].includes(t.type) && this.dragElement || e && this.controlKnobs.includes(e)) && (t.stopPropagation(), t.preventDefault());
   };
   /**
    * The `ColorPicker` keyboard event listener for menu navigation.
@@ -2341,7 +2338,7 @@ class ko {
    */
   menuKeyHandler = (t) => {
     const { target: e, code: s } = t, { previousElementSibling: r, nextElementSibling: n, parentElement: i } = e, a = i && T(i, "color-options"), l = i ? [...i.children] : [], c = a && Rt(i, "grid-template-columns").split(" ").length, h = l.indexOf(e), b = h > -1 && c && l[h - c], u = h > -1 && c && l[h + c];
-    [j, st, Wt].includes(s) && t.preventDefault(), a ? b && s === st ? U(b) : u && s === j ? U(u) : r && s === ht ? U(r) : n && s === G && U(n) : r && [ht, st].includes(s) ? U(r) : n && [G, j].includes(s) && U(n), [qe, Wt].includes(s) && this.menuClickHandler(t);
+    [j, st, Wt].includes(s) && t.preventDefault(), a ? b && s === st ? U(b) : u && s === j ? U(u) : r && s === gt ? U(r) : n && s === G && U(n) : r && [gt, st].includes(s) ? U(r) : n && [G, j].includes(s) && U(n), [ze, Wt].includes(s) && this.menuClickHandler(t);
   };
   /**
    * The `ColorPicker` click event listener for the colour menu presets / defaults.
@@ -2355,14 +2352,14 @@ class ko {
       return;
     const n = _("li.active", s);
     let i = r;
-    i = bt.includes(i) ? "white" : i, i = i === "transparent" ? "rgba(0,0,0,0)" : i;
+    i = pt.includes(i) ? "white" : i, i = i === "transparent" ? "rgba(0,0,0,0)" : i;
     const { r: a, g: l, b: c, a: h } = new y(i);
-    B(this.color, {
+    K(this.color, {
       r: a,
       g: l,
       b: c,
       a: h
-    }), this.update(), n !== e && (n && (O(n, "active"), Ct(n, St)), q(e, "active"), m(e, St, "true"), bt.includes(r) && (this.value = r), he(this));
+    }), this.update(), n !== e && (n && (O(n, "active"), Ct(n, St)), q(e, "active"), m(e, St, "true"), pt.includes(r) && (this.value = r), ge(this));
   };
   /**
    * The `ColorPicker` *touchstart* / *mousedown* events listener for control knobs.
@@ -2370,7 +2367,9 @@ class ko {
    * @param e
    */
   pointerDown = (t) => {
-    const { target: e, pageX: s, pageY: r } = t, { colorMenu: n, visuals: i, controlKnobs: a } = this, [l, c, h] = i, [b, u, d] = a, g = a.includes(e) ? e.previousElementSibling : e, p = gt(g), f = Lt(l), w = s - f.scrollLeft - p.left, $ = r - f.scrollTop - p.top;
+    if (t.button !== 0)
+      return;
+    const { target: e, pageX: s, pageY: r } = t, { colorMenu: n, visuals: i, controlKnobs: a } = this, [l, c, h] = i, [b, u, d] = a, g = a.includes(e) ? e.previousElementSibling : e, p = ut(g), f = Lt(l), w = s - f.scrollLeft - p.left, $ = r - f.scrollTop - p.top;
     if (e === l || e === b ? (this.dragElement = g, this.changeControl1(w, $)) : e === c || e === u ? (this.dragElement = g, this.changeControl2($)) : (e === h || e === d) && (this.dragElement = g, this.changeAlpha($)), n) {
       const P = _("li.active", n);
       P && (O(P, "active"), Ct(P, St));
@@ -2384,7 +2383,7 @@ class ko {
    * @this
    */
   pointerUp = ({ target: t }) => {
-    const { parent: e } = this, s = K(e), r = _(`${le}.open`, s) !== null, n = s.getSelection();
+    const { parent: e } = this, s = V(e), r = _(`${ce}.open`, s) !== null, n = s.getSelection();
     !this.dragElement && (!n || !n.toString().length) && !e.contains(t) && this.hide(r), this.dragElement = void 0;
   };
   /**
@@ -2396,7 +2395,7 @@ class ko {
     const { dragElement: e, visuals: s } = this, [r, n, i] = s, { pageX: a, pageY: l } = t;
     if (!e)
       return;
-    const c = gt(e), h = Lt(r), b = a - h.scrollLeft - c.left, u = l - h.scrollTop - c.top;
+    const c = ut(e), h = Lt(r), b = a - h.scrollLeft - c.left, u = l - h.scrollTop - c.top;
     e === r && this.changeControl1(b, u), e === n && this.changeControl2(u), e === i && this.changeAlpha(u);
   };
   /**
@@ -2406,15 +2405,15 @@ class ko {
    */
   handleKnobs = (t) => {
     const { target: e, code: s } = t;
-    if (![st, j, ht, G].includes(s))
+    if (![st, j, gt, G].includes(s))
       return;
     t.preventDefault();
-    const { controlKnobs: r, visuals: n } = this, { offsetWidth: i, offsetHeight: a } = n[0], [l, c, h] = r, { activeElement: b } = K(l), u = r.find((g) => g === b), d = a / 360;
+    const { controlKnobs: r, visuals: n } = this, { offsetWidth: i, offsetHeight: a } = n[0], [l, c, h] = r, { activeElement: b } = V(l), u = r.find((g) => g === b), d = a / 360;
     if (u) {
       let g = 0, p = 0;
       if (e === l) {
         const f = i / 100;
-        [ht, G].includes(s) ? this.controlPositions.c1x += s === G ? f : -f : [st, j].includes(s) && (this.controlPositions.c1y += s === j ? d : -d), g = this.controlPositions.c1x, p = this.controlPositions.c1y, this.changeControl1(g, p);
+        [gt, G].includes(s) ? this.controlPositions.c1x += s === G ? f : -f : [st, j].includes(s) && (this.controlPositions.c1y += s === j ? d : -d), g = this.controlPositions.c1x, p = this.controlPositions.c1y, this.changeControl1(g, p);
       } else
         e === c ? (this.controlPositions.c2y += [j, G].includes(s) ? d : -d, p = this.controlPositions.c2y, this.changeControl2(p)) : e === h && (this.controlPositions.c3y += [j, G].includes(s) ? d : -d, p = this.controlPositions.c3y, this.changeAlpha(p));
       this.handleScroll(t);
@@ -2423,7 +2422,7 @@ class ko {
   /** The event listener of the colour form inputs. */
   changeHandler = () => {
     let t;
-    const { inputs: e, format: s, value: r, input: n, controlPositions: i, visuals: a } = this, { activeElement: l } = K(n), { offsetHeight: c } = a[0], [h, , , b] = e, [u, d, g, p] = s === "rgb" ? e.map(($) => parseFloat($.value) / ($ === b ? 100 : 1)) : e.map(($) => parseFloat($.value) / ($ !== h ? 100 : 360)), f = this.hasNonColor && bt.includes(r), w = b ? p : 1 - i.c3y / c;
+    const { inputs: e, format: s, value: r, input: n, controlPositions: i, visuals: a } = this, { activeElement: l } = V(n), { offsetHeight: c } = a[0], [h, , , b] = e, [u, d, g, p] = s === "rgb" ? e.map(($) => parseFloat($.value) / ($ === b ? 100 : 1)) : e.map(($) => parseFloat($.value) / ($ !== h ? 100 : 360)), f = this.hasNonColor && pt.includes(r), w = b ? p : 1 - i.c3y / c;
     if (l === n || l && e.includes(l)) {
       l === n ? f ? t = r === "transparent" ? "rgba(0,0,0,0)" : "rgb(0,0,0)" : t = r : s === "hex" ? t = h.value : s === "hsl" ? t = {
         h: u,
@@ -2442,7 +2441,7 @@ class ko {
         a: w
       };
       const { r: $, g: P, b: L, a: S } = new y(t);
-      B(this.color, {
+      K(this.color, {
         r: $,
         g: P,
         b: L,
@@ -2468,7 +2467,7 @@ class ko {
       v: b,
       a: u
     });
-    B(this.color, {
+    K(this.color, {
       r: d,
       g,
       b: p,
@@ -2492,7 +2491,7 @@ class ko {
       v: c,
       a: h
     });
-    B(this.color, {
+    K(this.color, {
       r: b,
       g: u,
       b: d,
@@ -2522,7 +2521,7 @@ class ko {
   };
   /** Updates the open dropdown position on *scroll* event. */
   updateDropdownPosition() {
-    const { input: t, colorPicker: e, colorMenu: s } = this, r = gt(t), { top: n, bottom: i } = r, { offsetHeight: a } = t, l = Lt(t).clientHeight, h = T(e, "show") ? e : s;
+    const { input: t, colorPicker: e, colorMenu: s } = this, r = ut(t), { top: n, bottom: i } = r, { offsetHeight: a } = t, l = Lt(t).clientHeight, h = T(e, "show") ? e : s;
     if (!h)
       return;
     const { offsetHeight: b } = h, u = l - i, d = n, g = n + b + a > l, p = n - b < 0;
@@ -2578,7 +2577,7 @@ class ko {
       let { r: g, g: p, b: f } = this.rgb;
       [g, p, f] = [g, p, f].map(k), d = this.color.toRgbString(), a.value = `${g}`, l.value = `${p}`, c.value = `${f}`, h.value = `${b}`;
     }
-    this.value = d, !t && d !== e && he(this);
+    this.value = d, !t && d !== e && ge(this);
   }
   /**
    * Toggle the `ColorPicker` dropdown visibility.
@@ -2588,12 +2587,12 @@ class ko {
   togglePicker = (t) => {
     t && t.preventDefault();
     const { colorPicker: e } = this;
-    this.isOpen && T(e, "show") ? this.hide(!0) : Ht(this, e);
+    this.isOpen && T(e, "show") ? this.hide(!0) : Nt(this, e);
   };
   /** Shows the `ColorPicker` dropdown. */
   showPicker = () => {
     const { colorPicker: t } = this;
-    ["top", "bottom"].some((e) => T(t, e)) || Ht(this, t);
+    ["top", "bottom"].some((e) => T(t, e)) || Nt(this, t);
   };
   /**
    * Toggles the visibility of the `ColorPicker` presets menu.
@@ -2604,7 +2603,7 @@ class ko {
   toggleMenu = (t) => {
     t && t.preventDefault();
     const { colorMenu: e } = this;
-    this.isOpen && T(e, "show") ? this.hide(!0) : Ht(this, e);
+    this.isOpen && T(e, "show") ? this.hide(!0) : Nt(this, e);
   };
   /**
    * Hides the currently open `ColorPicker` dropdown.
@@ -2613,21 +2612,21 @@ class ko {
    */
   hide(t) {
     if (this.isOpen) {
-      const { pickerToggle: e, menuToggle: s, colorPicker: r, colorMenu: n, parent: i, input: a } = this, l = T(r, "show"), c = l ? r : n, h = l ? e : s, b = c && oo(c);
+      const { pickerToggle: e, menuToggle: s, colorPicker: r, colorMenu: n, parent: i, input: a } = this, l = T(r, "show"), c = l ? r : n, h = l ? e : s, b = c && so(c);
       this.value = this.color.toString(!0), c && (O(c, "show"), m(h, Et, "false"), setTimeout(() => {
-        Ee(c), _(".show", i) || (O(i, "open"), He(this), this.isOpen = !1);
-      }, b)), t || U(e), m(a, Y, "-1"), h === s && m(s, Y, "-1");
+        Me(c), _(".show", i) || (O(i, "open"), Ee(this), this.isOpen = !1);
+      }, b)), t || U(e), m(a, X, "-1"), h === s && m(s, X, "-1");
     }
   }
   /** Removes `ColorPicker` from target `<input>`. */
   dispose() {
     const { input: t, parent: e } = this;
-    this.hide(!0), ce(this), [...e.children].forEach((s) => {
+    this.hide(!0), he(this), [...e.children].forEach((s) => {
       s !== t && s.remove();
-    }), Ct(t, Y), D(t, { backgroundColor: "" }), ["txt-light", "txt-dark"].forEach((s) => O(e, s)), ct.remove(t, Z);
+    }), Ct(t, X), D(t, { backgroundColor: "" }), ["txt-light", "txt-dark"].forEach((s) => O(e, s)), ht.remove(t, Y);
   }
 }
 export {
-  ko as default
+  yo as default
 };
 //# sourceMappingURL=color-picker.mjs.map

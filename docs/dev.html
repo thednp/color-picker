@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ColorPicker Modern Web Component</title>
+  <meta name="description" content="A modern and fully featured color picker web component">
+  <meta name="keywords" content="color, picker, colorpicker, web component, hwb, hex, rgb, hsl, hsv">
+  <meta property="og:title" content="ColorPicker Modern Web Component">
+  <meta property="og:description" content="A modern and fully featured color picker web component">
+  <meta property="og:image" content="./img/color-picker.png">
+  <meta property="og:image:width" content="800">
+  <meta property="og:image:height" content="400">
+  <link id="favicon" rel="shortcut icon" href="data:image/svg+xml;utf8,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='rgb(0,102,153)'&gt;&lt;path d='M0 32a32 32 0 1 0 64 0a32 32 0 1 0 -64 0M21.83 47.18v-30.3q0 -4.65 2.66 -6.79T33 7.96c2.78 -0.15 5.55 0.42 8.04 1.67c0.23 0.13 0.45 0.28 0.66 0.43q2.85 2.1 2.85 6.9v9.97l-6.37 0.82v-9.22q0 -2.55 -0.98 -3.94t-4.05 -1.39q-2.93 0 -3.86 1.46t-0.94 3.79v27.23q0 1.95 1.05 3.23t3.75 1.27q2.77 0 3.9 -1.27t1.13 -3.23v-8.7l6.38 -0.75v10.95q0 3.98 -2.92 6.15t-8.4 2.17c-2.79 0.17 -5.57 -0.45 -8.03 -1.79C25.01 53.6 24.82 53.47 24.64 53.33q-2.81 -2.17 -2.81 -6.15z'&gt;&lt;/path&gt;&lt;/svg&gt;">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="./css/style.css">
+  <style>
+    @import url(../src/scss/color-picker.rtl.scss);
+    .light {
+      --dropdown-bg: var(--white-90);
+      --dropdown-color: var(--black-75);
+      --dropdown-scrollbar-bg: var(--black-33);
+      --dropdown-scrollbar-bg-hover: var(--black-50);
+      --knob-bg: #fff;
+      --knob-border: 1px solid var(--black-90);
+      --input-border: 1px solid var(--black-15);
+      --knob-shadow-hover: 0 0 0 6px var(--black-50);
+      --knob-shadow-active: 0 0 0 6px var(--black-90);
+      --input-border-hover: 1px solid var(--black-33);
+      --option-color-hover: var(--white-75);
+      --option-bg-hover: var(--black-50);
+      --option-color-active: var(--white-75);
+      --option-bg-active: var(--black-90);
+      --visual-shadow: 0 0 0 1px var(--black-15) inset;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1><a target="_blank" href="https://github.com/thednp/color-picker" title="ColorPicker on Github">ColorPicker Web Component</a></h1>
+</header>
+
+<main>
+  <h2>Regular Input</h2>
+  <button class="btn-appearance switch" id="rtlSwitch" title="Switch language direction" aria-label="Right To Left Languages Testing">RTL</button>
+  <div class="row">
+    <div class="col">
+      <label for="picker31">Accent Colour</label>
+      <div class="color-picker">
+        <input type="text" name="picker31" id="picker31" class="color-preview btn-appearance" autocomplete="off" spellcheck="false"
+          placeholder="Définir la couleur au format HSL" value="red" data-format="rgb" data-color-presets='{"hue": 0, "hueSteps": 12, "lightSteps": 10, "saturation": 85}'>
+      </div>
+      <ul class="mb-5">
+        <li>manually initialized via JavaScript;</li>
+        <li><code>componentLabels</code> option is default;</li>
+        <li><code>colorLabels</code> option is default;</li>
+        <li><code>data-format="hsl"</code> attribute is used;</li>
+        <li><code>colorPresets</code> option is set to <a href="https://material.io/archive/guidelines/style/color.html" target="_blank" title="Material Design Colors">Material Colors</a> via JavaScript API;</li>
+        <li><code>colorKeywords</code> option is set via JavaScript API;</li>
+      </ul>
+    </div>
+    <div class="col">
+      <label for="picker0">Primary Color</label>
+      <div class="color-picker">
+        <input type="text" data-function="color-picker" data-color-keywords="red,orange,yellow,lime,green,blue,magenta,pink" class="color-preview btn-appearance" name="picker0" id="picker0" value="rgb(29 78 216 / 90%)" autocomplete="off" spellcheck="false" placeholder="Set colour RGB format">
+      </div>
+      <ul class="mb-5">
+        <li>manually initialized with the default selector;</li>
+        <li>when changed, creates a colour tetrad with the others in the line;</li>
+        <li><code>format</code> option is default (<code>rgb</code>);</li>
+        <li><code>componentLabels</code> option is default;</li>
+        <li><code>colorLabels</code> option is default;</li>
+        <li><code>colorPresets</code> option is default (<code>false</code>);</li>
+        <li><code>colorKeywords</code> option is set via DATA API with a couple of web colors.</li>
+      </ul>
+    </div>
+    <div class="col">
+      <label for="picker1">Secondary Color</label>
+      <div class="color-picker light">
+        <input type="text" data-format="hex" class="color-preview btn-appearance" name="picker1" id="picker1" value="#be185de6" autocomplete="off" spellcheck="false" placeholder="Set color HEXADECIMAL format">
+      </div>
+      <ul class="mb-5">
+        <li>manually initialized via JavaScript;</li>
+        <li><code>data-format="hex"</code> attribute is used;</li>
+        <li><code>componentLabels</code> option is default;</li>
+        <li><code>colorLabels</code> option is default;</li>
+        <li><code>colorPresets</code> option is set to <a href="https://getbootstrap.com/docs/5.0/customize/color/#all-colors" target="_blank" title="All Bootstrap Colors">Bootstrap Colors</a>;</li>
+        <li><code>colorKeywords</code> option is set to use some non-color values.</li>
+      </ul>
+    </div>
+    <div class="col" lang="ro-RO">
+      <label for="picker2">Culoare Terțiară</label>
+      <div class="color-picker">
+        <input type="text" class="color-preview btn-appearance" name="picker2" id="picker2" value="hwb(17deg 5% 24% 90%)" autocomplete="off" spellcheck="false" placeholder="Alege o culoare în format HWB">
+      </div>
+      <ul class="mb-5">
+        <li>manually initialized via JavaScript;</li>
+        <li><code>format</code> option is set via JavaScript to <code>hwb</code>;</li>
+        <li><code>componentLabels</code> option is set via JavaScript;</li>
+        <li><code>colorLabels</code> option is set to via JavaScript;</li>
+        <li><code>colorPresets</code> option is set via JavaScript to <a href="https://tailwindcolor.com/" target="_blank" title="Tailwind Colors">Tailwind Colors</a>;</li>
+        <li><code>colorKeywords</code> option is set via JavaScript;</li>
+      </ul>
+    </div>
+    <div class="col">
+      <label for="picker3">Accent Colour</label>
+      <div class="color-picker">
+        <input type="text" name="picker3" id="picker3" class="color-preview btn-appearance" autocomplete="off" spellcheck="false"
+          placeholder="Définir la couleur au format HSL" value="hsl(86deg 78% 27% / 90%)" data-format="hsl">
+      </div>
+      <ul class="mb-5">
+        <li>manually initialized via JavaScript;</li>
+        <li><code>componentLabels</code> option is default;</li>
+        <li><code>colorLabels</code> option is default;</li>
+        <li><code>data-format="hsl"</code> attribute is used;</li>
+        <li><code>colorPresets</code> option is set to <a href="https://material.io/archive/guidelines/style/color.html" target="_blank" title="Material Design Colors">Material Colors</a> via JavaScript API;</li>
+        <li><code>colorKeywords</code> option is set via JavaScript API;</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p class="copy"><a target="_blank" href="https://github.com/thednp">thednp</a> © 2023</p>
+  
+  <p class="links">
+    <a target="_blank" href="https://github.com/thednp/color-picker" title="ColorPicker on Github">Github</a> |
+    <a target="_blank" href="https://www.jsdelivr.com/package/npm/@thednp/color-picker" title="ColorPicker on jsDelivr CDN">CDN</a> |
+    <a target="_blank" href="https://www.npmjs.com/package/@thednp/color-picker" title="ColorPicker on NPM">NPM</a>.
+  </p>
+</footer>
+
+<!-- <script src="./js/color-picker.js"></script> -->
+<script type="module">
+  import ColorPicker from '../src/ts';
+  // import './js/script';
+  // window.ColorPicker = ColorPicker;
+
+  const [picker31, picker0, picker1, picker2, picker3] = document.querySelectorAll('input');
+  const [picker4, picker5, picker6, picker7] = [...document.querySelectorAll('color-picker')].map(c => c.querySelector('input'));
+
+
+  const picker31Instance = new ColorPicker(picker31, {
+    // colorPresets: bootstrapColors,
+    colorKeywords: ['initial', 'revert', 'inherit']
+  });
+
+  const picker1Instance = new ColorPicker(picker1, {
+    colorPresets: bootstrapColors,
+    colorKeywords: ['initial', 'revert', 'inherit']
+  });
+
+  const picker2Instance = new ColorPicker(picker2, {
+    format: 'hwb',
+    colorPresets: tailwindColors,
+    colorKeywords: '#c2400de6:default,#0d8fc2e6:complementary',
+    componentLabels: {
+      pickerLabel: "Panel de culori",
+      appearanceLabel: "Aparența vizuală",
+      valueLabel:"Valoarea actuală",
+      toggleLabel: "Selectează culoare", 
+      presetsLabel: "Culori prestabilite",
+      defaultsLabel: "Valori implicite",
+      alphaLabel: "Alfa", hexLabel: "Hexazecimal",
+      whitenessLabel: 'Alb', blacknessLabel: 'Negru',
+      hueLabel: "Nuanță", saturationLabel: "Saturație", lightnessLabel: "Luminozitate",
+      redLabel: "Roșu", greenLabel: "Verde", blueLabel: "Albastru",
+    },
+    colorLabels:"alb, negru, gri, roșu, portocaliu, maro, auriu, măsliniu, galben, lămâi, verde, albastru verzui, aqua, albastru, violet, magenta, roz"  
+  });
+
+  const picker3Instance = new ColorPicker(picker3, {
+    colorPresets: materialColors,
+    colorKeywords: ['transparent', 'currentColor']
+  });
+
+  const { init, selector } = ColorPicker;
+  [...document.querySelectorAll(selector)].forEach(init);
+
+  const favicon = document.getElementById('favicon');
+  const CPs = [...document.querySelectorAll('input')]
+    .filter(x=>ColorPicker.getInstance(x) || ColorPicker.getInstance(x));
+
+  let changed = 0;
+
+  CPs.forEach((input, i) => {
+    input.addEventListener('colorpicker.change', (e) => {
+      const { target } = e;
+      let cp = target.parentNode.localName === 'color-picker'
+        ? ColorPickerElement.getInstance(target)
+        : ColorPicker.getInstance(target);
+      const {color} = cp;
+
+      if (target === picker0) {
+        const {h, s, l, a} = cp.hsl;
+        [picker1, picker2, picker3].forEach((p, i) => {
+          const pickerInstance = ColorPicker.getInstance(p);
+          const { r, g, b, a: al } = new ColorPicker.Color({ h, s, l, a }).spin((i + 1) * 90);
+          Object.assign(pickerInstance.color, { r, g, b, a: al });
+
+          pickerInstance.update();
+        })
+      }
+      if (target === picker3 && !changed) {
+        changed = 1;
+        console.log(`The "colorpicker.change" event has fired for <color-picker id="picker3"> with new value: ${target.value}\nThis listener is set to fire *only* once for performance reasons.`);
+      }
+
+      if (target === picker4) {
+        if (target.value === 'revert') {
+          document.body.style.setProperty('--body-bg', '');
+          document.body.style.setProperty('--color', '');
+          document.body.style.setProperty('--heading-color', '');
+        } else if (target.value === 'transparent') {
+          document.body.style.setProperty('--body-bg', 'transparent');
+          document.body.style.setProperty('--color', '');
+          document.body.style.setProperty('--heading-color', '');
+        } else {
+          const lightModifier = cp.isDark ? 35 : -35;
+          const [cp5, cp6] = [picker5, picker6].map(ColorPickerElement.getInstance);
+          cp5.color = color.clone().setAlpha(1).lighten(lightModifier);
+          cp6.color = color.clone().setAlpha(1).spin(60).lighten(1.2 * lightModifier);
+          cp5.update(); cp6.update();
+          document.body.style.setProperty('--body-bg', color.toString());
+          document.body.style.setProperty('--color', cp5.color.toString());
+          document.body.style.setProperty('--heading-color', cp6.color.toString());
+        }
+      }
+      if (target === picker5) {
+        document.body.style.setProperty('--color', color.toString());
+      }
+      if (target === picker6) {
+        document.body.style.setProperty('--heading-color', color.toString());
+      }
+      if (target === picker7) {
+        document.body.style.setProperty('--btn-bg-color', color.toString());
+        if (color.isDark) {
+          document.body.style.setProperty('--btn-color', 'rgb(255 255 255 / 70%)');
+        } else {
+          document.body.style.setProperty('--btn-color', 'rgb(0 0 0 / 70%)');
+        }
+      }
+      const favColor = new ColorPicker.Color({ r: color.r, g: color.g, b: color.b}).toString();
+      favicon.setAttribute('href', `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="${favColor}"><path d="M0 32a32 32 0 1 0 64 0a32 32 0 1 0 -64 0M21.83 47.18v-30.3q0 -4.65 2.66 -6.79T33 7.96c2.78 -0.15 5.55 0.42 8.04 1.67c0.23 0.13 0.45 0.28 0.66 0.43q2.85 2.1 2.85 6.9v9.97l-6.37 0.82v-9.22q0 -2.55 -0.98 -3.94t-4.05 -1.39q-2.93 0 -3.86 1.46t-0.94 3.79v27.23q0 1.95 1.05 3.23t3.75 1.27q2.77 0 3.9 -1.27t1.13 -3.23v-8.7l6.38 -0.75v10.95q0 3.98 -2.92 6.15t-8.4 2.17c-2.79 0.17 -5.57 -0.45 -8.03 -1.79C25.01 53.6 24.82 53.47 24.64 53.33q-2.81 -2.17 -2.81 -6.15z"></path></svg>`)
+    })
+  })
+
+const styles = document.getElementById('styles');
+const rtlSwitch = document.getElementById('rtlSwitch');
+const html = document.documentElement;
+
+rtlSwitch.addEventListener('click', (e) => {
+  e.preventDefault();
+  const isRTL = html.dir === 'rtl';
+  rtlSwitch.innerText = isRTL ? 'RTL' : 'LTR';
+  html.setAttribute('dir', isRTL ? '' : 'rtl');
+});
+
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  // The maximum is exclusive and the minimum is inclusive
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
+</script>
+<script src="./js/bootstrapColors.js"></script>
+<script src="./js/materialColors.js"></script>
+<script src="./js/tailwindColors.js"></script>
+</body>
+</html>

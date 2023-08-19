@@ -2,12 +2,15 @@
 // Build script to compile and minify the CSS file from SCSS folder
 // Usage: npm run compile-scss
 
-const fs = require("fs");
-const writeFileSync = fs.writeFileSync;
+const {writeFileSync} = require("fs");
+// const writeFileSync = fs.writeFileSync;
+// import { writeFileSync } from "fs";
 const sass = require("sass");
 const pkg = require("./package.json");
 const year = new Date().getFullYear();
 const args = {};
+const pkName = pkg.name.includes(pkg.author) ? pkg.name.replace('@','') : `${pkg.author}/${pkg.name}`;
+const home = `https://github.com/${pkName}`;
 
 const ARGS = process.argv.slice(-1)[0].split(",");
 ARGS.map((x) => {
@@ -22,7 +25,7 @@ const banner =
     : `/*!
 * ColorPicker v${pkg.version} (${pkg.homepage})
 * Copyright ${year} © ${pkg.author}
-* Licensed under MIT (${pkg.license}/blob/main/LICENSE)
+* Licensed under MIT (${home}/blob/main/LICENSE)
 */`;
 
 const DIR = args.DIR === "rtl" ? ".rtl" : "";

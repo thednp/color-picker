@@ -49,6 +49,26 @@ export interface ColorPickerOptions {
 	colorPresets: string | string[] | ColorPalette | false;
 	colorKeywords: string | string[] | false;
 }
+export interface ColorNames {
+	white: string;
+	black: string;
+	grey: string;
+	red: string;
+	orange: string;
+	brown: string;
+	gold: string;
+	olive: string;
+	yellow: string;
+	lime: string;
+	green: string;
+	teal: string;
+	cyan: string;
+	blue: string;
+	violet: string;
+	magenta: string;
+	pink: string;
+	[key: string]: string;
+}
 /**
  * Color Picker Web Component
  *
@@ -80,7 +100,7 @@ export default class ColorPicker {
 		c2y: number;
 		c3y: number;
 	};
-	colorLabels: Record<string, string>;
+	colorLabels: ColorNames;
 	colorKeywords: string[] | false;
 	colorPresets: ColorPalette | string[] | false;
 	componentLabels: ColorPickerLabels;
@@ -152,7 +172,6 @@ export default class ColorPicker {
 	 * The `ColorPicker` *scroll* event listener when open.
 	 *
 	 * @param e
-	 * @this {ColorPicker}
 	 */
 	handleScroll: (e: Event) => void;
 	/**
@@ -160,9 +179,8 @@ export default class ColorPicker {
 	 *
 	 * @param e
 	 */
-	menuKeyHandler: (e: Event & {
+	menuKeyHandler: (e: KeyboardEvent & {
 		target: HTMLElement;
-		code: string;
 	}) => void;
 	/**
 	 * The `ColorPicker` click event listener for the colour menu presets / defaults.
@@ -176,10 +194,8 @@ export default class ColorPicker {
 	 *
 	 * @param e
 	 */
-	pointerDown: (e: Event & {
+	pointerDown: (e: PointerEvent & {
 		target: HTMLElement;
-		pageX: number;
-		pageY: number;
 	}) => void;
 	/**
 	 * The `ColorPicker` *touchend* / *mouseup* events listener for control knobs.

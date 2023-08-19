@@ -1,6 +1,6 @@
 {
   "name": "@thednp/color-picker",
-  "version": "2.0.0-alpha8",
+  "version": "2.0.0-alpha9",
   "author": "thednp",
   "license": "MIT",
   "description": "🎨 Modern Color Picker Component",
@@ -46,7 +46,7 @@
     "lint:css": "stylelint --config .stylelintrc.json scss \"src/scss/*.scss\"",
     "build": "npm run lint:ts && npm run build-vite && npm run dts",
     "build-vite": "vite build && npm run docs",
-    "dev": "vite --open ./docs/index.html --port 8577",
+    "dev": "vite --open ./docs/dev.html --port 8577",
     "dts": "dts-bundle-generator --config ./dts.config.ts",
     "docs": "ncp dist/js/color-picker.js docs/js/color-picker.js && ncp dist/js/color-picker.js.map docs/js/color-picker.js.map",
     "copy": "npm-run-all --parallel copy-*",
@@ -81,15 +81,15 @@
   "dependencies": {
     "@thednp/color": "^1.0.8",
     "@thednp/event-listener": "^2.0.2",
-    "@thednp/shorty": "^2.0.0-alpha16"
+    "@thednp/shorty": "2.0.0-alpha17"
   },
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
     "@cypress/code-coverage": "^3.11.0",
     "@types/istanbul-lib-instrument": "^1.7.4",
-    "@typescript-eslint/eslint-plugin": "^6.3.0",
-    "@typescript-eslint/parser": "^6.3.0",
-    "cypress": "^12.17.3",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@typescript-eslint/parser": "^6.4.0",
+    "cypress": "^12.17.4",
     "dts-bundle-generator": "^8.0.1",
     "eslint": "^8.47.0",
     "eslint-plugin-jsdoc": "^46.4.6",
@@ -100,15 +100,16 @@
     "ncp": "^2.0.0",
     "npm-run-all": "^4.1.5",
     "nyc": "^15.1.0",
-    "prettier": "^3.0.1",
+    "prettier": "^3.0.2",
     "rimraf": "^5.0.1",
-    "sass": "^1.65.1",
-    "stylelint": "^15.10.2",
+    "sass": "^1.66.1",
+    "stylelint": "^15.10.3",
     "stylelint-config-standard": "^34.0.0",
     "stylelint-config-standard-scss": "^10.0.0",
     "stylelint-order": "^6.0.3",
     "stylelint-scss": "^5.1.0",
     "typescript": "^5.1.6",
     "vite": "^4.4.9"
-  }
+  },
+  "packageManager": "pnpm@8.6.12"
 }

@@ -1,7 +1,7 @@
 /*!
-* ColorPicker v2.0.0-alpha7 (http://thednp.github.io/color-picker)
+* ColorPicker v2.0.0-alpha9 (http://thednp.github.io/color-picker)
 * Copyright 2023 © thednp
-* Licensed under MIT (MIT/blob/main/LICENSE)
+* Licensed under MIT (https://github.com/thednp/color-picker/blob/main/LICENSE)
 */
 /* :host */
 .color-picker {
@@ -293,7 +293,7 @@
   transition: var(--options-transition);
 }
 
-.color-options.scrollable:hover {
+.color-dropdown.menu:hover .scrollable {
   height: var(--grid-hover-height);
 }
 
@@ -314,7 +314,7 @@
   width: var(--grid-item-size);
   height: var(--grid-item-size);
   overflow: hidden;
-  text-indent: 2.1rem;
+  color: rgba(0, 0, 0, 0);
 }
 .color-options .color-option:active, .color-options .color-option:focus {
   outline: none;
@@ -399,14 +399,14 @@
 
 /* visual control */
 .visual-control {
-  height: 150px;
+  height: 230px;
   /* important for mobile devices */
   touch-action: none;
   box-shadow: var(--visual-shadow);
 }
 
 .visual-control1 {
-  width: 150px;
+  width: 230px;
 }
 
 .visual-control2,
@@ -415,15 +415,7 @@
   cursor: ns-resize;
 }
 
-@media (width >= 578px) {
-  .visual-control {
-    height: 230px;
-  }
-  .visual-control1 {
-    width: 230px;
-  }
-}
-@media (width >= 1200px) {
+@media (width >= 980px) {
   .visual-control {
     height: 300px;
   }

@@ -20,9 +20,16 @@ export default function getMarkup(body, id, format) {
   input.setAttribute('autocomplete', "off");
   input.setAttribute('spellcheck', "false");
   input.setAttribute('data-format', format);
+
+  const a = document.createElement('a');
+  a.setAttribute('href', '#');
+  a.innerText = 'Some link';
+  a.className = 'my-link';
+  a.style = 'position: absolute; top: 20px; opacity: 0.015';
+  // body.append(a);
   cpWrapper.append(input);
   if (body) {
-    body.append(label, cpWrapper);
+    body.append(label, cpWrapper, a);
   }
   return {set, value};
 }
