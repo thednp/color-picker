@@ -6,8 +6,8 @@
 [![NPM Version](https://img.shields.io/npm/v/@thednp/color-picker.svg)](https://www.npmjs.com/package/@thednp/color-picker)
 [![typescript version](https://img.shields.io/badge/typescript-5.1.6-brightgreen)](https://www.typescriptlang.org/)
 [![eslint version](https://img.shields.io/badge/eslint-8.47.0-brightgreen)](https://github.com/eslint)
-[![prettier version](https://img.shields.io/badge/prettier-3.0.1-brightgreen)](https://prettier.io/)
-[![cypress version](https://img.shields.io/badge/cypress-12.17.3-brightgreen)](https://cypress.io/)
+[![prettier version](https://img.shields.io/badge/prettier-3.0.2-brightgreen)](https://prettier.io/)
+[![cypress version](https://img.shields.io/badge/cypress-12.17.4-brightgreen)](https://cypress.io/)
 [![vite version](https://img.shields.io/badge/vite-4.4.9-brightgreen)](https://github.com/vitejs)
 
 The feature rich **ColorPicker** component for the modern web, sourced with TypeScript, Cypress tested, WAI-ARIA compliant and lots of goodies. In addition, it features its own version of [TinyColor](https://github.com/bgrins/TinyColor) called simply [Color](http://github.com/thednp/color).
