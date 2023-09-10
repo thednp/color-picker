@@ -83,7 +83,7 @@
   ],
   "dependencies": {
     "@thednp/color": "^1.0.8",
-    "@thednp/shorty": "2.0.0-alpha21"
+    "@thednp/shorty": "2.0.0-alpha22"
   },
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",

@@ -9,8 +9,8 @@ dependencies:
     specifier: ^1.0.8
     version: 1.0.8
   '@thednp/shorty':
-    specifier: 2.0.0-alpha21
-    version: 2.0.0-alpha21
+    specifier: 2.0.0-alpha22
+    version: 2.0.0-alpha22
 
 devDependencies:
   '@bahmutov/cypress-esbuild-preprocessor':
@@ -1963,8 +1963,8 @@ packages:
     resolution: {integrity: sha512-jQBkcRtE8odj90mLZ3NsV69186fQcC0P2QSa2xyZBvXswJCiAzp2necdWU+nT6vjIU09o/dYB9Mv3rsyN/ysEA==}
     dev: false
 
-  /@thednp/shorty@2.0.0-alpha21:
-    resolution: {integrity: sha512-JH6oBOesJmIIqX/j+MpvkR/3PQJF3xiMWU9nenGlixH0/EhLEMFwxKBS3z6FdOC7MtFsB7Q8qC+/inzVavK5Pw==}
+  /@thednp/shorty@2.0.0-alpha22:
+    resolution: {integrity: sha512-BpXSRRGKJyZcP1OLBM2G7i+zcWGEA+6oHPwHs8GdaHykJDroDl+UaDEQX+PGiIxItosvY4hmF8zU2vG2JQ/qkQ==}
     engines: {node: '>=16', pnpm: '>=8.6.0'}
     dev: false
 
