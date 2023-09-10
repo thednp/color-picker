@@ -51,7 +51,6 @@ import {
   isArray,
   isString,
   getWindow,
-  submitEvent,
   on,
   off,
 } from '@thednp/shorty';
@@ -101,7 +100,6 @@ const toggleEvents = (self: ColorPicker, action?: boolean) => {
   const fn = action ? on : off;
   const { input, pickerToggle, menuToggle } = self;
 
-  fn(input, submitEvent, (e) => e.stopPropagation());
   fn(input, focusinEvent, self.showPicker);
   fn(pickerToggle, mouseclickEvent, self.togglePicker);
 
