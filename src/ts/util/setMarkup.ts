@@ -36,13 +36,14 @@ const setMarkup = (self: ColorPicker) => {
   // set initial controls dimensions
   const formatString = format === 'hex' ? hexLabel : toUpperCase(format);
 
-  const pickerBtn = createElement({
+  const pickerBtn = createElement<HTMLButtonElement>({
     id: `picker-btn-${id}`,
     tagName: 'button',
+    type: 'button',
     className: 'picker-toggle btn-appearance',
     ariaExpanded: 'false',
     ariaHasPopup: 'true',
-  }) as HTMLElement;
+  }) as HTMLButtonElement;
 
   pickerBtn.append(
     createElement({
@@ -84,13 +85,14 @@ const setMarkup = (self: ColorPicker) => {
       presetsDropdown.append(getColorMenu(self, colorKeywords, 'color-defaults'));
     }
 
-    const presetsBtn = createElement({
+    const presetsBtn = createElement<HTMLButtonElement>({
       tagName: 'button',
+      type: 'button',
       className: 'menu-toggle btn-appearance',
       tabIndex: -1,
       ariaExpanded: 'false',
       ariaHasPopup: 'true',
-    }) as HTMLElement;
+    }) as HTMLButtonElement;
 
     const xmlns = encodeURI('http://www.w3.org/2000/svg');
     const presetsIcon = createElementNS(xmlns, {

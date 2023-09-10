@@ -1,5 +1,3 @@
-import { addListener, removeListener } from '@thednp/event-listener';
-
 import {
   ariaDescription,
   ariaSelected,
@@ -53,6 +51,9 @@ import {
   isArray,
   isString,
   getWindow,
+  submitEvent,
+  on,
+  off,
 } from '@thednp/shorty';
 
 // ColorPicker Util
@@ -97,9 +98,10 @@ const initColorPicker = (element: HTMLInputElement) => new ColorPicker(element);
  * Add / remove `ColorPicker` main event listeners.
  */
 const toggleEvents = (self: ColorPicker, action?: boolean) => {
-  const fn = action ? addListener : removeListener;
+  const fn = action ? on : off;
   const { input, pickerToggle, menuToggle } = self;
 
+  fn(input, submitEvent, (e) => e.stopPropagation());
   fn(input, focusinEvent, self.showPicker);
   fn(pickerToggle, mouseclickEvent, self.togglePicker);
 
@@ -112,7 +114,7 @@ const toggleEvents = (self: ColorPicker, action?: boolean) => {
  * Add / remove `ColorPicker` event listeners active only when open.
  */
 const toggleEventsOnShown = (self: ColorPicker, action?: boolean) => {
-  const fn = action ? addListener : removeListener;
+  const fn = action ? on : off;
   const { input, colorMenu, parent } = self;
   const doc = getDocument(input);
   const win = getWindow(doc);
