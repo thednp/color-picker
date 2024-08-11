@@ -17,14 +17,23 @@ jobs:
           node-version: 20
           # cache: pnpm
 
-      - run: npm install
-      - run: npx cypress install
-      - run: npm run lint:css
-      - run: npm run build-vite
-      - run: npm run compile-scss
-      - run: npm run copy-css-cp
-      - run: npm run docs
-      - run: npm run test
+      - name: Install
+        run: npm install
+        run: npx cypress install
+
+      - name: Lint
+        run: npm run lint:ts
+        run: npm run lint:css
+
+      - name: Build
+        run: npm run build-vite
+        run: npm run compile-scss
+        run: npm run copy-css-cp
+        run: npm run docs
+
+      - name: Run tests
+        run: npm run clean-coverage
+        run: npx cypress run
 
       - name: Upload coverage report on to coveralls.io...
         uses: coverallsapp/github-action@master
