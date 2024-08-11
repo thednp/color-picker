@@ -1,13 +1,13 @@
-import Color from '@thednp/color';
+import Color$1 from '@thednp/color';
 import { ColorFormats, HSLA, HSVA, HWBA, RGBA } from '@thednp/color';
 
 declare class ColorPalette {
-	static Color: typeof Color;
+	static Color: typeof Color$1;
 	hue: number;
 	hueSteps: number;
 	lightSteps: number;
 	saturation: number;
-	colors: Color[];
+	colors: Color$1[];
 	/**
 	 * The `hue` parameter is optional, which would be set to 0.
 	 * * `args.hue` the starting Hue [0, 360]
@@ -74,8 +74,8 @@ export interface ColorNames {
  *
  * @see http://thednp.github.io/color-picker
  */
-export default class ColorPicker {
-	static Color: typeof Color;
+declare class ColorPicker {
+	static Color: typeof Color$1;
 	static ColorPalette: typeof ColorPalette;
 	static getInstance: (element: HTMLInputElement) => ColorPicker | null;
 	static init: (element: HTMLInputElement) => ColorPicker;
@@ -83,13 +83,13 @@ export default class ColorPicker {
 	static roundPart: (v: number) => number;
 	static setElementStyle: (element: HTMLElement, styles: Partial<import("@thednp/shorty").CSS4Declaration>) => void;
 	static setAttribute: (element: HTMLElement, att: string, value: string) => void;
-	static getBoundingClientRect: (element: HTMLElement, includeScale?: boolean | undefined) => import("@thednp/shorty").BoundingClientRect;
+	static getBoundingClientRect: (element: HTMLElement, includeScale?: boolean) => import("@thednp/shorty").BoundingClientRect;
 	static version: string;
 	static colorNames: string[];
 	static colorPickerLabels: ColorPickerLabels;
 	id: number;
 	input: HTMLInputElement;
-	color: Color;
+	color: Color$1;
 	format: string;
 	parent: HTMLElement;
 	dragElement: HTMLElement | undefined;
@@ -290,6 +290,10 @@ export default class ColorPicker {
 	/** Removes `ColorPicker` from target `<input>`. */
 	dispose(): void;
 }
+
+export {
+	ColorPicker as default,
+};
 
 export as namespace ColorPicker;
 

@@ -205,8 +205,10 @@
 
 /* scrollable */
 .scrollable {
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden auto;
+
+  // overflow-x: hidden;
+  // overflow-y: auto;
   scrollbar-width: thin;
 }
 
