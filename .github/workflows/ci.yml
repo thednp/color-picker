@@ -8,21 +8,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
+      # - name: Install pnpm
+      #   uses: pnpm/action-setup@v3
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+          # cache: pnpm
 
-      - run: pnpm install --no-frozen-lockfile
+      - run: npm run install
       - run: npx cypress install
-      - run: pnpm lint:css
-      - run: pnpm build
-      - run: pnpm compile-scss
-      - run: pnpm test
+      - run: npm run lint:css
+      - run: npm run build-vite
+      - run: npm run compile-scss
+      - run: npm run copy
+      - run: npm run docs
+      - run: npm run test
 
       - name: Upload coverage report on to coveralls.io...
         uses: coverallsapp/github-action@master
