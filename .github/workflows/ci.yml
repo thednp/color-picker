@@ -22,7 +22,7 @@ jobs:
       - run: npm run lint:css
       - run: npm run build-vite
       - run: npm run compile-scss
-      - run: npm run copy
+      - run: npm run copy-css-cp
       - run: npm run docs
       - run: npm run test
 
