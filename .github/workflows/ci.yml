@@ -19,10 +19,12 @@ jobs:
 
       - name: Install
         run: npm install
+      - name: Install Cypress
         run: npx cypress install
 
-      - name: Lint
+      - name: Lint TS
         run: npm run lint:ts
+      - name: Lint CSS
         run: npm run lint:css
 
       - name: Build JS
