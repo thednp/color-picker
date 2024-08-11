@@ -2086,7 +2086,7 @@ const Kt = {
     ), e.append(P, L);
   }
   i && c.includes(l) && (o.value = l), m(t, X, "-1");
-}, go = "2.0.0", Y = "color-picker", uo = `[data-function="${Y}"]`, ce = `.${Y}`, bo = {
+}, go = "2.0.1", Y = "color-picker", uo = `[data-function="${Y}"]`, ce = `.${Y}`, bo = {
   componentLabels: Kt,
   colorLabels: it,
   format: "rgb",

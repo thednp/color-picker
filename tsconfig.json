@@ -3,7 +3,7 @@
  "compilerOptions": {
    "lib": ["DOM", "ESNext", "DOM.Iterable"],
   //  "types": ["vite", "vite/client", "@thednp/shorty", "@thednp/color"],
-   "rootDir": "./",
+   "rootDir": "./src",
    "baseUrl": "./",
    "module": "ESNext",
    "target": "ESNext",

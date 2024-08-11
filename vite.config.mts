@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 "use strict";
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
