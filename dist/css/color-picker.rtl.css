@@ -1,8 +1,12 @@
 /*!
-* ColorPicker v2.0.0-alpha10 (http://thednp.github.io/color-picker)
-* Copyright 2023 © thednp
+* ColorPicker v2.0.1 (https://thednp.github.io/color-picker)
+* Copyright 2024 © thednp
 * Licensed under MIT (https://github.com/thednp/color-picker/blob/main/LICENSE)
 */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 /* :host */
 .color-picker {
   position: relative;
@@ -39,9 +43,6 @@
   --option-color-active: var(--black-75);
   --option-bg-active: var(--white-90);
   --visual-shadow: 0 0 0 1px var(--white-15) inset;
-}
-.color-picker *, .color-picker *::before, .color-picker *::after {
-  box-sizing: border-box;
 }
 
 .color-picker:focus {
@@ -206,8 +207,7 @@
 
 /* scrollable */
 .scrollable {
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden auto;
   scrollbar-width: thin;
 }
 

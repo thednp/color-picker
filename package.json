@@ -11,6 +11,7 @@
   "module": "./dist/js/color-picker.mjs",
   "style": "./dist/css/color-picker.css",
   "sass": "./src/scss/color-picker.scss",
+  "sideEffects": false,
   "exports": {
     ".": {
       "require": "./dist/js/color-picker.cjs",
@@ -40,7 +41,7 @@
     "cypress": "pnpm pre-test && npx cypress open",
     "badges": "npx -p dependency-version-badge update-badge typescript cypress eslint prettier vite",
     "clean-coverage": "rm -rf coverage && rm -rf .nyc_output",
-    "prepublishOnly": "pnpm up && npm update && pnpm format && pnpm build && pnpm badges",
+    "prepublishOnly": "pnpm up && npm update && pnpm format && pnpm build && pnpm badges && pnpm compile",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "pnpm lint:ts && pnpm check:ts && pnpm lint:css",
@@ -49,19 +50,19 @@
     "check:ts": "tsc --noEmit",
     "fix:css": "stylelint --config .stylelintrc.json --fix scss \"src/scss/*.scss\"",
     "lint:css": "stylelint --config .stylelintrc.json scss \"src/scss/*.scss\"",
-    "build": "pnpm lint && pnpm build-vite && pnpm dts",
-    "build-vite": "pnpx vite build --config ./vite.config.mts && pnpm docs",
+    "build": "pnpm lint && pnpm build-vite && pnpm dts && pnpm docs",
+    "build-vite": "vite build",
     "dev": "vite --open ./docs/dev.html --port 8577",
     "dts": "dts-bundle-generator --config ./dts.config.ts",
-    "docs": "cp dist/js/color-picker.js docs/js/color-picker.js && cp dist/js/color-picker.js.map docs/js/color-picker.js.map",
+    "docs": "ncp dist/js/color-picker.js ./docs/js/color-picker.js && ncp dist/js/color-picker.js.map docs/js/color-picker.js.map",
     "copy": "pnpm copy-css-cp && pnpm copy-css-rtl",
-    "copy-css-cp": "cp dist/css/color-picker.css docs/css/color-picker.css",
-    "copy-css-rtl": "cp dist/css/color-picker.rtl.css docs/css/color-picker.rtl.css",
+    "copy-css-cp": "ncp dist/css/color-picker.css docs/css/color-picker.css",
+    "copy-css-rtl": "ncp dist/css/color-picker.rtl.css docs/css/color-picker.rtl.css",
     "compile": "pnpm lint:css && pnpm compile-scss && pnpm compile-scss-min && pnpm compile-scss-rtl && pnpm compile-scss-rtl-min && pnpm copy",
-    "compile-scss": "node compile.js",
-    "compile-scss-min": "node compile.js MIN:true",
-    "compile-scss-rtl": "node compile.js MIN:false,DIR:rtl",
-    "compile-scss-rtl-min": "node compile.js MIN:true,DIR:rtl"
+    "compile-scss": "node compile.cjs",
+    "compile-scss-min": "node compile.cjs MIN:true",
+    "compile-scss-rtl": "node compile.cjs MIN:false,DIR:rtl",
+    "compile-scss-rtl-min": "node compile.cjs MIN:true,DIR:rtl"
   },
   "bugs": {
     "url": "https://github.com/thednp/color-picker/issues"
@@ -102,6 +103,7 @@
     "eslint-plugin-prettier": "^5.2.1",
     "istanbul-lib-coverage": "^3.2.2",
     "istanbul-lib-instrument": "^6.0.3",
+    "ncp": "^2.0.0",
     "nyc": "^15.1.0",
     "prettier": "^3.3.3",
     "sass": "^1.77.8",

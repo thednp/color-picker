@@ -1,13 +1,13 @@
 @import "variables";
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 /* :host */
 .color-picker {
   position: relative;
   display: flex;
-
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
 
   @each $name in "white", "black" {
     @each $lvl in $transparency-levels {
@@ -21,6 +21,8 @@
         $rgba: rgba($color, $lvl * 1%);
 
         --#{$name}-#{$lvl}: #{$rgba};
+
+        // --#{$name}-#{$lvl}: #{rgba($color, $lvl * 1%)};
       }
     }
   }
