@@ -17,7 +17,7 @@ jobs:
           node-version: 20
           # cache: pnpm
 
-      - run: npm run install
+      - run: npm install
       - run: npx cypress install
       - run: npm run lint:css
       - run: npm run build-vite
