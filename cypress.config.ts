@@ -1,12 +1,13 @@
 import { defineConfig } from "cypress";
 import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
 import createEsbuildIstanbulPlugin from "./cypress/plugins/esbuild-istanbul";
+import codeCoverageTask from "@cypress/code-coverage/task";
 
 async function setupNodeEvents(
   on: Cypress.PluginEvents,
   config: Cypress.PluginConfigOptions
 ): Promise<Cypress.PluginConfigOptions> {
-  await require("@cypress/code-coverage/task")(on, config);
+  codeCoverageTask(on, config);
 
   on(
     "file:preprocessor",
