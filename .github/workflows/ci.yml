@@ -26,6 +26,8 @@ jobs:
         run: npm run lint:ts
       - name: Lint CSS
         run: npm run lint:css
+      - name: Check TS
+        run: npm run check:ts
 
       - name: Build JS
         run: npm run build-vite
