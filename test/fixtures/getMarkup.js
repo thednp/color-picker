@@ -1,9 +1,11 @@
 import testSample from "./testSample";
 import getRandomInt from "./getRandomInt";
 
-export default function getMarkup(body, id, format) {
+export default function getMarkup(id, format) {
   const set = testSample[getRandomInt(0,3)];
   const value = set[format];
+
+  const container = document.createElement('div');
 
   const label = document.createElement('label');
   label.setAttribute('for', `color-picker-${id}`);
@@ -25,11 +27,10 @@ export default function getMarkup(body, id, format) {
   a.setAttribute('href', '#');
   a.innerText = 'Some link';
   a.className = 'my-link';
-  a.style = 'position: absolute; top: 20px; opacity: 0.015';
-  // body.append(a);
+  a.style = 'position: absolute; top: 0px; right:0; opacity: 0.015';
+
   cpWrapper.append(input);
-  if (body) {
-    body.append(label, cpWrapper, a);
-  }
-  return {set, value};
+  container.append(label, cpWrapper, a);
+
+  return { container, set, value};
 }

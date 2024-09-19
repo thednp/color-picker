@@ -8,40 +8,41 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # - name: Install pnpm
-      #   uses: pnpm/action-setup@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          # cache: pnpm
+          cache: pnpm
 
       - name: Install
-        run: npm install
-      - name: Install Cypress
-        run: npx cypress install
+        run: pnpm install --no-frozen-lockfile
+ 
+      - name: Install Playwright
+        run: pnpm exec playwright install
 
-      - name: Lint TS
-        run: npm run lint:ts
-      - name: Lint CSS
-        run: npm run lint:css
-      - name: Check TS
-        run: npm run check:ts
+      - name: Lint
+        run: pnpm lint
 
       - name: Build JS
-        run: npm run build-vite
+        run: pnpm build
+
       - name: Build CSS
-        run: npm run compile-scss
+        run: pnpm compile-scss
+
       - name: Copy CSS
-        run: npm run copy-css-cp
+        run: pnpm copy-css-cp
+
       - name: Copy JS
-        run: npm run docs
+        run: pnpm docs
 
       - name: Clean coverage
-        run: npm run clean-coverage
+        run: pnpm clean-coverage
+
       - name: Run tests
-        run: npx cypress run
+        run: pnpm test
 
       - name: Upload coverage report on to coveralls.io...
         uses: coverallsapp/github-action@master

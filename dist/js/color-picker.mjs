@@ -1,25 +1,27 @@
-const _t = "aria-description", Nt = "aria-expanded", Ee = "aria-hidden", St = "aria-selected", tt = "aria-valuenow", et = "aria-valuetext", Me = "change", Te = "DOMContentLoaded", Re = "focusin", Oe = "focusout", zt = "keydown", De = "keyup", Et = "click", Fe = "pointerdown", ue = "pointermove", Ie = "pointerup", Ke = "resize", Ve = "scroll", Be = "touchmove", j = "ArrowDown", ot = "ArrowUp", ht = "ArrowLeft", U = "ArrowRight", je = "Enter", qe = "Escape", Wt = "Space", Ge = "transitionDuration", Ue = "transitionProperty", X = "tabindex", _e = navigator.userAgentData, mt = _e, { userAgent: ze } = navigator, vt = ze, Jt = /iPhone|iPad|iPod|Android/i;
-mt ? mt.brands.some((o) => Jt.test(o.brand)) : Jt.test(vt);
-const Xt = /(iPhone|iPod|iPad)/;
-mt ? mt.brands.some((o) => Xt.test(o.brand)) : (
-  /* istanbul ignore next */
-  Xt.test(vt)
+const _t = "aria-description", Nt = "aria-expanded", Te = "aria-hidden", xt = "aria-selected", tt = "aria-valuenow", et = "aria-valuetext", Me = "change", Re = "DOMContentLoaded", Oe = "focusin", De = "focusout", zt = "keydown", Fe = "keyup", Et = "click", Ie = "pointerdown", be = "pointermove", Ke = "pointerup", Ve = "resize", Be = "scroll", je = "touchmove", j = "ArrowDown", ot = "ArrowUp", ht = "ArrowLeft", U = "ArrowRight", qe = "Enter", Ge = "Escape", Jt = "Space", Ue = "transitionDuration", We = "transitionProperty", X = "tabindex", _e = navigator.userAgentData, mt = _e, { userAgent: ze } = navigator, vt = ze, Xt = /iPhone|iPad|iPod|Android/i;
+/* istanbul ignore else @preserve */
+mt ? mt.brands.some((o) => Xt.test(o.brand)) : Xt.test(vt);
+const Yt = /(iPhone|iPod|iPad)/;
+mt ? mt.brands.some((o) => Yt.test(o.brand)) : (
+  /* istanbul ignore next @preserve */
+  Yt.test(vt)
 );
 vt && vt.includes("Firefox");
-const { head: kt } = document;
-["webkitPerspective", "perspective"].some((o) => o in kt.style);
+const { head: wt } = document;
+["webkitPerspective", "perspective"].some((o) => o in wt.style);
 const Bt = (o, t, e, s) => {
   const r = s || !1;
   o.addEventListener(t, e, r);
 }, jt = (o, t, e, s) => {
   const r = s || !1;
   o.removeEventListener(t, e, r);
-}, We = (o, t, e, s) => {
+}, Je = (o, t, e, s) => {
   const r = (n) => {
+    /* istanbul ignore else @preserve */
     (n.target === o || n.currentTarget === o) && (e.apply(o, [n]), jt(o, t, r, s));
   };
   Bt(o, t, r, s);
-}, Je = () => {
+}, Xe = () => {
 };
 (() => {
   let o = !1;
@@ -27,20 +29,20 @@ const Bt = (o, t, e, s) => {
     const t = Object.defineProperty({}, "passive", {
       get: () => (o = !0, o)
     });
-    We(document, Te, Je, t);
+    Je(document, Re, Xe, t);
   } catch {
   }
   return o;
 })();
-["webkitTransform", "transform"].some((o) => o in kt.style);
-["webkitAnimation", "animation"].some((o) => o in kt.style);
-["webkitTransition", "transition"].some((o) => o in kt.style);
-const yt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), Pt = (o, t) => o.removeAttribute(t), q = (o, ...t) => {
+["webkitTransform", "transform"].some((o) => o in wt.style);
+["webkitAnimation", "animation"].some((o) => o in wt.style);
+["webkitTransition", "transition"].some((o) => o in wt.style);
+const kt = (o, t) => o.getAttribute(t), v = (o, t, e) => o.setAttribute(t, e), Pt = (o, t) => o.removeAttribute(t), q = (o, ...t) => {
   o.classList.add(...t);
 }, O = (o, ...t) => {
   o.classList.remove(...t);
-}, T = (o, t) => o.classList.contains(t), qt = (o) => o != null && typeof o == "object" || !1, Z = (o) => qt(o) && typeof o.nodeType == "number" && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].some((t) => o.nodeType === t) || !1, at = (o) => Z(o) && o.nodeType === 1 || !1, W = /* @__PURE__ */ new Map(), ct = {
-  data: W,
+}, R = (o, t) => o.classList.contains(t), qt = (o) => o != null && typeof o == "object" || !1, Z = (o) => qt(o) && typeof o.nodeType == "number" && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].some((t) => o.nodeType === t) || !1, at = (o) => Z(o) && o.nodeType === 1 || !1, z = /* @__PURE__ */ new Map(), ct = {
+  data: z,
   /**
    * Sets web components data.
    *
@@ -49,7 +51,7 @@ const yt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), P
    * @param instance the component instance
    */
   set: (o, t, e) => {
-    at(o) && (W.has(t) || W.set(t, /* @__PURE__ */ new Map()), W.get(t).set(o, e));
+    at(o) && (z.has(t) || z.set(t, /* @__PURE__ */ new Map()), z.get(t).set(o, e));
   },
   /**
    * Returns all instances for specified component.
@@ -57,7 +59,7 @@ const yt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), P
    * @param component the component's name or a unique key
    * @returns all the component instances
    */
-  getAllFor: (o) => W.get(o) || null,
+  getAllFor: (o) => z.get(o) || null,
   /**
    * Returns the instance associated with the target.
    *
@@ -78,9 +80,9 @@ const yt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), P
    */
   remove: (o, t) => {
     const e = ct.getAllFor(t);
-    !e || !at(o) || (e.delete(o), e.size === 0 && W.delete(t));
+    !e || !at(o) || (e.delete(o), e.size === 0 && z.delete(t));
   }
-}, Xe = (o, t) => ct.get(o, t), B = (o) => typeof o == "string" || !1, Ye = (o) => qt(o) && o.constructor.name === "Window" || !1, be = (o) => Z(o) && o.nodeType === 9 || !1, V = (o) => Ye(o) ? o.document : be(o) ? o : Z(o) ? o.ownerDocument : window.document, K = (o, ...t) => Object.assign(o, ...t), x = (o) => {
+}, Ye = (o, t) => ct.get(o, t), B = (o) => typeof o == "string" || !1, Ze = (o) => qt(o) && o.constructor.name === "Window" || !1, pe = (o) => Z(o) && o.nodeType === 9 || !1, V = (o) => Ze(o) ? o.document : pe(o) ? o : Z(o) ? o.ownerDocument : window.document, K = (o, ...t) => Object.assign(o, ...t), x = (o) => {
   if (!o) return;
   if (B(o))
     return V().createElement(o);
@@ -88,19 +90,19 @@ const yt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), P
   if (!e) return;
   const s = { ...o };
   return delete s.tagName, K(e, s);
-}, Mt = (o, t) => {
+}, Tt = (o, t) => {
   if (!o || !t) return;
   if (B(t))
     return V().createElementNS(o, t);
-  const { tagName: e } = t, s = Mt(o, e);
+  const { tagName: e } = t, s = Tt(o, e);
   if (!s) return;
   const r = { ...t };
   return delete r.tagName, K(s, r);
-}, Ze = (o, t) => o.dispatchEvent(t), Tt = (o, t) => {
+}, Qe = (o, t) => o.dispatchEvent(t), Mt = (o, t) => {
   const e = getComputedStyle(o), s = t.replace("webkit", "Webkit").replace(/([A-Z])/g, "-$1").toLowerCase();
   return e.getPropertyValue(s);
-}, Qe = (o) => {
-  const t = Tt(o, Ue), e = Tt(o, Ge), s = e.includes("ms") ? (
+}, to = (o) => {
+  const t = Mt(o, We), e = Mt(o, Ue), s = e.includes("ms") ? (
     /* istanbul ignore next */
     1
   ) : 1e3, r = t && t !== "none" ? parseFloat(e) * s : (
@@ -111,17 +113,17 @@ const yt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), P
     /* istanbul ignore next */
     0
   ) : r;
-}, _ = (o, t) => o.focus(t), Yt = (o) => ["true", !0].includes(o) ? !0 : ["false", !1].includes(o) ? !1 : ["null", "", null, void 0].includes(o) ? null : o !== "" && !Number.isNaN(+o) ? +o : o, pt = (o) => Object.entries(o), to = (o, t, e, s) => {
+}, W = (o, t) => o.focus(t), Zt = (o) => ["true", !0].includes(o) ? !0 : ["false", !1].includes(o) ? !1 : ["null", "", null, void 0].includes(o) ? null : o !== "" && !Number.isNaN(+o) ? +o : o, pt = (o) => Object.entries(o), eo = (o, t, e, s) => {
   const r = { ...e }, n = { ...o.dataset }, i = { ...t }, a = {}, l = "title";
   return pt(n).forEach(([c, h]) => {
     const b = c;
-    a[b] = Yt(h);
+    a[b] = Zt(h);
   }), pt(r).forEach(([c, h]) => {
-    r[c] = Yt(h);
+    r[c] = Zt(h);
   }), pt(t).forEach(([c, h]) => {
-    c in r ? i[c] = r[c] : c in a ? i[c] = a[c] : i[c] = c === l ? yt(o, l) : h;
+    c in r ? i[c] = r[c] : c in a ? i[c] = a[c] : i[c] = c === l ? kt(o, l) : h;
   }), i;
-}, Zt = (o) => Object.fromEntries(o), eo = (o) => o.offsetHeight, D = (o, t) => {
+}, Qt = (o) => Object.fromEntries(o), oo = (o) => o.offsetHeight, D = (o, t) => {
   pt(t).forEach(([e, s]) => {
     if (s && B(e) && e.includes("--"))
       o.style.setProperty(e, s);
@@ -130,7 +132,7 @@ const yt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), P
       r[e] = s, K(o.style, r);
     }
   });
-}, oo = (o) => qt(o) && o.constructor.name === "Map" || !1, pe = (o) => o.toUpperCase(), gt = (o, t) => {
+}, so = (o) => qt(o) && o.constructor.name === "Map" || !1, de = (o) => o.toUpperCase(), gt = (o, t) => {
   const { width: e, height: s, top: r, right: n, bottom: i, left: a } = o.getBoundingClientRect();
   let l = 1, c = 1;
   if (t && at(o)) {
@@ -153,28 +155,28 @@ const yt = (o, t) => o.getAttribute(t), m = (o, t, e) => o.setAttribute(t, e), P
     x: a / l,
     y: r / c
   };
-}, Ct = (o) => V(o).documentElement;
-let Qt = 0, te = 0;
-const J = /* @__PURE__ */ new Map(), de = (o, t) => {
-  let e = t ? Qt : te;
+}, St = (o) => V(o).documentElement;
+let te = 0, ee = 0;
+const J = /* @__PURE__ */ new Map(), fe = (o, t) => {
+  let e = t ? te : ee;
   if (t) {
-    const s = de(o), r = J.get(s) || /* @__PURE__ */ new Map();
-    J.has(s) || J.set(s, r), oo(r) && !r.has(t) ? (r.set(t, e), Qt += 1) : e = r.get(t);
+    const s = fe(o), r = J.get(s) || /* @__PURE__ */ new Map();
+    J.has(s) || J.set(s, r), so(r) && !r.has(t) ? (r.set(t, e), te += 1) : e = r.get(t);
   } else {
     const s = o.id || o;
-    J.has(s) ? e = J.get(s) : (J.set(s, e), te += 1);
+    J.has(s) ? e = J.get(s) : (J.set(s, e), ee += 1);
   }
   return e;
-}, so = (o) => {
+}, ro = (o) => {
   var t;
-  return o ? be(o) ? o.defaultView : Z(o) ? (t = o?.ownerDocument) == null ? void 0 : t.defaultView : o : window;
-}, Lt = (o) => Array.isArray(o) || !1, fe = (o, t) => o ? o.closest(t) || // break out of `ShadowRoot`
-fe(o.getRootNode().host, t) : null, z = (o, t) => at(o) ? o : (Z(t) ? t : V()).querySelector(o), st = (o, t) => (t && Z(t) ? t : V()).getElementsByClassName(
+  return o ? pe(o) ? o.defaultView : Z(o) ? (t = o?.ownerDocument) == null ? void 0 : t.defaultView : o : window;
+}, Ct = (o) => Array.isArray(o) || !1, me = (o, t) => o ? o.closest(t) || // break out of `ShadowRoot`
+me(o.getRootNode().host, t) : null, _ = (o, t) => at(o) ? o : (Z(t) ? t : V()).querySelector(o), st = (o, t) => (t && Z(t) ? t : V()).getElementsByClassName(
   o
-), Gt = ["transparent", "currentColor", "inherit", "revert", "initial"], v = (o) => {
+), Gt = ["transparent", "currentColor", "inherit", "revert", "initial"], m = (o) => {
   const t = Math.floor(o);
   return o - t < 0.5 ? t : Math.round(o);
-}, wt = [
+}, $t = [
   [
     "aliceblue",
     {
@@ -1359,11 +1361,11 @@ fe(o.getRootNode().host, t) : null, z = (o, t) => at(o) ? o : (Z(t) ? t : V()).q
       b: 50
     }
   ]
-], me = "deg|rad|grad|turn", ve = "[-\\+]?\\d+%?", we = "[-\\+]?\\d*\\.\\d+%?", $e = `[-\\+]?\\d*\\.?\\d+(?:${me})?`, dt = `(?:${we})|(?:${ve})`, Rt = `(?:${dt})|(?:${$e}?)`, ro = "(?:[\\s|\\(\\s|\\s\\(\\s]+)?", no = "(?:[\\s|\\)\\s]+)?", ee = "(?:[,|\\s]+)", io = "(?:[,|\\/\\s]*)?", rt = `${ro}(${Rt})${ee}(${dt})${ee}(${dt})${io}(${dt})?${no}`, I = {
+], ve = "deg|rad|grad|turn", $e = "[-\\+]?\\d+%?", we = "[-\\+]?\\d*\\.\\d+%?", ke = `[-\\+]?\\d*\\.?\\d+(?:${ve})?`, dt = `(?:${we})|(?:${$e})`, Rt = `(?:${dt})|(?:${ke}?)`, no = "(?:[\\s|\\(\\s|\\s\\(\\s]+)?", io = "(?:[\\s|\\)\\s]+)?", oe = "(?:[,|\\s]+)", ao = "(?:[,|\\/\\s]*)?", rt = `${no}(${Rt})${oe}(${dt})${oe}(${dt})${ao}(${dt})?${io}`, I = {
   CSS_UNIT: new RegExp(Rt),
-  ANGLES: me,
-  CSS_ANGLE: $e,
-  CSS_INTEGER: ve,
+  ANGLES: ve,
+  CSS_ANGLE: ke,
+  CSS_INTEGER: $e,
   CSS_NUMBER: we,
   CSS_UNIT2: Rt,
   PERMISSIVE_MATCH: rt,
@@ -1375,21 +1377,16 @@ fe(o.getRootNode().host, t) : null, z = (o, t) => at(o) ? o : (Z(t) ? t : V()).q
   hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
   hex4: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
   hex8: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/
-}, ke = (o) => Gt.includes(o), nt = (o, t) => o !== null && typeof o == "object" && Object.keys(t).every((e) => e in o), ye = (o) => `${o}`.includes(".") && parseFloat(o) === 1, $t = (o) => typeof o == "string" && o.includes("%"), H = (o) => !!I.CSS_UNIT.exec(`${o}`), xe = ["rgb", "hex", "hsl", "hsv", "hwb"], Se = (o) => Gt.includes(o) || ["#", ...xe].some((t) => o.includes(t)) ? !1 : wt.some(([t]) => o === t), R = (o, t) => {
+}, ye = (o) => Gt.includes(o), nt = (o, t) => o !== null && typeof o == "object" && Object.keys(t).every((e) => e in o), xe = (o) => `${o}`.includes(".") && parseFloat(o) === 1, Ut = (o) => typeof o == "string" && o.includes("%"), H = (o) => !!I.CSS_UNIT.exec(`${o}`), Pe = ["rgb", "hex", "hsl", "hsv", "hwb"], Se = (o) => Gt.includes(o) || ["#", ...Pe].some((t) => o.includes(t)) ? !1 : $t.some(([t]) => o === t), se = 1e-6, lo = (o, t) => Math.abs(o * t - t) < se ? 1 : o < se ? 0 : o, E = (o, t) => {
   let e = o;
-  if (typeof o == "number" && Math.min(o, 0) === 0 && // round values to 6 decimals Math.round(N * (10 ** 6)) / 10 ** 6
-  Math.max(o, 1) === 1)
-    return o;
-  ye(o) && (e = "100%");
-  const s = $t(e);
-  return e = t === 360 ? parseFloat(e) : Math.min(t, Math.max(0, parseFloat(e))), s && (e = e * t / 100), Math.abs(e - t) < 1e-6 ? 1 : (t === 360 ? e = (e < 0 ? e % t + t : e % t) / t : e = e % t / t, e);
+  return xe(o) && (e = "100%"), Ut(e) ? Number.parseFloat(e) / 100 : (e = typeof e != "number" ? Number.parseFloat(e) : e, t === 360 ? e = (e < 0 ? e % t + t : e > 360 ? e % t : e) / t : (e = Math.min(t, Math.max(0, e)), e = e / t), lo(e, t));
 }, Ot = (o) => {
   let t = parseFloat(o);
   return (Number.isNaN(t) || t < 0 || t > 1) && (t = 1), t;
-}, ut = (o) => Math.min(1, Math.max(0, o)), G = (o) => o.length === 1 ? `0${o}` : String(o), Pe = (o) => {
-  const [[, t]] = wt.filter(([e]) => e === o.toLowerCase());
+}, ut = (o) => Math.min(1, Math.max(0, o)), G = (o) => o.length === 1 ? `0${o}` : String(o), Ce = (o) => {
+  const [[, t]] = $t.filter(([e]) => e === o.toLowerCase());
   return t;
-}, N = (o) => parseInt(o, 16), Dt = (o) => N(o) / 255, Ce = (o) => v(o * 255).toString(16), oe = (o, t, e) => {
+}, N = (o) => parseInt(o, 16), Dt = (o) => N(o) / 255, Le = (o) => m(o * 255).toString(16), re = (o, t, e) => {
   const s = Math.max(o, t, e), r = Math.min(o, t, e);
   let n = 0, i = 0;
   const a = (s + r) / 2;
@@ -1407,12 +1404,12 @@ fe(o.getRootNode().host, t) : null, z = (o, t) => at(o) ? o : (Z(t) ? t : V()).q
   let s = 0, r = 0, n = 0;
   if (t === 0)
     r = e, n = e, s = e;
-  else if (e) {
+  else {
     const i = e < 0.5 ? e * (1 + t) : e + t - e * t, a = 2 * e - i;
     s = ft(a, i, o + 1 / 3), r = ft(a, i, o), n = ft(a, i, o - 1 / 3);
   }
   return { r: s, g: r, b: n };
-}, se = (o, t, e) => {
+}, ne = (o, t, e) => {
   let s = 0, r = 0;
   const n = Math.min(o, t, e), i = Math.max(o, t, e), a = 1 - i;
   if (i === n) return { h: 0, w: n, b: a };
@@ -1423,14 +1420,14 @@ fe(o.getRootNode().host, t) : null, z = (o, t) => at(o) ? o : (Z(t) ? t : V()).q
     w: n,
     b: a
   };
-}, Le = (o, t, e) => {
+}, Ae = (o, t, e) => {
   if (t + e >= 1) {
     const i = t / (t + e);
     return { r: i, g: i, b: i };
   }
   let { r: s, g: r, b: n } = lt(o, 1, 0.5);
   return [s, r, n] = [s, r, n].map((i) => i * (1 - t - e) + t), { r: s, g: r, b: n };
-}, re = (o, t, e) => {
+}, ie = (o, t, e) => {
   const s = Math.max(o, t, e), r = Math.min(o, t, e);
   let n = 0;
   const i = s, a = s - r, l = s === 0 ? 0 : a / s;
@@ -1438,30 +1435,30 @@ fe(o.getRootNode().host, t) : null, z = (o, t) => at(o) ? o : (Z(t) ? t : V()).q
 }, Ft = (o, t, e) => {
   const s = o * 6, r = t, n = e, i = Math.floor(s), a = s - i, l = n * (1 - r), c = n * (1 - a * r), h = n * (1 - (1 - a) * r), b = i % 6, u = [n, c, l, l, h, n][b], d = [h, n, n, c, l, l][b], g = [l, l, h, n, n, c][b];
   return { r: u, g: d, b: g };
-}, ne = (o, t, e, s) => {
+}, Lt = (o, t, e, s) => {
   const r = [
-    G(v(o).toString(16)),
-    G(v(t).toString(16)),
-    G(v(e).toString(16))
+    G(m(o).toString(16)),
+    G(m(t).toString(16)),
+    G(m(e).toString(16))
   ];
   return s && r[0].charAt(0) === r[0].charAt(1) && r[1].charAt(0) === r[1].charAt(1) && r[2].charAt(0) === r[2].charAt(1) ? r[0].charAt(0) + r[1].charAt(0) + r[2].charAt(0) : r.join("");
 }, At = (o, t, e, s, r) => {
   const n = [
-    G(v(o).toString(16)),
-    G(v(t).toString(16)),
-    G(v(e).toString(16)),
-    G(Ce(s))
+    G(m(o).toString(16)),
+    G(m(t).toString(16)),
+    G(m(e).toString(16)),
+    G(Le(s))
   ];
   return r && n[0].charAt(0) === n[0].charAt(1) && n[1].charAt(0) === n[1].charAt(1) && n[2].charAt(0) === n[2].charAt(1) && n[3].charAt(0) === n[3].charAt(1) ? n[0].charAt(0) + n[1].charAt(0) + n[2].charAt(0) + n[3].charAt(0) : n.join("");
-}, Ae = (o) => {
+}, He = (o) => {
   const t = String(o).trim().toLowerCase();
   if (Se(t))
-    return Object.assign(Pe(t), {
+    return Object.assign(Ce(t), {
       a: 1,
       format: "rgb",
       ok: !0
     });
-  if (ke(t))
+  if (ye(t))
     return {
       r: 0,
       g: 0,
@@ -1535,49 +1532,56 @@ fe(o.getRootNode().host, t) : null, z = (o, t) => at(o) ? o : (Z(t) ? t : V()).q
     format: "rgb",
     ok: !o
   })))))));
-}, ie = (o) => {
+}, co = (o, t, e) => ({
+  r: E(o, 255),
+  g: E(t, 255),
+  b: E(e, 255)
+}), ae = (o) => {
   let t = { r: 0, g: 0, b: 0 }, e = o, s = 1, r, n, i, a, l, c, h, b, u = "rgb", d = !1;
-  return (!e || typeof e == "string") && (e = Ae(e), d = e.ok), nt(e, t) && H(e.r) && H(e.g) && H(e.b) && ({ r: h, g: b, b: l } = e, [h, b, l] = [h, b, l].map((g) => R(g, $t(g) ? 100 : 255)), t = { r: h, g: b, b: l }, u = "format" in e ? e.format : "rgb"), nt(e, { h: 0, s: 0, v: 0 }) && H(e.h) && H(e.s) && H(e.v) && ({ h: c, s: r, v: n } = e, c = R(c, 360), r = R(r, 100), n = R(n, 100), t = Ft(c, r, n), u = "hsv"), nt(e, { h: 0, s: 0, l: 0 }) && H(e.h) && H(e.s) && H(e.l) && ({ h: c, s: r, l: i } = e, c = R(c, 360), r = R(r, 100), i = R(i, 100), t = lt(c, r, i), u = "hsl"), nt(e, { h: 0, w: 0, b: 0 }) && H(e.h) && H(e.w) && H(e.b) && ({ h: c, w: a, b: l } = e, c = R(c, 360), a = R(a, 100), l = R(l, 100), t = Le(c, a, l), u = "hwb"), H(e.a) && (s = e.a, s = $t(s) || parseFloat(`${s}`) > 1 ? R(s, 100) : s), {
-    r: t.r,
-    g: t.g,
-    b: t.b,
+  if ((!e || typeof e == "string") && (e = He(e), d = e.ok || d), nt(e, t) && H(e.r) && H(e.g) && H(e.b)) {
+    if (["format", "ok", "originalInput"].every((g) => g in e))
+      return { ...e };
+    ({ r: h, g: b, b: l } = e), t = co(h, b, l), u = "format" in e ? e.format : "rgb";
+  }
+  return nt(e, { h: 0, s: 0, v: 0 }) && H(e.h) && H(e.s) && H(e.v) && ({ h: c, s: r, v: n } = e, c = E(c, 360), r = E(r, 100), n = E(n, 100), t = Ft(c, r, n), u = "hsv"), nt(e, { h: 0, s: 0, l: 0 }) && H(e.h) && H(e.s) && H(e.l) && ({ h: c, s: r, l: i } = e, c = E(c, 360), r = E(r, 100), i = E(i, 100), t = lt(c, r, i), u = "hsl"), nt(e, { h: 0, w: 0, b: 0 }) && H(e.h) && H(e.w) && H(e.b) && ({ h: c, w: a, b: l } = e, c = E(c, 360), a = E(a, 100), l = E(l, 100), t = Ae(c, a, l), u = "hwb"), H(e.a) && (s = e.a, s = Ut(s) || parseFloat(`${s}`) > 1 ? E(s, 100) : s), {
+    ...t,
     a: Ot(s),
     format: u,
     ok: d
   };
-}, ao = "1.0.9";
+}, ho = "1.0.11";
 class y {
   // bring main utilities to front
   static matchers = I;
-  static isOnePointZero = ye;
-  static isPercentage = $t;
+  static isOnePointZero = xe;
+  static isPercentage = Ut;
   static isValidCSSUnit = H;
-  static isNonColor = ke;
+  static isNonColor = ye;
   static isColorName = Se;
   static isColorType = nt;
   static pad2 = G;
   static clamp01 = ut;
-  static bound01 = R;
+  static bound01 = E;
   static boundAlpha = Ot;
-  static getRGBFromName = Pe;
+  static getRGBFromName = Ce;
   static convertHexToDecimal = Dt;
-  static convertDecimalToHex = Ce;
-  static rgbToHsl = oe;
-  static rgbToHex = ne;
-  static rgbToHsv = re;
-  static rgbToHwb = se;
+  static convertDecimalToHex = Le;
+  static rgbToHsl = re;
+  static rgbToHex = Lt;
+  static rgbToHsv = ie;
+  static rgbToHwb = ne;
   static rgbaToHex = At;
   static hslToRgb = Ft;
   static hsvToRgb = Ft;
   static hueToRgb = ft;
-  static hwbToRgb = Le;
+  static hwbToRgb = Ae;
   static parseIntFromHex = N;
-  static stringInputToObject = Ae;
-  static inputToRGB = ie;
-  static roundPart = v;
-  static webColors = wt;
+  static stringInputToObject = He;
+  static inputToRGB = ae;
+  static roundPart = m;
+  static webColors = $t;
   static nonColors = Gt;
-  static version = ao;
+  static version = ho;
   // main public properties
   r;
   g;
@@ -1588,7 +1592,7 @@ class y {
   originalInput;
   // main public methods
   constructor(t, e) {
-    const s = e && xe.includes(e) ? e : "", { r, g: n, b: i, a, ok: l, format: c } = ie(t);
+    const s = e && Pe.includes(e) ? e : "", { r, g: n, b: i, a, ok: l, format: c } = ae(t);
     this.originalInput = t, this.r = r, this.g = n, this.b = i, this.a = a, this.ok = l, this.format = s || c;
   }
   /**
@@ -1624,7 +1628,7 @@ class y {
    * Returns the web colour name closest to the current colour.
    */
   get name() {
-    const { r: t, g: e, b: s } = this.toRgb(), [r] = wt.map(([n, i]) => {
+    const { r: t, g: e, b: s } = this.toRgb(), [r] = $t.map(([n, i]) => {
       const a = (
         // ((rgb.r - r) ** 2 + (rgb.g - g) ** 2 + (rgb.b - b) ** 2) ** 0.5; // standard
         (((i.r - t) * 0.3) ** 2 + ((i.g - e) * 0.6) ** 2 + ((i.b - s) * 0.1) ** 2) ** 0.5
@@ -1638,7 +1642,7 @@ class y {
    */
   toRgb() {
     let { r: t, g: e, b: s, a: r } = this;
-    return [t, e, s] = [t, e, s].map((n) => v(n * 255 * 100) / 100), r = v(r * 100) / 100, {
+    return [t, e, s] = [t, e, s].map((n) => m(n * 255 * 100) / 100), r = m(r * 100) / 100, {
       r: t,
       g: e,
       b: s,
@@ -1651,7 +1655,7 @@ class y {
    * * rgba(255,255,255,0.5)
    */
   toRgbString() {
-    const { r: t, g: e, b: s, a: r } = this.toRgb(), [n, i, a] = [t, e, s].map(v);
+    const { r: t, g: e, b: s, a: r } = this.toRgb(), [n, i, a] = [t, e, s].map(m);
     return r === 1 ? `rgb(${n}, ${i}, ${a})` : `rgba(${n}, ${i}, ${a}, ${r})`;
   }
   /**
@@ -1660,7 +1664,7 @@ class y {
    * * rgb(255 255 255 / 50%)
    */
   toRgbCSS4String() {
-    const { r: t, g: e, b: s, a: r } = this.toRgb(), [n, i, a] = [t, e, s].map(v), l = r === 1 ? "" : ` / ${v(r * 100)}%`;
+    const { r: t, g: e, b: s, a: r } = this.toRgb(), [n, i, a] = [t, e, s].map(m), l = r === 1 ? "" : ` / ${m(r * 100)}%`;
     return `rgb(${n} ${i} ${a}${l})`;
   }
   /**
@@ -1668,8 +1672,8 @@ class y {
    * it will find a 3 characters shorthand of the decimal value.
    */
   toHex(t) {
-    const { r: e, g: s, b: r, a: n } = this.toRgb();
-    return n === 1 ? ne(e, s, r, t) : At(e, s, r, n, t);
+    let { r: e, g: s, b: r, a: n } = this;
+    return [e, s, r] = [e, s, r].map((i) => m(i * 255)), n = m(n * 100) / 100, n === 1 ? Lt(e, s, r, t) : At(e, s, r, n, t);
   }
   /**
    * Returns the CSS valid hexadecimal vaue of the colour. When the parameter is *true*
@@ -1682,8 +1686,8 @@ class y {
    * Returns the HEX8 value of the colour.
    */
   toHex8(t) {
-    const { r: e, g: s, b: r, a: n } = this.toRgb();
-    return At(e, s, r, n, t);
+    let { r: e, g: s, b: r, a: n } = this;
+    return [e, s, r] = [e, s, r].map((i) => m(i * 255)), n = m(n * 100) / 100, n === 1 ? Lt(e, s, r, t) : At(e, s, r, n, t);
   }
   /**
    * Returns the HEX8 value of the colour.
@@ -1695,7 +1699,7 @@ class y {
    * Returns the colour as a HSVA object.
    */
   toHsv() {
-    const { r: t, g: e, b: s, a: r } = this, { h: n, s: i, v: a } = re(t, e, s);
+    const { r: t, g: e, b: s, a: r } = this, { h: n, s: i, v: a } = ie(t, e, s);
     return {
       h: n,
       s: i,
@@ -1707,7 +1711,7 @@ class y {
    * Returns the colour as an HSLA object.
    */
   toHsl() {
-    const { r: t, g: e, b: s, a: r } = this, { h: n, s: i, l: a } = oe(t, e, s);
+    const { r: t, g: e, b: s, a: r } = this, { h: n, s: i, l: a } = re(t, e, s);
     return {
       h: n,
       s: i,
@@ -1722,7 +1726,7 @@ class y {
    */
   toHslString() {
     let { h: t, s: e, l: s, a: r } = this.toHsl();
-    return t = v(t * 360), e = v(e * 100), s = v(s * 100), r = v(r * 100) / 100, r === 1 ? `hsl(${t}, ${e}%, ${s}%)` : `hsla(${t}, ${e}%, ${s}%, ${r})`;
+    return t = m(t * 360), e = m(e * 100), s = m(s * 100), r = m(r * 100) / 100, r === 1 ? `hsl(${t}, ${e}%, ${s}%)` : `hsla(${t}, ${e}%, ${s}%, ${r})`;
   }
   /**
    * Returns the HSLA values concatenated into a CSS4 Module format string.
@@ -1731,15 +1735,15 @@ class y {
    */
   toHslCSS4String() {
     let { h: t, s: e, l: s, a: r } = this.toHsl();
-    t = v(t * 360), e = v(e * 100), s = v(s * 100), r = v(r * 100);
-    const n = r < 100 ? ` / ${v(r)}%` : "";
+    t = m(t * 360), e = m(e * 100), s = m(s * 100), r = m(r * 100);
+    const n = r < 100 ? ` / ${m(r)}%` : "";
     return `hsl(${t}deg ${e}% ${s}%${n})`;
   }
   /**
    * Returns the colour as an HWBA object.
    */
   toHwb() {
-    const { r: t, g: e, b: s, a: r } = this, { h: n, w: i, b: a } = se(t, e, s);
+    const { r: t, g: e, b: s, a: r } = this, { h: n, w: i, b: a } = ne(t, e, s);
     return {
       h: n,
       w: i,
@@ -1752,8 +1756,8 @@ class y {
    */
   toHwbString() {
     let { h: t, w: e, b: s, a: r } = this.toHwb();
-    t = v(t * 360), e = v(e * 100), s = v(s * 100), r = v(r * 100);
-    const n = r < 100 ? ` / ${v(r)}%` : "";
+    t = m(t * 360), e = m(e * 100), s = m(s * 100), r = m(r * 100);
+    const n = r < 100 ? ` / ${m(r)}%` : "";
     return `hwb(${t}deg ${e}% ${s}%${n})`;
   }
   /**
@@ -1853,10 +1857,10 @@ class It {
     for (let g = 1; g < r - c; g += 1)
       n = [0.5 - d * g, ...n];
     for (let g = 0; g < s; g += 1) {
-      const p = (e + g * l) % 360 / 360;
+      const p = (e + g * l) % 360;
       n.forEach((f) => {
-        const w = new y({ h: p, s: 1, l: f });
-        a.push(i < 100 ? w.saturate(i - 100) : w);
+        const $ = new y({ h: p, s: 100, l: f * 100 });
+        a.push(i < 100 ? $.saturate(i - 100) : $);
       });
     }
     this.hue = e, this.hueSteps = s, this.lightSteps = r, this.saturation = i, this.colors = a;
@@ -1898,7 +1902,7 @@ const Kt = {
   "violet",
   "magenta",
   "pink"
-], ae = (o) => {
+], le = (o) => {
   if (!B(o)) return !1;
   try {
     JSON.parse(o);
@@ -1906,15 +1910,15 @@ const Kt = {
     return !1;
   }
   return !0;
-}, Vt = "v-hidden", lo = (o) => {
+}, Vt = "v-hidden", go = (o) => {
   const { format: t, id: e, componentLabels: s } = o, r = x({
     tagName: "div",
     className: `color-form ${t}`
   });
   let n = ["hex"];
   return t === "rgb" ? n = ["red", "green", "blue", "alpha"] : t === "hsl" ? n = ["hue", "saturation", "lightness", "alpha"] : t === "hwb" && (n = ["hue", "whiteness", "blackness", "alpha"]), n.forEach((i) => {
-    const [a] = t === "hex" ? ["#"] : pe(i).split(""), l = `color_${t}_${i}_${e}`, c = s[`${i}Label`], h = x({ tagName: "label" });
-    m(h, "for", l), h.append(
+    const [a] = t === "hex" ? ["#"] : de(i).split(""), l = `color_${t}_${i}_${e}`, c = s[`${i}Label`], h = x({ tagName: "label" });
+    v(h, "for", l), h.append(
       x({
         tagName: "span",
         ariaHidden: "true",
@@ -1943,7 +1947,7 @@ const Kt = {
       step: d
     }), r.append(h, b);
   }), r;
-}, co = (o) => {
+}, uo = (o) => {
   const { format: t, componentLabels: e } = o, { hueLabel: s, alphaLabel: r, lightnessLabel: n, saturationLabel: i, whitenessLabel: a, blacknessLabel: l } = e, c = t === "hsl" ? 360 : 100, h = t === "hsl" ? 100 : 360, b = 100;
   let u = t === "hsl" ? `${s} & ${n}` : `${n} & ${i}`;
   u = t === "hwb" ? `${a} & ${l}` : u;
@@ -1973,48 +1977,48 @@ const Kt = {
       min: 0,
       max: b
     }
-  ].forEach(($) => {
-    const { i: S, c: L, l: P, min: C, max: M } = $, E = x({
+  ].forEach((w) => {
+    const { i: P, c: L, l: S, min: C, max: M } = w, T = x({
       tagName: "div",
       className: "color-control",
       role: "presentation"
     });
-    E.append(
+    T.append(
       x({
         tagName: "div",
-        className: `visual-control visual-control${S}`
+        className: `visual-control visual-control${P}`
       })
     );
     const A = x({
       tagName: "div",
       className: `${L} knob`,
       ariaLive: "polite",
-      ariaLabel: P,
+      ariaLabel: S,
       role: "slider",
       tabIndex: 0,
       ariaValueMin: `${C}`,
       ariaValueMax: `${M}`
     });
-    E.append(A), g.append(E);
+    T.append(A), g.append(T);
   }), g;
-}, le = (o, t, e) => {
+}, ce = (o, t, e) => {
   const { input: s, format: r, componentLabels: n } = o, { defaultsLabel: i, presetsLabel: a } = n, l = e === "color-options", c = t instanceof It, h = l ? a : i, b = c ? t.colors : t, u = b.length, { lightSteps: d } = c ? t : { lightSteps: null }, g = d || [9, 10].find((A) => u >= A * 2 && !(u % A)) || 5, p = l && u > g;
   let f = 2;
   f = p && u > g * 2 ? 3 : f, f = p && u > g * 3 ? 4 : f, f = p && u > g * 4 ? 5 : f;
-  const w = f - (u <= g * 3 ? 1 : 2), $ = p && u > w * g;
-  let S = e;
-  S += $ ? " scrollable" : "", S += p ? " multiline" : "";
+  const $ = f - (u <= g * 3 ? 1 : 2), w = p && u > $ * g;
+  let P = e;
+  P += w ? " scrollable" : "", P += p ? " multiline" : "";
   const L = p ? "1px" : "0.25rem";
-  let P = p ? 1.75 : 2;
-  P = g > 5 && p ? 1.5 : P;
-  const C = `${w * P}rem`, M = `calc(${f} * ${P}rem + ${f - 1} * ${L})`, E = x({
+  let S = p ? 1.75 : 2;
+  S = g > 5 && p ? 1.5 : S;
+  const C = `${$ * S}rem`, M = `calc(${f} * ${S}rem + ${f - 1} * ${L})`, T = x({
     tagName: "ul",
-    className: S,
+    className: P,
     role: "listbox",
     ariaLabel: h
   });
-  return $ && D(E, {
-    "--grid-item-size": `${P}rem`,
+  return w && D(T, {
+    "--grid-item-size": `${S}rem`,
     "--grid-fit": `${g}`,
     "--grid-gap": L,
     "--grid-height": C,
@@ -2022,20 +2026,20 @@ const Kt = {
   }), b.forEach((A) => {
     let [F, Q] = typeof A == "string" ? A.trim().split(":") : [];
     A instanceof y && (F = A.toHexString(), Q = F);
-    const Ut = new y(A instanceof y ? A : F, r).toString() === yt(s, "value"), xt = x({
+    const Wt = new y(A instanceof y ? A : F, r).toString() === kt(s, "value"), yt = x({
       tagName: "li",
-      className: `color-option${Ut ? " active" : ""}`,
+      className: `color-option${Wt ? " active" : ""}`,
       innerText: `${Q || F}`,
       tabIndex: 0,
       role: "option",
-      ariaSelected: Ut ? "true" : "false"
+      ariaSelected: Wt ? "true" : "false"
     });
-    m(xt, "data-value", `${F}`), l && D(xt, { backgroundColor: F }), E.append(xt);
-  }), E;
-}, ho = (o) => {
-  const { input: t, parent: e, format: s, id: r, componentLabels: n, colorKeywords: i, colorPresets: a } = o, l = yt(t, "value") || "#fff", { nonColors: c } = y, { toggleLabel: h, pickerLabel: b, formatLabel: u, hexLabel: d } = n, g = c.includes(l) ? "#fff" : l;
+    v(yt, "data-value", `${F}`), l && D(yt, { backgroundColor: F }), T.append(yt);
+  }), T;
+}, bo = (o) => {
+  const { input: t, parent: e, format: s, id: r, componentLabels: n, colorKeywords: i, colorPresets: a } = o, l = kt(t, "value") || "#fff", { nonColors: c } = y, { toggleLabel: h, pickerLabel: b, formatLabel: u, hexLabel: d } = n, g = c.includes(l) ? "#fff" : l;
   o.color = new y(g, s);
-  const p = s === "hex" ? d : pe(s), f = x({
+  const p = s === "hex" ? d : de(s), f = x({
     id: `picker-btn-${r}`,
     tagName: "button",
     type: "button",
@@ -2050,75 +2054,75 @@ const Kt = {
       innerText: `${b}. ${u}: ${p}`
     })
   );
-  const w = x({
+  const $ = x({
     tagName: "div",
     className: "color-dropdown picker",
     role: "group",
     ariaLabelledBy: `picker-btn-${r}`
-  }), $ = co(o), S = lo(o);
-  if (w.append($, S), t.before(f), e.append(w), i || a) {
+  }), w = uo(o), P = go(o);
+  if ($.append(w, P), t.before(f), e.append($), i || a) {
     const L = x({
       tagName: "div",
       className: "color-dropdown scrollable menu"
     });
-    a && L.append(le(o, a, "color-options")), i && i.length && L.append(le(o, i, "color-defaults"));
-    const P = x({
+    a && L.append(ce(o, a, "color-options")), i && i.length && L.append(ce(o, i, "color-defaults"));
+    const S = x({
       tagName: "button",
       type: "button",
       className: "menu-toggle btn-appearance",
       tabIndex: -1,
       ariaExpanded: "false",
       ariaHasPopup: "true"
-    }), C = encodeURI("http://www.w3.org/2000/svg"), M = Mt(C, {
+    }), C = encodeURI("http://www.w3.org/2000/svg"), M = Tt(C, {
       tagName: "svg"
     });
-    m(M, "xmlns", C), m(M, "viewBox", "0 0 512 512"), m(M, Ee, "true");
-    const E = Mt(C, {
+    v(M, "xmlns", C), v(M, "viewBox", "0 0 512 512"), v(M, Te, "true");
+    const T = Tt(C, {
       tagName: "path"
     });
-    m(E, "d", "M98,158l157,156L411,158l27,27L255,368L71,185L98,158z"), m(E, "fill", "#fff"), M.append(E), P.append(
+    v(T, "d", "M98,158l157,156L411,158l27,27L255,368L71,185L98,158z"), v(T, "fill", "#fff"), M.append(T), S.append(
       x({
         tagName: "span",
         className: Vt,
         innerText: `${h}`
       }),
       M
-    ), e.append(P, L);
+    ), e.append(S, L);
   }
-  i && c.includes(l) && (o.value = l), m(t, X, "-1");
-}, go = "2.0.1", Y = "color-picker", uo = `[data-function="${Y}"]`, ce = `.${Y}`, bo = {
+  i && c.includes(l) && (o.value = l), v(t, X, "-1");
+}, po = "2.0.2", Y = "color-picker", fo = `[data-function="${Y}"]`, he = `.${Y}`, mo = {
   componentLabels: Kt,
   colorLabels: it,
   format: "rgb",
   colorPresets: !1,
   colorKeywords: !1
-}, { roundPart: k, nonColors: bt } = y, po = (o) => Xe(o, Y), fo = (o) => new mo(o), he = (o, t) => {
+}, { roundPart: k, nonColors: bt } = y, vo = (o) => Ye(o, Y), $o = (o) => new wo(o), ge = (o, t) => {
   const e = t ? Bt : jt, { input: s, pickerToggle: r, menuToggle: n } = o;
-  e(s, Re, o.showPicker), e(r, Et, o.togglePicker), n && e(n, Et, o.toggleMenu);
-}, He = (o, t) => {
-  const e = t ? Bt : jt, { input: s, colorMenu: r, parent: n } = o, i = V(s), a = so(i);
-  e(o.controls, Fe, o.pointerDown), o.controlKnobs.forEach((l) => e(l, zt, o.handleKnobs)), e(a, Ve, o.handleScroll), e(a, Ke, o.update), [s, ...o.inputs].forEach((l) => e(l, Me, o.changeHandler)), r && (e(r, Et, o.menuClickHandler), e(r, zt, o.menuKeyHandler)), e(i, ue, o.pointerMove), e(i, Ie, o.pointerUp), e(n, Oe, o.handleFocusOut), e(i, De, o.handleDismiss);
-}, ge = (o) => {
-  Ze(o.input, new CustomEvent("colorpicker.change"));
-}, Ne = (o) => {
+  e(s, Oe, o.showPicker), e(r, Et, o.togglePicker), n && e(n, Et, o.toggleMenu);
+}, Ne = (o, t) => {
+  const e = t ? Bt : jt, { input: s, colorMenu: r, parent: n } = o, i = V(s), a = ro(i);
+  e(o.controls, Ie, o.pointerDown), o.controlKnobs.forEach((l) => e(l, zt, o.handleKnobs)), e(a, Be, o.handleScroll), e(a, Ve, o.update), [s, ...o.inputs].forEach((l) => e(l, Me, o.changeHandler)), r && (e(r, Et, o.menuClickHandler), e(r, zt, o.menuKeyHandler)), e(i, be, o.pointerMove), e(i, Ke, o.pointerUp), e(n, De, o.handleFocusOut), e(i, Fe, o.handleDismiss);
+}, ue = (o) => {
+  Qe(o.input, new CustomEvent("colorpicker.change"));
+}, Ee = (o) => {
   o && ["bottom", "top"].forEach((t) => O(o, t));
 }, Ht = (o, t) => {
   const { colorPicker: e, colorMenu: s, menuToggle: r, pickerToggle: n, parent: i } = o, a = t === e, l = a ? s : e, c = a ? r : n, h = a ? n : r;
-  T(i, "open") || q(i, "open"), l && (O(l, "show"), Ne(l)), q(t, "bottom"), eo(t), q(t, "show"), a && o.update(), o.isOpen || (He(o, !0), o.updateDropdownPosition(), o.isOpen = !0, m(o.input, X, "0"), r && m(r, X, "0")), m(h, Nt, "true"), c && m(c, Nt, "false");
+  R(i, "open") || q(i, "open"), l && (O(l, "show"), Ee(l)), q(t, "bottom"), oo(t), q(t, "show"), a && o.update(), o.isOpen || (Ne(o, !0), o.updateDropdownPosition(), o.isOpen = !0, v(o.input, X, "0"), r && v(r, X, "0")), v(h, Nt, "true"), c && v(c, Nt, "false");
 };
-class mo {
+class wo {
   // bring utils to staic
   static Color = y;
   static ColorPalette = It;
-  static getInstance = po;
-  static init = fo;
-  static selector = uo;
+  static getInstance = vo;
+  static init = $o;
+  static selector = fo;
   // utils important for render
   static roundPart = k;
   static setElementStyle = D;
-  static setAttribute = m;
+  static setAttribute = v;
   static getBoundingClientRect = gt;
-  static version = go;
+  static version = po;
   static colorNames = it;
   static colorPickerLabels = Kt;
   id;
@@ -2129,7 +2133,7 @@ class mo {
   dragElement;
   isOpen = !1;
   controlPositions;
-  colorLabels = Zt(it.map((t) => [t, t]));
+  colorLabels = Qt(it.map((t) => [t, t]));
   colorKeywords;
   colorPresets;
   componentLabels;
@@ -2149,37 +2153,37 @@ class mo {
    * @param config instance options
    */
   constructor(t, e) {
-    const s = z(t);
+    const s = _(t);
     if (typeof t > "u") throw new TypeError("ColorPicker target not specified.");
     if (B(t) && !s) throw new TypeError(`ColorPicker target "${t}" cannot be found.`);
     this.input = s;
-    const r = fe(s, ce);
+    const r = me(s, he);
     if (!r) throw new TypeError("ColorPicker requires a specific markup to work.");
-    this.parent = r, this.id = de(s, Y), this.dragElement = void 0, this.isOpen = !1, this.controlPositions = {
+    this.parent = r, this.id = fe(s, Y), this.dragElement = void 0, this.isOpen = !1, this.controlPositions = {
       c1x: 0,
       c1y: 0,
       c2y: 0,
       c3y: 0
     }, this.colorKeywords = !1, this.colorPresets = !1;
-    const { format: n, componentLabels: i, colorLabels: a, colorKeywords: l, colorPresets: c } = to(
+    const { format: n, componentLabels: i, colorLabels: a, colorKeywords: l, colorPresets: c } = eo(
       s,
-      bo,
+      mo,
       e || {}
     );
     let h = it;
-    Lt(a) && a.length === 17 ? h = a : B(a) && a.split(",").length === 17 && (h = a.split(",")), K(this.colorLabels, Zt(h.map((p, f) => [it[f], p])));
-    const b = B(i) && ae(i) ? JSON.parse(i) : i;
-    if (this.componentLabels = K({ ...Kt }, b), this.color = new y(s.value || "#fff", n), this.format = n, Lt(l) && l.length ? this.colorKeywords = l : B(l) && l.length && (this.colorKeywords = l.split(",").map((p) => p.trim())), Lt(c) && c.length)
+    Ct(a) && a.length === 17 ? h = a : B(a) && a.split(",").length === 17 && (h = a.split(",")), K(this.colorLabels, Qt(h.map((p, f) => [it[f], p])));
+    const b = B(i) && le(i) ? JSON.parse(i) : i;
+    if (this.componentLabels = K({ ...Kt }, b), this.color = new y(s.value || "#fff", n), this.format = n, Ct(l) && l.length ? this.colorKeywords = l : B(l) && l.length && (this.colorKeywords = l.split(",").map((p) => p.trim())), Ct(c) && c.length)
       this.colorPresets = c;
-    else if (c && ae(c)) {
-      const { hue: p, hueSteps: f, lightSteps: w, saturation: $ } = JSON.parse(c);
-      this.colorPresets = new It(p, f, w, $);
+    else if (c && le(c)) {
+      const { hue: p, hueSteps: f, lightSteps: $, saturation: w } = JSON.parse(c);
+      this.colorPresets = new It(p, f, $, w);
     } else B(c) && (this.colorPresets = c.split(",").map((p) => p.trim()));
-    ho(this);
+    bo(this);
     const [u, d] = st("color-dropdown", r);
-    this.pickerToggle = z(".picker-toggle", r), this.menuToggle = z(".menu-toggle", r), this.colorPicker = u, this.colorMenu = d, this.inputs = [...st("color-input", r)];
+    this.pickerToggle = _(".picker-toggle", r), this.menuToggle = _(".menu-toggle", r), this.colorPicker = u, this.colorMenu = d, this.inputs = [...st("color-input", r)];
     const [g] = st("color-controls", r);
-    this.controls = g, this.controlKnobs = [...st("knob", g)], this.visuals = [...st("visual-control", g)], this.update(), he(this, !0), ct.set(s, Y, this);
+    this.controls = g, this.controlKnobs = [...st("knob", g)], this.visuals = [...st("visual-control", g)], this.update(), ge(this, !0), ct.set(s, Y, this);
   }
   /** Returns the current colour value */
   get value() {
@@ -2257,10 +2261,10 @@ class mo {
   }
   /** Updates `ColorPicker` visuals. */
   updateVisuals() {
-    const { controlPositions: t, visuals: e } = this, [s, r, n] = e, { offsetHeight: i } = s, a = t.c2y / i, { r: l, g: c, b: h } = new y({ h: a, s: 1, l: 0.5 }).toRgb(), b = "linear-gradient(rgb(255,255,255) 0%, rgb(255,255,255) 100%)", u = 1 - t.c3y / i, d = k(u * 100) / 100, g = new y({
-      h: a,
-      s: 1,
-      l: 0.5,
+    const { controlPositions: t, visuals: e } = this, [s, r, n] = e, { offsetHeight: i } = s, a = t.c2y / i, { r: l, g: c, b: h } = new y({ h: a * 360, s: 100, l: 50 }).toRgb(), b = "linear-gradient(rgb(255,255,255) 0%, rgb(255,255,255) 100%)", u = 1 - t.c3y / i, d = k(u * 100) / 100, g = new y({
+      h: a * 360,
+      s: 100,
+      l: 50,
       a: u
     }).toRgbString(), p = `linear-gradient(
       rgb(255,0,0) 0%, rgb(255,255,0) 16.67%,
@@ -2291,7 +2295,7 @@ class mo {
    * @this {ColorPicker}
    */
   handleDismiss = ({ code: t }) => {
-    this.isOpen && t === qe && this.hide();
+    this.isOpen && t === Ge && this.hide();
   };
   /**
    * The `ColorPicker` *scroll* event listener when open.
@@ -2300,7 +2304,7 @@ class mo {
    */
   handleScroll = (t) => {
     const { activeElement: e } = V(this.input);
-    this.updateDropdownPosition(), ([ue, Be].includes(t.type) && this.dragElement || e && this.controlKnobs.includes(e)) && (t.stopPropagation(), t.preventDefault());
+    this.updateDropdownPosition(), ([be, je].includes(t.type) && this.dragElement || e && this.controlKnobs.includes(e)) && (t.stopPropagation(), t.preventDefault());
   };
   /**
    * The `ColorPicker` keyboard event listener for menu navigation.
@@ -2308,8 +2312,8 @@ class mo {
    * @param e
    */
   menuKeyHandler = (t) => {
-    const { target: e, code: s } = t, { previousElementSibling: r, nextElementSibling: n, parentElement: i } = e, a = i && T(i, "color-options"), l = i ? [...i.children] : [], c = a && Tt(i, "grid-template-columns").split(" ").length, h = l.indexOf(e), b = h > -1 && c && l[h - c], u = h > -1 && c && l[h + c];
-    [j, ot, Wt].includes(s) && t.preventDefault(), a ? b && s === ot ? _(b) : u && s === j ? _(u) : r && s === ht ? _(r) : n && s === U && _(n) : r && [ht, ot].includes(s) ? _(r) : n && [U, j].includes(s) && _(n), [je, Wt].includes(s) && this.menuClickHandler(t);
+    const { target: e, code: s } = t, { previousElementSibling: r, nextElementSibling: n, parentElement: i } = e, a = i && R(i, "color-options"), l = i ? [...i.children] : [], c = a && Number(Mt(i, "--grid-fit")), h = l.indexOf(e), b = h > -1 && c && l[h - c], u = h > -1 && c && l[h + c];
+    [j, ot, Jt].includes(s) && t.preventDefault(), a ? b && s === ot ? W(b) : u && s === j ? W(u) : r && s === ht ? W(r) : n && s === U && W(n) : r && [ht, ot].includes(s) ? W(r) : n && [U, j].includes(s) && W(n), [qe, Jt].includes(s) && this.menuClickHandler(t);
   };
   /**
    * The `ColorPicker` click event listener for the colour menu presets / defaults.
@@ -2318,9 +2322,9 @@ class mo {
    * @this {ColorPicker}
    */
   menuClickHandler = (t) => {
-    const { target: e } = t, { colorMenu: s } = this, r = (yt(e, "data-value") || "").trim();
+    const { target: e } = t, { colorMenu: s } = this, r = (kt(e, "data-value") || "").trim();
     if (!r.length) return;
-    const n = z("li.active", s);
+    const n = _("li.active", s);
     let i = r;
     i = bt.includes(i) ? "white" : i, i = i === "transparent" ? "rgba(0,0,0,0)" : i;
     const { r: a, g: l, b: c, a: h } = new y(i);
@@ -2329,7 +2333,7 @@ class mo {
       g: l,
       b: c,
       a: h
-    }), this.update(), n !== e && (n && (O(n, "active"), Pt(n, St)), q(e, "active"), m(e, St, "true"), bt.includes(r) && (this.value = r), ge(this));
+    }), this.update(), n !== e && (n && (O(n, "active"), Pt(n, xt)), q(e, "active"), v(e, xt, "true"), bt.includes(r) && (this.value = r), ue(this));
   };
   /**
    * The `ColorPicker` *touchstart* / *mousedown* events listener for control knobs.
@@ -2338,10 +2342,10 @@ class mo {
    */
   pointerDown = (t) => {
     if (t.button !== 0) return;
-    const { target: e, pageX: s, pageY: r } = t, { colorMenu: n, visuals: i, controlKnobs: a } = this, [l, c, h] = i, [b, u, d] = a, g = a.includes(e) ? e.previousElementSibling : e, p = gt(g), f = Ct(l), w = s - f.scrollLeft - p.left, $ = r - f.scrollTop - p.top;
-    if (e === l || e === b ? (this.dragElement = g, this.changeControl1(w, $)) : e === c || e === u ? (this.dragElement = g, this.changeControl2($)) : (e === h || e === d) && (this.dragElement = g, this.changeAlpha($)), n) {
-      const S = z("li.active", n);
-      S && (O(S, "active"), Pt(S, St));
+    const { target: e, pageX: s, pageY: r } = t, { colorMenu: n, visuals: i, controlKnobs: a } = this, [l, c, h] = i, [b, u, d] = a, g = a.includes(e) ? e.previousElementSibling : e, p = gt(g), f = St(l), $ = s - f.scrollLeft - p.left, w = r - f.scrollTop - p.top;
+    if (e === l || e === b ? (this.dragElement = g, this.changeControl1($, w)) : e === c || e === u ? (this.dragElement = g, this.changeControl2(w)) : (e === h || e === d) && (this.dragElement = g, this.changeAlpha(w)), n) {
+      const P = _("li.active", n);
+      P && (O(P, "active"), Pt(P, xt));
     }
     t.preventDefault();
   };
@@ -2352,7 +2356,7 @@ class mo {
    * @this
    */
   pointerUp = ({ target: t }) => {
-    const { parent: e } = this, s = V(e), r = z(`${ce}.open`, s) !== null, n = s.getSelection();
+    const { parent: e } = this, s = V(e), r = _(`${he}.open`, s) !== null, n = s.getSelection();
     !this.dragElement && (!n || !n.toString().length) && !e.contains(t) && this.hide(r), this.dragElement = void 0;
   };
   /**
@@ -2363,7 +2367,7 @@ class mo {
   pointerMove = (t) => {
     const { dragElement: e, visuals: s } = this, [r, n, i] = s, { pageX: a, pageY: l } = t;
     if (!e) return;
-    const c = gt(e), h = Ct(r), b = a - h.scrollLeft - c.left, u = l - h.scrollTop - c.top;
+    const c = gt(e), h = St(r), b = a - h.scrollLeft - c.left, u = l - h.scrollTop - c.top;
     e === r && this.changeControl1(b, u), e === n && this.changeControl2(u), e === i && this.changeAlpha(u);
   };
   /**
@@ -2388,30 +2392,30 @@ class mo {
   /** The event listener of the colour form inputs. */
   changeHandler = () => {
     let t;
-    const { inputs: e, format: s, value: r, input: n, controlPositions: i, visuals: a } = this, { activeElement: l } = V(n), { offsetHeight: c } = a[0], [h, , , b] = e, [u, d, g, p] = s === "rgb" ? e.map(($) => parseFloat($.value) / ($ === b ? 100 : 1)) : e.map(($) => parseFloat($.value) / ($ !== h ? 100 : 360)), f = this.hasNonColor && bt.includes(r), w = b ? p : 1 - i.c3y / c;
+    const { inputs: e, format: s, value: r, input: n, controlPositions: i, visuals: a } = this, { activeElement: l } = V(n), { offsetHeight: c } = a[0], [h, , , b] = e, [u, d, g, p] = s === "rgb" ? e.map((w) => parseFloat(w.value) / (w === b ? 100 : 1)) : e.map((w) => parseFloat(w.value) / (w !== h ? 100 : 360)), f = this.hasNonColor && bt.includes(r), $ = b ? p : 1 - i.c3y / c;
     if (l === n || l && e.includes(l)) {
       l === n ? f ? t = r === "transparent" ? "rgba(0,0,0,0)" : "rgb(0,0,0)" : t = r : s === "hex" ? t = h.value : s === "hsl" ? t = {
         h: u,
         s: d,
         l: g,
-        a: w
+        a: $
       } : s === "hwb" ? t = {
         h: u,
         w: d,
         b: g,
-        a: w
+        a: $
       } : t = {
         r: u,
         g: d,
         b: g,
-        a: w
+        a: $
       };
-      const { r: $, g: S, b: L, a: P } = new y(t);
+      const { r: w, g: P, b: L, a: S } = new y(t);
       K(this.color, {
-        r: $,
-        g: S,
+        r: w,
+        g: P,
         b: L,
-        a: P
+        a: S
       }), this.setControlPositions(), this.updateAppearance(), this.updateInputs(), this.updateControls(), this.updateVisuals(), l === n && f && (this.value = r);
     }
   };
@@ -2428,9 +2432,9 @@ class mo {
     const { controlPositions: n, visuals: i } = this, { offsetHeight: a, offsetWidth: l } = i[0];
     t > l ? s = l : t >= 0 && (s = t), e > a ? r = a : e >= 0 && (r = e);
     const c = n.c2y / a, h = s / l, b = 1 - r / a, u = 1 - n.c3y / a, { r: d, g, b: p, a: f } = new y({
-      h: c,
-      s: h,
-      v: b,
+      h: c * 360,
+      s: h * 100,
+      v: b * 100,
       a: u
     });
     K(this.color, {
@@ -2452,9 +2456,9 @@ class mo {
     let i = 0;
     t > r ? i = r : t >= 0 && (i = t);
     const a = i / r, l = e.c1x / n, c = 1 - e.c1y / r, h = 1 - e.c3y / r, { r: b, g: u, b: d, a: g } = new y({
-      h: a,
-      s: l,
-      v: c,
+      h: a * 360,
+      s: l * 100,
+      v: c * 100,
       a: h
     });
     K(this.color, {
@@ -2487,10 +2491,10 @@ class mo {
   };
   /** Updates the open dropdown position on *scroll* event. */
   updateDropdownPosition() {
-    const { input: t, colorPicker: e, colorMenu: s } = this, r = gt(t), { top: n, bottom: i } = r, { offsetHeight: a } = t, l = Ct(t).clientHeight, h = T(e, "show") ? e : s;
+    const { input: t, colorPicker: e, colorMenu: s } = this, r = gt(t), { top: n, bottom: i } = r, { offsetHeight: a } = t, l = St(t).clientHeight, h = R(e, "show") ? e : s;
     if (!h) return;
     const { offsetHeight: b } = h, u = l - i, d = n, g = n + b + a > l, p = n - b < 0;
-    (T(h, "bottom") || !p) && u < d && g ? (O(h, "bottom"), q(h, "top")) : (O(h, "top"), q(h, "bottom"));
+    (R(h, "bottom") || !p) && u < d && g ? (O(h, "bottom"), q(h, "top")) : (O(h, "top"), q(h, "bottom"));
   }
   /** Updates control knobs' positions. */
   setControlPositions() {
@@ -2501,17 +2505,17 @@ class mo {
   updateAppearance() {
     const { componentLabels: t, color: e, parent: s, hsv: r, hex: n, format: i, controlKnobs: a } = this, { appearanceLabel: l, hexLabel: c, valueLabel: h } = t;
     let { r: b, g: u, b: d } = e.toRgb();
-    const [g, p, f] = a, w = k(r.h * 360), $ = e.a, S = k(r.s * 100), L = k(r.v * 100), P = this.appearance;
+    const [g, p, f] = a, $ = k(r.h * 360), w = e.a, P = k(r.s * 100), L = k(r.v * 100), S = this.appearance;
     let C = `${c} ${n.split("").join(" ")}`;
     if (i === "hwb") {
       const { hwb: A } = this, F = k(A.w * 100), Q = k(A.b * 100);
-      C = `HWB: ${w}°, ${F}%, ${Q}%`, m(g, et, `${F}% & ${Q}%`), m(g, tt, `${F}`), m(p, _t, `${h}: ${C}. ${l}: ${P}.`), m(p, et, `${w}%`), m(p, tt, `${w}`);
+      C = `HWB: ${$}°, ${F}%, ${Q}%`, v(g, et, `${F}% & ${Q}%`), v(g, tt, `${F}`), v(p, _t, `${h}: ${C}. ${l}: ${S}.`), v(p, et, `${$}%`), v(p, tt, `${$}`);
     } else
-      [b, u, d] = [b, u, d].map(k), C = i === "hsl" ? `HSL: ${w}°, ${S}%, ${L}%` : C, C = i === "rgb" ? `RGB: ${b}, ${u}, ${d}` : C, m(g, et, `${L}% & ${S}%`), m(g, tt, `${L}`), m(p, _t, `${h}: ${C}. ${l}: ${P}.`), m(p, et, `${w}°`), m(p, tt, `${w}`);
-    const M = k($ * 100);
-    m(f, et, `${M}%`), m(f, tt, `${M}`);
-    const E = e.toString();
-    D(this.input, { backgroundColor: E }), this.isDark ? (T(s, "txt-light") && O(s, "txt-light"), T(s, "txt-dark") || q(s, "txt-dark")) : (T(s, "txt-dark") && O(s, "txt-dark"), T(s, "txt-light") || q(s, "txt-light"));
+      [b, u, d] = [b, u, d].map(k), C = i === "hsl" ? `HSL: ${$}°, ${P}%, ${L}%` : C, C = i === "rgb" ? `RGB: ${b}, ${u}, ${d}` : C, v(g, et, `${L}% & ${P}%`), v(g, tt, `${L}`), v(p, _t, `${h}: ${C}. ${l}: ${S}.`), v(p, et, `${$}°`), v(p, tt, `${$}`);
+    const M = k(w * 100);
+    v(f, et, `${M}%`), v(f, tt, `${M}`);
+    const T = e.toString();
+    D(this.input, { backgroundColor: T }), this.isDark ? (R(s, "txt-light") && O(s, "txt-light"), R(s, "txt-dark") || q(s, "txt-dark")) : (R(s, "txt-dark") && O(s, "txt-dark"), R(s, "txt-light") || q(s, "txt-light"));
   }
   /** Updates the control knobs actual positions. */
   updateControls() {
@@ -2536,13 +2540,13 @@ class mo {
       const g = k(i.l * 100), p = k(i.s * 100);
       d = this.color.toHslString(), a.value = `${u}`, l.value = `${p}`, c.value = `${g}`, h.value = `${b}`;
     } else if (s === "hwb") {
-      const { w: g, b: p } = this.hwb, f = k(g * 100), w = k(p * 100);
-      d = this.color.toHwbString(), a.value = `${u}`, l.value = `${f}`, c.value = `${w}`, h.value = `${b}`;
+      const { w: g, b: p } = this.hwb, f = k(g * 100), $ = k(p * 100);
+      d = this.color.toHwbString(), a.value = `${u}`, l.value = `${f}`, c.value = `${$}`, h.value = `${b}`;
     } else if (s === "rgb") {
       let { r: g, g: p, b: f } = this.rgb;
       [g, p, f] = [g, p, f].map(k), d = this.color.toRgbString(), a.value = `${g}`, l.value = `${p}`, c.value = `${f}`, h.value = `${b}`;
     }
-    this.value = d, !t && d !== e && ge(this);
+    this.value = d, !t && d !== e && ue(this);
   }
   /**
    * Toggle the `ColorPicker` dropdown visibility.
@@ -2552,12 +2556,12 @@ class mo {
   togglePicker = (t) => {
     t && t.preventDefault();
     const { colorPicker: e } = this;
-    this.isOpen && T(e, "show") ? this.hide(!0) : Ht(this, e);
+    this.isOpen && R(e, "show") ? this.hide(!0) : Ht(this, e);
   };
   /** Shows the `ColorPicker` dropdown. */
   showPicker = () => {
     const { colorPicker: t } = this;
-    ["top", "bottom"].some((e) => T(t, e)) || Ht(this, t);
+    ["top", "bottom"].some((e) => R(t, e)) || Ht(this, t);
   };
   /**
    * Toggles the visibility of the `ColorPicker` presets menu.
@@ -2568,7 +2572,7 @@ class mo {
   toggleMenu = (t) => {
     t && t.preventDefault();
     const { colorMenu: e } = this;
-    this.isOpen && T(e, "show") ? this.hide(!0) : Ht(this, e);
+    this.isOpen && R(e, "show") ? this.hide(!0) : Ht(this, e);
   };
   /**
    * Hides the currently open `ColorPicker` dropdown.
@@ -2577,21 +2581,21 @@ class mo {
    */
   hide(t) {
     if (this.isOpen) {
-      const { pickerToggle: e, menuToggle: s, colorPicker: r, colorMenu: n, parent: i, input: a } = this, l = T(r, "show"), c = l ? r : n, h = l ? e : s, b = c && Qe(c);
-      this.value = this.color.toString(!0), c && (O(c, "show"), m(h, Nt, "false"), setTimeout(() => {
-        Ne(c), z(".show", i) || (O(i, "open"), He(this), this.isOpen = !1);
-      }, b)), t || _(e), m(a, X, "-1"), h === s && m(s, X, "-1");
+      const { pickerToggle: e, menuToggle: s, colorPicker: r, colorMenu: n, parent: i, input: a } = this, l = R(r, "show"), c = l ? r : n, h = l ? e : s, b = c && to(c);
+      this.value = this.color.toString(!0), c && (O(c, "show"), v(h, Nt, "false"), setTimeout(() => {
+        Ee(c), _(".show", i) || (O(i, "open"), Ne(this), this.isOpen = !1);
+      }, b)), t || W(e), v(a, X, "-1"), h === s && v(s, X, "-1");
     }
   }
   /** Removes `ColorPicker` from target `<input>`. */
   dispose() {
     const { input: t, parent: e } = this;
-    this.hide(!0), he(this), [...e.children].forEach((s) => {
+    this.hide(!0), ge(this), [...e.children].forEach((s) => {
       s !== t && s.remove();
     }), Pt(t, X), D(t, { backgroundColor: "" }), ["txt-light", "txt-dark"].forEach((s) => O(e, s)), ct.remove(t, Y);
   }
 }
 export {
-  mo as default
+  wo as default
 };
 //# sourceMappingURL=color-picker.mjs.map

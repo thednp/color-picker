@@ -73,9 +73,9 @@ export default class ColorPalette {
 
     // feed `colors` Array
     for (let i = 0; i < hueSteps; i += 1) {
-      const currentHue = ((hue + i * hueStep) % 360) / 360;
+      const currentHue = (hue + i * hueStep) % 360;
       lightnessArray.forEach(l => {
-        const newColor = new Color({ h: currentHue, s: 1, l });
+        const newColor = new Color({ h: currentHue, s: 100, l: l * 100 });
         colors.push(saturation < 100 ? newColor.saturate(saturation - 100) : newColor);
       });
     }

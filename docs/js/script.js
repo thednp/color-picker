@@ -52,11 +52,12 @@ CPs.forEach((input, i) => {
       : ColorPicker.getInstance(target);
     const {color} = cp;
 
+    // console.log(cp)
     if (target === picker0) {
       const {h, s, l, a} = cp.hsl;
       [picker1, picker2, picker3].forEach((p, i) => {
         const pickerInstance = ColorPicker.getInstance(p);
-        const { r, g, b, a: al } = new ColorPicker.Color({ h, s, l, a }).spin((i + 1) * 90);
+        const { r, g, b, a: al } = new ColorPicker.Color({ h: h * 360, s: s * 100, l: l * 100, a }).spin((i + 1) * 90);
         Object.assign(pickerInstance.color, { r, g, b, a: al });
 
         pickerInstance.update();
@@ -101,7 +102,7 @@ CPs.forEach((input, i) => {
         document.body.style.setProperty('--btn-color', 'rgb(0 0 0 / 70%)');
       }
     }
-    const favColor = new ColorPicker.Color({ r: color.r, g: color.g, b: color.b}).toString();
+    const favColor = new ColorPicker.Color({ r: color.r * 255, g: color.g * 255, b: color.b *255 }).toString();
     favicon.setAttribute('href', `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="${favColor}"><path d="M0 32a32 32 0 1 0 64 0a32 32 0 1 0 -64 0M21.83 47.18v-30.3q0 -4.65 2.66 -6.79T33 7.96c2.78 -0.15 5.55 0.42 8.04 1.67c0.23 0.13 0.45 0.28 0.66 0.43q2.85 2.1 2.85 6.9v9.97l-6.37 0.82v-9.22q0 -2.55 -0.98 -3.94t-4.05 -1.39q-2.93 0 -3.86 1.46t-0.94 3.79v27.23q0 1.95 1.05 3.23t3.75 1.27q2.77 0 3.9 -1.27t1.13 -3.23v-8.7l6.38 -0.75v10.95q0 3.98 -2.92 6.15t-8.4 2.17c-2.79 0.17 -5.57 -0.45 -8.03 -1.79C25.01 53.6 24.82 53.47 24.64 53.33q-2.81 -2.17 -2.81 -6.15z"></path></svg>`)
   })
 })

@@ -117,8 +117,8 @@ const toggleEventsOnShown = (self: ColorPicker, action?: boolean) => {
   const doc = getDocument(input);
   const win = getWindow(doc);
 
-  fn(self.controls, pointerdownEvent, self.pointerDown as EventListener);
-  self.controlKnobs.forEach(x => fn(x, keydownEvent, self.handleKnobs as EventListener));
+  fn(self.controls, pointerdownEvent, self.pointerDown);
+  self.controlKnobs.forEach(x => fn(x, keydownEvent, self.handleKnobs));
 
   fn(win, scrollEvent, self.handleScroll);
   fn(win, resizeEvent, self.update);
@@ -127,13 +127,13 @@ const toggleEventsOnShown = (self: ColorPicker, action?: boolean) => {
 
   if (colorMenu) {
     fn(colorMenu, mouseclickEvent, self.menuClickHandler);
-    fn(colorMenu, keydownEvent, self.menuKeyHandler as EventListener);
+    fn(colorMenu, keydownEvent, self.menuKeyHandler);
   }
 
-  fn(doc, pointermoveEvent, self.pointerMove as EventListener);
-  fn(doc, pointerupEvent, self.pointerUp as EventListener);
-  fn(parent, focusoutEvent, self.handleFocusOut as EventListener);
-  fn(doc, keyupEvent, self.handleDismiss as EventListener);
+  fn(doc, pointermoveEvent, self.pointerMove);
+  fn(doc, pointerupEvent, self.pointerUp);
+  fn(parent, focusoutEvent, self.handleFocusOut);
+  fn(doc, keyupEvent, self.handleDismiss);
 };
 
 /**
@@ -465,15 +465,15 @@ export default class ColorPicker {
     const [v1, v2, v3] = visuals;
     const { offsetHeight } = v1;
     const hue = controlPositions.c2y / offsetHeight;
-    const { r, g, b } = new Color({ h: hue, s: 1, l: 0.5 }).toRgb();
+    const { r, g, b } = new Color({ h: hue * 360, s: 100, l: 50 }).toRgb();
     const whiteGrad = 'linear-gradient(rgb(255,255,255) 0%, rgb(255,255,255) 100%)';
     const alpha = 1 - controlPositions.c3y / offsetHeight;
     const roundA = roundPart(alpha * 100) / 100;
 
     const fill = new Color({
-      h: hue,
-      s: 1,
-      l: 0.5,
+      h: hue * 360,
+      s: 100,
+      l: 50,
       a: alpha,
     }).toRgbString();
     const hueGradient = `linear-gradient(
@@ -547,8 +547,9 @@ export default class ColorPicker {
     const { previousElementSibling, nextElementSibling, parentElement } = target;
     const isColorOptionsMenu = parentElement && hasClass(parentElement, 'color-options');
     const allSiblings = parentElement ? [...parentElement.children] : [];
-    const columnsCount =
-      isColorOptionsMenu && getElementStyle(parentElement, 'grid-template-columns').split(' ').length;
+    // const columnsCount =
+    //   isColorOptionsMenu && getElementStyle(parentElement, 'grid-template-columns').split(' ').length;
+    const columnsCount = isColorOptionsMenu && Number(getElementStyle(parentElement, '--grid-fit'));
     const currentIndex = allSiblings.indexOf(target);
     const previousElement = currentIndex > -1 && columnsCount && allSiblings[currentIndex - columnsCount];
     const nextElement = currentIndex > -1 && columnsCount && allSiblings[currentIndex + columnsCount];
@@ -861,9 +862,9 @@ export default class ColorPicker {
 
     // new color
     const { r, g, b, a } = new Color({
-      h: hue,
-      s: saturation,
-      v: lightness,
+      h: hue * 360,
+      s: saturation * 100,
+      v: lightness * 100,
       a: alpha,
     });
 
@@ -908,9 +909,9 @@ export default class ColorPicker {
 
     // new color
     const { r, g, b, a } = new Color({
-      h: hue,
-      s: saturation,
-      v: lightness,
+      h: hue * 360,
+      s: saturation * 100,
+      v: lightness * 100,
       a: alpha,
     });
 
