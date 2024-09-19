@@ -1,19 +1,12 @@
-/// <reference types="vite/client" />
-"use strict";
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
-import { name } from './package.json';
-
-const getPackageName = () => {
-  return name.includes('@') ? name.split('/')[1] : name;
-};
 
 const NAME = 'ColorPicker';
 
 const fileName = {
-  es: `${getPackageName()}.mjs`,
-  cjs: `${getPackageName()}.cjs`,
-  iife: `${getPackageName()}.js`,
+  es: `color-picker.mjs`,
+  cjs: `color-picker.cjs`,
+  iife: `color-picker.js`,
 };
 
 export default defineConfig({
