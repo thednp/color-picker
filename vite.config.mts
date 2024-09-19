@@ -11,11 +11,6 @@ const fileName = {
 
 export default defineConfig({
   base: './',
-  resolve: {
-    alias: {
-      "~": resolve(__dirname, "src"),
-    },
-  },
   build: {
     emptyOutDir: true,
     outDir: 'dist/js',
@@ -25,9 +20,8 @@ export default defineConfig({
       formats: ['es', 'cjs', 'iife'],
       fileName: (format: string) => fileName[format],
     },
-    target: 'ESNext',
     sourcemap: true,
-    minify: true,
+    target: "ESNext",
   },
 });
 

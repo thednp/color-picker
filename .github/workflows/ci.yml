@@ -32,11 +32,8 @@ jobs:
       - name: Build CSS
         run: pnpm compile-scss
 
-      - name: Copy CSS
-        run: pnpm copy-css-cp
-
-      - name: Copy JS
-        run: pnpm docs
+      - name: Copy Assets
+        run: pnpm copy
 
       - name: Clean coverage
         run: pnpm clean-coverage
