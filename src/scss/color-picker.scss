@@ -1,4 +1,5 @@
-@import "variables";
+@use "sass:meta";
+@use "variables";
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -10,8 +11,8 @@
   display: flex;
 
   @each $name in "white", "black" {
-    @each $lvl in $transparency-levels {
-      @if  type-of($name) == "string" and type-of($lvl) == "number" {
+    @each $lvl in variables.$transparency-levels {
+      @if  meta.type-of($name) == "string" and meta.type-of($lvl) == "number" {
         $color: #fff;
 
         @if $name == "black" {
@@ -27,9 +28,9 @@
     }
   }
 
-  --dropdown-transition: #{$dropdown-transition};
-  --btn-transition: #{$btn-transition};
-  --options-transition: #{$options-transition};
+  --dropdown-transition: #{variables.$dropdown-transition};
+  --btn-transition: #{variables.$btn-transition};
+  --options-transition: #{variables.$options-transition};
   --dropdown-bg: var(--black-75);
   --dropdown-color: var(--white-75);
   --dropdown-shadow: 0 6px 12px var(--black-33);

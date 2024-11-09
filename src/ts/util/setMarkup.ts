@@ -1,21 +1,21 @@
 import {
-  getAttribute,
-  setAttribute,
-  toUpperCase,
   ariaHidden,
-  tabindex,
   createElement,
   createElementNS,
-} from '@thednp/shorty';
+  getAttribute,
+  setAttribute,
+  tabindex,
+  toUpperCase,
+} from "@thednp/shorty";
 
-import Color from '@thednp/color';
+import Color from "@thednp/color";
 
-import getColorForm from './getColorForm';
-import getColorControls from './getColorControls';
-import getColorMenu from './getColorMenu';
-import vHidden from './vHidden';
+import getColorForm from "./getColorForm";
+import getColorControls from "./getColorControls";
+import getColorMenu from "./getColorMenu";
+import vHidden from "./vHidden";
 
-import ColorPicker from '../index';
+import ColorPicker from "../index";
 
 /**
  * Generate HTML markup and update instance properties.
@@ -23,42 +23,52 @@ import ColorPicker from '../index';
  * @param self
  */
 const setMarkup = (self: ColorPicker) => {
-  const { input, parent, format, id, componentLabels, colorKeywords, colorPresets } = self;
-  const colorValue = getAttribute(input, 'value') || '#fff';
+  const {
+    input,
+    parent,
+    format,
+    id,
+    componentLabels,
+    colorKeywords,
+    colorPresets,
+  } = self;
+  const colorValue = getAttribute(input, "value") || "#fff";
   const { nonColors } = Color;
 
   const { toggleLabel, pickerLabel, formatLabel, hexLabel } = componentLabels;
 
   // update color
-  const color = nonColors.includes(colorValue) ? '#fff' : colorValue;
+  const color = nonColors.includes(colorValue) ? "#fff" : colorValue;
   self.color = new Color(color, format);
 
   // set initial controls dimensions
-  const formatString = format === 'hex' ? hexLabel : toUpperCase(format);
+  const formatString = format === "hex" ? hexLabel : toUpperCase(format);
 
   const pickerBtn = createElement<HTMLButtonElement>({
     id: `picker-btn-${id}`,
-    tagName: 'button',
-    type: 'button',
-    className: 'picker-toggle btn-appearance',
-    ariaExpanded: 'false',
-    ariaHasPopup: 'true',
+    tagName: "button",
+    type: "button",
+    className: "picker-toggle btn-appearance",
+    ariaExpanded: "false",
+    ariaHasPopup: "true",
   }) as HTMLButtonElement;
 
   pickerBtn.append(
     createElement({
-      tagName: 'span',
+      tagName: "span",
       className: vHidden,
       innerText: `${pickerLabel}. ${formatLabel}: ${formatString}`,
     }) as HTMLElement,
   );
 
-  const pickerDropdown = createElement({
-    tagName: 'div',
-    className: 'color-dropdown picker',
-    role: 'group',
-    ariaLabelledBy: `picker-btn-${id}`,
-  } as Partial<HTMLElement> & { ariaLabelledBy: string }) as HTMLElement;
+  const pickerDropdown = createElement(
+    {
+      tagName: "div",
+      className: "color-dropdown picker",
+      role: "group",
+      ariaLabelledBy: `picker-btn-${id}`,
+    } as Partial<HTMLElement> & { ariaLabelledBy: string },
+  ) as HTMLElement;
 
   const colorControls = getColorControls(self);
   const colorForm = getColorForm(self);
@@ -68,49 +78,57 @@ const setMarkup = (self: ColorPicker) => {
   parent.append(pickerDropdown);
 
   // set colour key menu template
+  /* istanbul ignore else @preserve */
   if (colorKeywords || colorPresets) {
     const presetsDropdown = createElement({
-      tagName: 'div',
-      className: 'color-dropdown scrollable menu',
+      tagName: "div",
+      className: "color-dropdown scrollable menu",
     }) as HTMLElement;
 
     // color presets
     if (colorPresets) {
-      presetsDropdown.append(getColorMenu(self, colorPresets, 'color-options'));
+      presetsDropdown.append(getColorMenu(self, colorPresets, "color-options"));
     }
 
     // explicit defaults [reset, initial, inherit, transparent, currentColor]
     // also custom defaults [default: #069, complementary: #930]
+    /* istanbul ignore else @preserve */
     if (colorKeywords && colorKeywords.length) {
-      presetsDropdown.append(getColorMenu(self, colorKeywords, 'color-defaults'));
+      presetsDropdown.append(
+        getColorMenu(self, colorKeywords, "color-defaults"),
+      );
     }
 
     const presetsBtn = createElement<HTMLButtonElement>({
-      tagName: 'button',
-      type: 'button',
-      className: 'menu-toggle btn-appearance',
+      tagName: "button",
+      type: "button",
+      className: "menu-toggle btn-appearance",
       tabIndex: -1,
-      ariaExpanded: 'false',
-      ariaHasPopup: 'true',
+      ariaExpanded: "false",
+      ariaHasPopup: "true",
     }) as HTMLButtonElement;
 
-    const xmlns = encodeURI('http://www.w3.org/2000/svg');
+    const xmlns = encodeURI("http://www.w3.org/2000/svg");
     const presetsIcon = createElementNS(xmlns, {
-      tagName: 'svg',
+      tagName: "svg",
     }) as HTMLElement;
-    setAttribute(presetsIcon, 'xmlns', xmlns);
-    setAttribute(presetsIcon, 'viewBox', '0 0 512 512');
-    setAttribute(presetsIcon, ariaHidden, 'true');
+    setAttribute(presetsIcon, "xmlns", xmlns);
+    setAttribute(presetsIcon, "viewBox", "0 0 512 512");
+    setAttribute(presetsIcon, ariaHidden, "true");
 
     const path = createElementNS(xmlns, {
-      tagName: 'path',
+      tagName: "path",
     }) as HTMLElement;
-    setAttribute(path, 'd', 'M98,158l157,156L411,158l27,27L255,368L71,185L98,158z');
-    setAttribute(path, 'fill', '#fff');
+    setAttribute(
+      path,
+      "d",
+      "M98,158l157,156L411,158l27,27L255,368L71,185L98,158z",
+    );
+    setAttribute(path, "fill", "#fff");
     presetsIcon.append(path);
     presetsBtn.append(
       createElement({
-        tagName: 'span',
+        tagName: "span",
         className: vHidden,
         innerText: `${toggleLabel}`,
       }) as HTMLElement,
@@ -121,10 +139,11 @@ const setMarkup = (self: ColorPicker) => {
   }
 
   // solve non-colors after settings save
+  /* istanbul ignore else @preserve */
   if (colorKeywords && nonColors.includes(colorValue)) {
     self.value = colorValue;
   }
-  setAttribute(input, tabindex, '-1');
+  setAttribute(input, tabindex, "-1");
 };
 
 export default setMarkup;

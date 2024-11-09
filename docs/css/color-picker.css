@@ -1,8 +1,3 @@
-/*!
-* ColorPicker v2.0.2 (https://thednp.github.io/color-picker)
-* Copyright 2024 © thednp
-* Licensed under MIT (https://github.com/thednp/color-picker/blob/main/LICENSE)
-*/
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -510,3 +505,5 @@
   white-space: nowrap !important;
   border: 0 !important;
 }
+
+/*# sourceMappingURL=color-picker.css.map */

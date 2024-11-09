@@ -1,4 +1,4 @@
-@import "color-picker";
+@use "color-picker";
 
 [dir="rtl"] {
   .color-preview { text-align: right; }

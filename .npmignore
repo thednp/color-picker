@@ -5,4 +5,11 @@ node_modules
 experiments
 docs
 coverage
-test/__screenshots__
+test
+src
+compile.cjs
+tsconfig.json
+.stylelintrc.json
+vite.config.mts
+vitest.config.mts
+vitest.config-ui.mts

@@ -1,9 +1,0 @@
-extraction:
-  typescript:
-    index:
-      exclude:
-        - coverage
-        - cypress
-        - docs
-        - experiments
-        - node_modules

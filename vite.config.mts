@@ -1,5 +1,7 @@
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
+import dts from "vite-plugin-dts";
+import strip from "vite-plugin-strip-comments";
 
 const NAME = 'ColorPicker';
 
@@ -11,6 +13,14 @@ const fileName = {
 
 export default defineConfig({
   base: './',
+  plugins: [
+    dts({
+      outDir: 'dist/js',
+      copyDtsFiles: true,
+      rollupTypes: true,
+    }),
+    strip()
+  ],
   build: {
     emptyOutDir: true,
     outDir: 'dist/js',

@@ -1,6 +1,6 @@
-import { createElement } from '@thednp/shorty';
+import { createElement } from "@thednp/shorty";
 
-import ColorPicker from '..';
+import ColorPicker from "..";
 
 /**
  * Returns all color controls for `ColorPicker`.
@@ -10,25 +10,36 @@ import ColorPicker from '..';
  */
 const getColorControls = (self: ColorPicker): HTMLElement => {
   const { format, componentLabels } = self;
-  const { hueLabel, alphaLabel, lightnessLabel, saturationLabel, whitenessLabel, blacknessLabel } = componentLabels;
+  const {
+    hueLabel,
+    alphaLabel,
+    lightnessLabel,
+    saturationLabel,
+    whitenessLabel,
+    blacknessLabel,
+  } = componentLabels;
 
-  const max1 = format === 'hsl' ? 360 : 100;
-  const max2 = format === 'hsl' ? 100 : 360;
+  const max1 = format === "hsl" ? 360 : 100;
+  const max2 = format === "hsl" ? 100 : 360;
   const max3 = 100;
 
-  let ctrl1Label = format === 'hsl' ? `${hueLabel} & ${lightnessLabel}` : `${lightnessLabel} & ${saturationLabel}`;
+  let ctrl1Label = format === "hsl"
+    ? `${hueLabel} & ${lightnessLabel}`
+    : `${lightnessLabel} & ${saturationLabel}`;
 
-  ctrl1Label = format === 'hwb' ? `${whitenessLabel} & ${blacknessLabel}` : ctrl1Label;
+  ctrl1Label = format === "hwb"
+    ? `${whitenessLabel} & ${blacknessLabel}`
+    : ctrl1Label;
 
-  const ctrl2Label = format === 'hsl' ? `${saturationLabel}` : `${hueLabel}`;
+  const ctrl2Label = format === "hsl" ? `${saturationLabel}` : `${hueLabel}`;
 
   const colorControls = createElement({
-    tagName: 'div',
+    tagName: "div",
     className: `color-controls ${format}`,
   }) as HTMLElement;
 
-  const colorPointer = 'color-pointer';
-  const colorSlider = 'color-slider';
+  const colorPointer = "color-pointer";
+  const colorSlider = "color-slider";
 
   const controls = [
     {
@@ -54,27 +65,27 @@ const getColorControls = (self: ColorPicker): HTMLElement => {
     },
   ];
 
-  controls.forEach(template => {
+  controls.forEach((template) => {
     const { i, c, l, min, max } = template;
     const control = createElement({
-      tagName: 'div',
-      className: 'color-control',
-      role: 'presentation',
+      tagName: "div",
+      className: "color-control",
+      role: "presentation",
     }) as HTMLElement;
 
     control.append(
       createElement({
-        tagName: 'div',
+        tagName: "div",
         className: `visual-control visual-control${i}`,
       }) as HTMLElement,
     );
 
     const knob = createElement({
-      tagName: 'div',
+      tagName: "div",
       className: `${c} knob`,
-      ariaLive: 'polite',
+      ariaLive: "polite",
       ariaLabel: l,
-      role: 'slider',
+      role: "slider",
       tabIndex: 0,
       ariaValueMin: `${min}`,
       ariaValueMax: `${max}`,

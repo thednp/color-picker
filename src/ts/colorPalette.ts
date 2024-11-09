@@ -1,4 +1,4 @@
-import Color from '@thednp/color';
+import Color from "@thednp/color";
 // import { isNumber } from '@thednp/shorty';
 
 /**
@@ -31,13 +31,20 @@ export default class ColorPalette {
     // if (!args.every(n => isNumber(n))) throw TypeError('ColorPalette only accepts numbers.');
 
     if (args.length === 4) {
-      [hue, hueSteps, lightSteps, saturation] = args as [number, number, number, number];
+      [hue, hueSteps, lightSteps, saturation] = args as [
+        number,
+        number,
+        number,
+        number,
+      ];
     } else if (args.length === 3) {
       [hue, hueSteps, lightSteps] = args as [number, number, number];
     } else if (args.length === 2) {
       [hueSteps, lightSteps] = args as [number, number];
-      if ([hueSteps, lightSteps].some(n => n < 1)) {
-        throw TypeError('ColorPalette: the two minimum arguments must be numbers higher than 0.');
+      if ([hueSteps, lightSteps].some((n) => n < 1)) {
+        throw TypeError(
+          "ColorPalette: the two minimum arguments must be numbers higher than 0.",
+        );
       }
     }
 
@@ -53,7 +60,7 @@ export default class ColorPalette {
       [10, 11],
       [12, 13],
     ];
-    const closestSet = lightSets.find(set => set.includes(lightSteps));
+    const closestSet = lightSets.find((set) => set.includes(lightSteps));
 
     // find a lightStep that won't go beyond black and white
     // something within the [10-90] range of lightness
@@ -74,9 +81,11 @@ export default class ColorPalette {
     // feed `colors` Array
     for (let i = 0; i < hueSteps; i += 1) {
       const currentHue = (hue + i * hueStep) % 360;
-      lightnessArray.forEach(l => {
+      lightnessArray.forEach((l) => {
         const newColor = new Color({ h: currentHue, s: 100, l: l * 100 });
-        colors.push(saturation < 100 ? newColor.saturate(saturation - 100) : newColor);
+        colors.push(
+          saturation < 100 ? newColor.saturate(saturation - 100) : newColor,
+        );
       });
     }
 

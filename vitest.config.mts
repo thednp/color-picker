@@ -7,6 +7,11 @@ export default defineConfig({
       "~": resolve(__dirname, "src"),
     },
   },
+  optimizeDeps: {
+    include: [
+      "@vitest/coverage-istanbul"
+    ]
+  },
   test: {
     css: true,
     globals: true,
@@ -17,9 +22,9 @@ export default defineConfig({
       include: ["src/**/*.{ts,tsx}"],
     },
     browser: {
-      // provider: 'webdriverio', // or 'webdriverio'
+      provider: 'playwright', // or 'webdriverio'
       enabled: true,
-      headless: false,
+      headless: true,
       name: 'chromium', // browser name is required
     },
   },

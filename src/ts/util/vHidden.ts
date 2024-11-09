@@ -1,2 +1,2 @@
-const vHidden = 'v-hidden';
+const vHidden = "v-hidden";
 export default vHidden;

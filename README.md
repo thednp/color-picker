@@ -4,13 +4,11 @@
 [![ci](https://github.com/thednp/color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/color-picker/actions/workflows/ci.yml)
 [![jsDeliver](https://img.shields.io/jsdelivr/npm/hw/@thednp/color-picker)](https://www.jsdelivr.com/package/npm/@thednp/color-picker)
 [![NPM Version](https://img.shields.io/npm/v/@thednp/color-picker.svg)](https://www.npmjs.com/package/@thednp/color-picker)
-[![typescript version](https://img.shields.io/badge/typescript-5.6.2-brightgreen)](https://www.typescriptlang.org/)
-[![eslint version](https://img.shields.io/badge/eslint-8.57.1-brightgreen)](https://github.com/eslint)
-[![prettier version](https://img.shields.io/badge/prettier-3.3.3-brightgreen)](https://prettier.io/)
-[![vitest version](https://img.shields.io/badge/vitest-2.1.1-brightgreen)](https://vitest.dev/)
-[![vite version](https://img.shields.io/badge/vite-5.4.6-brightgreen)](https://github.com/vitejs)
+[![typescript version](https://img.shields.io/badge/typescript-5.6.3-brightgreen)](https://www.typescriptlang.org/)
+[![vitest version](https://img.shields.io/badge/vitest-2.1.4-brightgreen)](https://vitest.dev/)
+[![vite version](https://img.shields.io/badge/vite-5.4.10-brightgreen)](https://github.com/vitejs)
 
-The feature rich **ColorPicker** component for the modern web, sourced with TypeScript, Cypress tested, WAI-ARIA compliant and lots of goodies. In addition, it features its own version of [TinyColor](https://github.com/bgrins/TinyColor) called simply [Color](http://github.com/thednp/color).
+The feature rich **ColorPicker** component for the modern web, sourced with TypeScript, Vitest tested, WAI-ARIA compliant and lots of goodies. In addition, it features its own version of [TinyColor](https://github.com/bgrins/TinyColor) called simply [Color](http://github.com/thednp/color).
 
 **ColorPicker** can use existing colour palettes or generate custom ones via DATA API configuration. If you want to play, check out [this codepen](https://codepen.io/thednp/pen/WNdRWPN) I've setup for you. Have fun!
 
@@ -25,7 +23,7 @@ The feature rich **ColorPicker** component for the modern web, sourced with Type
 - Supports keyboard and touch events
 - Automatic repositioning of the popup dropdown on show / window scroll
 - SCSS sources with minimal style required
-- Cypress tested
+- Vitest tested
 - Right To Left Languages Supported
 - light footprint, `10kb` in size when minified and gZipped
 

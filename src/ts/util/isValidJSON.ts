@@ -1,4 +1,4 @@
-import { isString } from '@thednp/shorty';
+import { isString } from "@thednp/shorty";
 
 /**
  * Check if a string is valid JSON string.
@@ -7,10 +7,11 @@ import { isString } from '@thednp/shorty';
  * @returns the query result
  */
 const isValidJSON = (str: unknown): str is string => {
+  /* istanbul ignore next @preserve */
   if (!isString(str)) return false;
   try {
     JSON.parse(str);
-  } catch (e) {
+  } catch (_) {
     return false;
   }
   return true;

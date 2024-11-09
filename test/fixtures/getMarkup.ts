@@ -1,9 +1,9 @@
 import testSample from "./testSample";
 import getRandomInt from "./getRandomInt";
 
-export default function getMarkup(id, format) {
+export default function getMarkup(id: number, format: string) {
   const set = testSample[getRandomInt(0,3)];
-  const value = set[format];
+  const value = set[format as keyof typeof testSample[0]] ;
 
   const container = document.createElement('div');
 
@@ -27,10 +27,10 @@ export default function getMarkup(id, format) {
   a.setAttribute('href', '#');
   a.innerText = 'Some link';
   a.className = 'my-link';
-  a.style = 'position: absolute; top: 0px; right:0; opacity: 0.015';
+  Object.assign(a.style, { position: 'absolute', top: '0px', right: '0', opacity: '0.015' });
 
   cpWrapper.append(input);
   container.append(label, cpWrapper, a);
 
-  return { container, set, value};
+  return { container, set, value };
 }

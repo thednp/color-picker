@@ -1,7 +1,12 @@
-import { createElement, setAttribute, ObjectAssign, toUpperCase } from '@thednp/shorty';
+import {
+  createElement,
+  ObjectAssign,
+  setAttribute,
+  toUpperCase,
+} from "@thednp/shorty";
 
-import vHidden from './vHidden';
-import ColorPicker from '../index';
+import vHidden from "./vHidden";
+import ColorPicker from "../index";
 
 /**
  * Returns the color form for `ColorPicker`.
@@ -12,58 +17,61 @@ import ColorPicker from '../index';
 const getColorForm = (self: ColorPicker): HTMLElement => {
   const { format, id, componentLabels } = self;
   const colorForm = createElement({
-    tagName: 'div',
+    tagName: "div",
     className: `color-form ${format}`,
   }) as HTMLElement;
 
-  let components = ['hex'];
-  if (format === 'rgb') components = ['red', 'green', 'blue', 'alpha'];
-  else if (format === 'hsl') components = ['hue', 'saturation', 'lightness', 'alpha'];
-  else if (format === 'hwb') components = ['hue', 'whiteness', 'blackness', 'alpha'];
+  let components = ["hex"];
+  if (format === "rgb") components = ["red", "green", "blue", "alpha"];
+  else if (format === "hsl") {
+    components = ["hue", "saturation", "lightness", "alpha"];
+  } else if (format === "hwb") {
+    components = ["hue", "whiteness", "blackness", "alpha"];
+  }
 
   components.forEach((c: string): void => {
-    const [C] = format === 'hex' ? ['#'] : toUpperCase(c).split('');
+    const [C] = format === "hex" ? ["#"] : toUpperCase(c).split("");
     const cID = `color_${format}_${c}_${id}`;
     const formatLabel = componentLabels[`${c}Label`];
-    const cInputLabel = createElement({ tagName: 'label' }) as HTMLElement;
-    setAttribute(cInputLabel, 'for', cID);
+    const cInputLabel = createElement({ tagName: "label" }) as HTMLElement;
+    setAttribute(cInputLabel, "for", cID);
     cInputLabel.append(
       createElement({
-        tagName: 'span',
-        ariaHidden: 'true',
+        tagName: "span",
+        ariaHidden: "true",
         innerText: `${C}:`,
       }) as HTMLElement,
       createElement({
-        tagName: 'span',
+        tagName: "span",
         className: vHidden,
         innerText: formatLabel,
       }) as HTMLElement,
     );
     const cInput = createElement({
-      tagName: 'input',
+      tagName: "input",
       id: cID,
       // name: cID, - prevent saving the value to a form
-      type: format === 'hex' ? 'text' : 'number',
-      value: c === 'alpha' ? '100' : '0',
+      type: format === "hex" ? "text" : "number",
+      value: c === "alpha" ? "100" : "0",
       className: `color-input ${c}`,
-      autocomplete: 'off',
+      autocomplete: "off",
       spellcheck: false,
     } as Partial<HTMLInputElement>) as HTMLInputElement;
 
     // alpha
-    let max = '100';
-    let step = '1';
-    if (c !== 'alpha') {
-      if (format === 'rgb') {
-        max = '255';
-        step = '1';
-      } else if (c === 'hue') {
-        max = '360';
-        step = '1';
+    let max = "100";
+    let step = "1";
+    if (c !== "alpha") {
+      if (format === "rgb") {
+        max = "255";
+        step = "1";
+      } else if (c === "hue") {
+        max = "360";
+        step = "1";
       }
     }
     ObjectAssign(cInput, {
-      min: '0',
+      min: "0",
       max,
       step,
     });
