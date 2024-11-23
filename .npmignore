@@ -7,7 +7,6 @@ docs
 coverage
 test
 src
-compile.cjs
 tsconfig.json
 .stylelintrc.json
 vite.config.mts
