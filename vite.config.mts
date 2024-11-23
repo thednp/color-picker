@@ -14,12 +14,15 @@ const fileName = {
 export default defineConfig({
   base: './',
   plugins: [
-    dts({
-      outDir: 'dist/js',
-      copyDtsFiles: true,
-      rollupTypes: true,
-    }),
-    strip()
+    {
+      ...dts({
+        outDir: 'dist/js',
+        copyDtsFiles: true,
+        rollupTypes: true,
+      }),
+      ...strip(),
+      apply: 'build'
+    }
   ],
   build: {
     emptyOutDir: true,
