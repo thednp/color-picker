@@ -10,11 +10,21 @@ on:
       - README.md
       - package.json
       - .github/workflows/badges.yml
+  pull_request:
+    # [push, pull_request]
+    # update README badge only if the README file changes
+    # or if the package.json file changes, or this file changes
+    branches:
+      - main
+    paths:
+      - README.md
+      - package.json
+      - .github/workflows/badges.yml
 
 jobs:
   badges:
     name: Badges
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v3

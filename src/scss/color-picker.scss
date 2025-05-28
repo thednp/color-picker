@@ -127,7 +127,7 @@
 
 /* color-preview */
 .color-preview {
-  box-shadow: 0 0 0 1px rgba(120,120,120,33%) inset;
+  box-shadow: 0 0 0 1px rgb(120 120 120 / 33%) inset;
   direction: ltr; /* color value can never be rtl */
 }
 
@@ -327,11 +327,11 @@
   width: var(--grid-item-size);
   height: var(--grid-item-size);
   overflow: hidden;
-  color: rgba(0,0,0,0%);
+  color: rgb(0 0 0 / 0%);
 
   &:active, &:focus {
     outline: none;
-    box-shadow: 0 0 0 4px rgba(125,125,125,75%) inset;
+    box-shadow: 0 0 0 4px rgb(125 125 125 / 75%) inset;
   }
 }
 
